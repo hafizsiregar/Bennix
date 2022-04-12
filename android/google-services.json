@@ -1,0 +1,87 @@
+{
+  "project_info": {
+    "project_number": "406230232290",
+    "project_id": "bennixid",
+    "storage_bucket": "bennixid.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406230232290:android:0399cdf698c413bb8542bb",
+        "android_client_info": {
+          "package_name": "com.benix.benix"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "406230232290-8dbcl9lgl18t67quo3ecl8p47ugh2065.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.benix.benix",
+            "certificate_hash": "30c203fb22a73e229358b3db716b878079d6e87f"
+          }
+        },
+        {
+          "client_id": "406230232290-an4jl992hk5h7igsdohkh6gqmqmmn000.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.benix.benix",
+            "certificate_hash": "1130bb57dd04688d1eab275976f1a03926491617"
+          }
+        },
+        {
+          "client_id": "406230232290-b12tafp2kjk81c7tdh1k8lf4qljqd0b9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.benix.benix",
+            "certificate_hash": "2da6dd14c7157a89b8a4a90527ab1bcae65174d7"
+          }
+        },
+        {
+          "client_id": "406230232290-biakrob79ctverkif8rs32kc2slokoag.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.benix.benix",
+            "certificate_hash": "83b6044a3576af74ad7da38e435d9d2531e5afc1"
+          }
+        },
+        {
+          "client_id": "406230232290-jhf9f8bbtta90h4h384vphbgjjomh5lb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.benix.benix",
+            "certificate_hash": "3fd61e0359154cb645031b80b7d3dff4d978f2d1"
+          }
+        },
+        {
+          "client_id": "406230232290-qg7519slgjlqpi1nddsjcliu6s2l9a4u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.benix.benix",
+            "certificate_hash": "fdbecfdb38114e764f194b7649782424f713e85c"
+          }
+        },
+        {
+          "client_id": "406230232290-3lt4008nc1fl31p0pf8au1kqc4l3bcun.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBW9l-Qf_YbclLfjNecpF8jU_B4DQqV_3Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "406230232290-3lt4008nc1fl31p0pf8au1kqc4l3bcun.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
