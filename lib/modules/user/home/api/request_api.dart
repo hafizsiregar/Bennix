@@ -34,7 +34,7 @@ Future<void> filterEvent(context, FilterDataEvent data) async {
 
 Future<void> popularEvent(context) async {
   Map<String, dynamic> body = {
-    'order_by': 'popular',
+    'order_by': 'populer',
   };
 
   await req.send(
@@ -50,7 +50,7 @@ Future<void> popularEvent(context) async {
       },
     ),
   );
-}
+} 
 
 Future<void> newEvent(context) async {
   Map<String, dynamic> body = {

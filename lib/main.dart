@@ -29,7 +29,6 @@ void main() async {
       withLoading: Redirects(toogle: true),
       noapiurl: 'https://admin.benix.id/',
       url: 'https://admin.benix.id/api/',
-      logResponse: true,
       errorMessage: 'default',
       timeout: const Duration(seconds: 120),
     ),

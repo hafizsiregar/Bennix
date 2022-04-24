@@ -243,7 +243,7 @@ _showBottom({required context, required TextEditingController controller, requir
     backgroundColor: Colors.transparent,
     context: context,
     builder: (BuildContext context) => bottom(
-      title: 'Jumlah Ticket Dibeli',
+      title: 'Jumlah Tiket Dibeli',
       maxHeight: 0.95,
       context: context,
       child: StatefulBuilder(
@@ -302,7 +302,7 @@ _showBottom({required context, required TextEditingController controller, requir
                     Navigator.of(context).pop();
                     int qtyTiket = int.parse(controller.text);
                     
-                    if(qtyTiket < remainingQty!){
+                    if(qtyTiket <= remainingQty!){
                       navigator(
                       page: BuyTicket(
                         buyQty: int.parse(controller.text),

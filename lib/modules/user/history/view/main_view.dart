@@ -122,7 +122,7 @@ class _HistoryViewState extends BaseBackground<HistoryView> {
                                                     children: [
                                                       Expanded(
                                                         child: Text(
-                                                          BlocHistoryEvent.listEvent[index].dueDate != null ? DateFormat('d MMM y HH:mm:ss').format(BlocHistoryEvent.listEvent[index].dueDate!) : 'Belum Checkin',
+                                                          BlocHistoryEvent.listEvent[index].isCheckin == '1' ?  'Hadir'  : BlocHistoryEvent.listEvent[index].isCheckin == '0' ? 'Belum Checkin': 'Tidak Hadir',
                                                           style: TextStyle(
                                                             color: BaseColor.theme?.primaryColor,
                                                           ),

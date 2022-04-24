@@ -1,11 +1,11 @@
 import 'package:benix/main_library.dart';
 
 class InputEventData {
-  String? banner, name, type, organizerName, organizerImg, startDate, endDate, locationType, locationAddress, locationCity, locationLat, locationLong, maxBuyTicket, uniqueEmailTransaction, description, locationName, sumPeserta;
+  String? banner, name, type, organizerName, organizerImg, startDate, endDate, locationType, locationAddress, locationCity, locationLat, locationLong, maxBuyTicket, uniqueEmailTransaction, description, locationName, sumPeserta,sk,tages;
   List categories, tags, tickets, buyerDataSettings;
   int? id;
 
-  InputEventData({this.banner, this.name, this.type, this.organizerName, this.organizerImg, this.startDate, this.endDate, this.locationType, this.locationAddress, this.locationCity, this.locationLat, this.locationLong, this.maxBuyTicket, this.uniqueEmailTransaction, this.description, required this.categories, required this.tags, required this.tickets, required this.buyerDataSettings, this.id, this.locationName, this.sumPeserta});
+  InputEventData({this.banner, this.name, this.type, this.organizerName, this.organizerImg, this.startDate, this.endDate, this.locationType, this.locationAddress, this.locationCity, this.locationLat, this.locationLong, this.maxBuyTicket, this.uniqueEmailTransaction, this.description, required this.categories, required this.tags, required this.tickets, required this.buyerDataSettings, this.id, this.locationName, this.sumPeserta,this.sk,this.tages});
 }
 
 class CheckBoxSetting {
@@ -27,11 +27,11 @@ class TicketData {
 
 class EventData {
   int? id, userId, maxBuyTicket, uniqueEmailTransaction;
-  String? banner, name, type, organizerName, organizerImg, locationType, locationAddress, locationCity, locationLat, locationLong, description, locationName, sumPeserta;
+  String? banner, name, type, organizerName, organizerImg, locationType, locationAddress, locationCity, locationLat, locationLong, description, locationName, sumPeserta,sk,tages;
   DateTime? startDate, endDate;
   bool? certificate;
 
-  EventData({this.id, this.userId, this.maxBuyTicket, this.uniqueEmailTransaction, this.banner, this.name, this.type, this.organizerName, this.organizerImg, this.locationType, this.locationAddress, this.locationCity, this.locationLat, this.locationLong, this.description, this.startDate, this.endDate, this.certificate, this.locationName, this.sumPeserta});
+  EventData({this.id, this.userId, this.maxBuyTicket, this.uniqueEmailTransaction, this.banner, this.name, this.type, this.organizerName, this.organizerImg, this.locationType, this.locationAddress, this.locationCity, this.locationLat, this.locationLong, this.description, this.startDate, this.endDate, this.certificate, this.locationName, this.sumPeserta,this.sk,this.tages});
 }
 
 class EventCategories {

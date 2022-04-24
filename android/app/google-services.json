@@ -14,14 +14,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "406230232290-8dbcl9lgl18t67quo3ecl8p47ugh2065.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.benix.benix",
-            "certificate_hash": "30c203fb22a73e229358b3db716b878079d6e87f"
-          }
-        },
-        {
           "client_id": "406230232290-an4jl992hk5h7igsdohkh6gqmqmmn000.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

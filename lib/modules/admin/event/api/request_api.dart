@@ -4,7 +4,8 @@ import 'package:benix/modules/admin/event/bloc/main_bloc.dart';
 import 'package:benix/modules/admin/event/bloc/model.dart';
 import 'package:benix/modules/user/login/bloc/main_bloc.dart';
 import 'package:request_api_helper/request.dart' as req;
-import 'package:request_api_helper/request_api_helper.dart' show RESTAPI, RequestApiHelperConfigData, RequestData;
+import 'package:request_api_helper/request_api_helper.dart'
+    show RESTAPI, RequestApiHelperConfigData, RequestData;
 
 Future<void> getFormat({required context}) async {
   await req.send(
@@ -58,7 +59,8 @@ Future<void> getSettings({required context}) async {
   );
 }
 
-Future<bool> createEvent({required context, required InputEventData data}) async {
+Future<bool> createEvent(
+    {required context, required InputEventData data}) async {
   bool status = false;
   Map body = {
     'banner': data.banner,
@@ -77,8 +79,10 @@ Future<bool> createEvent({required context, required InputEventData data}) async
     'uniqe_email_transaction': data.uniqueEmailTransaction,
     'description': data.description,
     'categories': data.categories,
+    'tages': data.tages,
     'tags': data.tags,
     'tickets': data.tickets,
+    'sk': data.sk,
     'buyer_data_settings': data.buyerDataSettings,
     'location_name': data.locationName,
   };
@@ -102,7 +106,8 @@ Future<bool> createEvent({required context, required InputEventData data}) async
   return status;
 }
 
-Future<bool> updateEvent({required context, required InputEventData data}) async {
+Future<bool> updateEvent(
+    {required context, required InputEventData data}) async {
   bool status = false;
   Map body = {
     'name': data.name,
@@ -119,7 +124,9 @@ Future<bool> updateEvent({required context, required InputEventData data}) async
     'uniqe_email_transaction': data.uniqueEmailTransaction,
     'description': data.description,
     'categories': data.categories,
+    'tages': data.tages,
     'tags': data.tags,
+    'sk': data.sk,
     'tickets': data.tickets,
     'buyer_data_settings': data.buyerDataSettings,
     'location_name': data.locationName,
@@ -266,6 +273,9 @@ Future<String?> getEvent({required context}) async {
     type: RESTAPI.get,
     context: context,
     name: 'events',
+    data: RequestData(body: {
+      'order_by': 'populer',
+    }),
     changeConfig: RequestApiHelperConfigData(
       onSuccess: (data) {
         BlocEvent.initEvent(data['data']);

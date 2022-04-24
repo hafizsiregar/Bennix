@@ -89,6 +89,8 @@ class _LoginViewState extends BaseBackground<LoginView> {
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
                       'assets/images/bennix.png',
@@ -99,10 +101,13 @@ class _LoginViewState extends BaseBackground<LoginView> {
                     ),
                     const SizedBox(
                       width: double.infinity,
-                      child: Text(
-                        'Masuk Aplikasi',
-                        style: TextStyle(
-                          fontSize: 24,
+                      child: Center(
+                        child: Text(
+                            'Masuk Aplikasi',
+                            style: TextStyle(
+                              fontSize: 24,
+                            ),
+                          
                         ),
                       ),
                     ),
@@ -153,51 +158,57 @@ class _LoginViewState extends BaseBackground<LoginView> {
                         ),
                         // const Text('Ingat Saya'),
                         const Expanded(child: SizedBox()),
-                        InkWell(
-                          borderRadius: const BorderRadius.all(Radius.circular(100)),
-                          onTap: () {
-                            navigator(
-                              page: const ResetPasswordView(),
-                            );
-                          },
-                          child: const Text('Lupa Password?'),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20,top: 16),
+                          child: InkWell(
+                            borderRadius: const BorderRadius.all(Radius.circular(100)),
+                            onTap: () {
+                              navigator(
+                                page: const ResetPasswordView(),
+                              );
+                            },
+                            child: const Text('Lupa Password?',style: TextStyle(color: Colors.blue)),
+                          ),
                         ),
                       ],
                     ),
                     const SizedBox(
                       height: 30,
                     ),
-                    Button.flat(
-                      onTap: () async {
-                        await _login();
-                      },
-                      context: context,
-                      color: BaseColor.theme?.primaryColor,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
-                          SizedBox(
-                            width: 30,
-                          ),
-                          Text(
-                            'MASUK',
-                            style: TextStyle(color: Colors.white, fontSize: 16),
-                          ),
-                          SizedBox(
-                            width: 30,
-                            height: 30,
-                            child: Material(
-                              color: Colors.black38,
-                              borderRadius: BorderRadius.all(Radius.circular(100)),
-                              child: Center(
-                                child: Icon(
-                                  Icons.arrow_forward,
-                                  color: Colors.white,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Button.flat(
+                        onTap: () async {
+                          await _login();
+                        },
+                        context: context,
+                        color: BaseColor.theme?.primaryColor,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const [
+                            SizedBox(
+                              width: 30,
+                            ),
+                            Text(
+                              'MASUK',
+                              style: TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                            SizedBox(
+                              width: 30,
+                              height: 30,
+                              child: Material(
+                                color: Colors.black38,
+                                borderRadius: BorderRadius.all(Radius.circular(100)),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.arrow_forward,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(

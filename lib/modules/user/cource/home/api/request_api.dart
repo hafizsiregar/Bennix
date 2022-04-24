@@ -32,7 +32,7 @@ Future<void> getEcourceClose(context) async {
       },
     ),
     changeConfig: RequestApiHelperConfigData(
-      logResponse: true,
+      
       onSuccess: (data) {
         CourceBloc.initCloseData(data);
       },
@@ -46,7 +46,7 @@ Future<void> getDetailEcource(context, id) async {
     context: context,
     type: RESTAPI.get,
     changeConfig: RequestApiHelperConfigData(
-      logResponse: true,
+      
       onSuccess: (data) async {
         await DetailEcourceBloc.init(data['data']);
       },
@@ -60,7 +60,7 @@ Future<void> getComments(context, id) async {
     context: context,
     type: RESTAPI.get,
     changeConfig: RequestApiHelperConfigData(
-      logResponse: true,
+      
       onSuccess: (data) async {
         await CommentsBloc.init(data['data']);
       },
@@ -81,7 +81,7 @@ Future<bool> saveComment(context, id, value) async {
       },
     ),
     changeConfig: RequestApiHelperConfigData(
-      logResponse: true,
+      
       // successMessage: 'Berhasil Memberi Rating',
       onSuccess: (data) async {
         stat = true;
@@ -105,7 +105,7 @@ Future<bool> rating(context, id, value) async {
       },
     ),
     changeConfig: RequestApiHelperConfigData(
-      logResponse: true,
+      
       successMessage: 'Berhasil Memberi Rating',
       onSuccess: (data) async {
         stat = true;

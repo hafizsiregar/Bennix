@@ -11,7 +11,6 @@ class BlocHistoryEvent extends Bloc {
   static initEvent(data) {
     _listEvent.clear();
     if (data['data'] != null) {
-      print(data['data']);
       for (var i in data['data']) {
         _listEvent.add(HistoryEvent(
             date: DateTime.parse(i['date']),
@@ -20,6 +19,7 @@ class BlocHistoryEvent extends Bloc {
             orderNumber: i['order_number'],
             paymentMethod: i['payment_method'],
             status: i['status'],
+            isCheckin: i['is_checkin'],
             total: int.parse(i['total_net'].replaceAll('.00', '')),
             event: addEvent(i['event']),
             id: i['id']));
@@ -67,10 +67,12 @@ class DetailHistoryBloc {
   static DetailHistory get data => _data;
 
   static Future<void> init(data) async {
+    
     List<DetailTicket> tickets = [];
-
+    //  _data = DetailHistory();
+    print("dataa ${_data.eventName}");
     for (var i in data['details'] ?? []) {
-      print("DATAAA ${i['name_encryption']}");
+    
       tickets.add(
         DetailTicket(
           ticketName: i['ticket']['name'],
@@ -106,6 +108,9 @@ class DetailHistoryBloc {
               ? '-'
               : data['payment_method'],
       status: data['status'],
+      billNumber: data['bill_number'],
+      billCode: data['bill_code'],
+      isCheckin: data['is_checkin'],
       total: int.parse(
         data['total_net'].replaceAll('.00', ''),
       ),

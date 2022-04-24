@@ -221,7 +221,9 @@ class _EventViewState extends BaseBackground<EventView> {
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.all(15.0),
-                                    child: Container(
+                                    child: _selectedEvent?.organizerImg == 'null' ? Container(height: 100,width: 100,
+                                     color: Colors.blue,
+                                    )  :Container(
                                       height: 100,
                                       width: 100,
                                       decoration: BoxDecoration(
@@ -289,7 +291,7 @@ class _EventViewState extends BaseBackground<EventView> {
                                             ),
                                           ],
                                         ),
-                                        SizedBox(height: 10),
+                                       const SizedBox(height: 10),
                                         Text(
                                             _selectedEvent!.sumPeserta! +
                                                 ' ' +
@@ -322,6 +324,8 @@ class _EventViewState extends BaseBackground<EventView> {
                                   ),
                                 ),
                               ),
+                                
+                              
                               const SizedBox(height: 17),
                               Padding(
                                 padding:
@@ -330,6 +334,40 @@ class _EventViewState extends BaseBackground<EventView> {
                                   alignment: Alignment.centerLeft,
                                   child: Text(
                                     _selectedEvent?.description ?? '',
+                                    textAlign: TextAlign.justify,
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: BaseColor.theme?.captionColor,
+                                      height: 1.5,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                               Divider(
+                                color: Colors.grey[200],
+                              ),
+                              const SizedBox(height: 10),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 20),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Syarat dan Ketentuan',
+                                    style: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                               Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    _selectedEvent?.sk ?? '-',
                                     textAlign: TextAlign.justify,
                                     style: GoogleFonts.poppins(
                                       fontSize: 14,
