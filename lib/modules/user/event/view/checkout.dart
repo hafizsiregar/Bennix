@@ -472,7 +472,7 @@ class _BuyTicketState extends BaseBackground<BuyTicket> {
                     ),
                     Button.flat(
                       context: context,
-                      title: 'Checkout',
+                      title: 'Pesan',
                       onTap: () async {
                         if (_forms.currentState!.validate()) {
                           _checkout();

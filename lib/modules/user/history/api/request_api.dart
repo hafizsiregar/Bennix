@@ -11,7 +11,7 @@ Future<void> getHistory(context) async {
       body: {},
     ),
     changeConfig: RequestApiHelperConfigData(
-      logResponse: true,
+      
       onSuccess: (data) {
         BlocHistoryEvent.initEvent(data);
       },
@@ -25,8 +25,9 @@ Future<void> getHistoryDetail(context, id) async {
     context: context,
     type: RESTAPI.get,
     changeConfig: RequestApiHelperConfigData(
-      // logResponse: true,
+      // 
       onSuccess: (data) async {
+        await DetailHistoryBloc.clear();
         await DetailHistoryBloc.init(data['data']);
       },
     ),

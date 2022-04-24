@@ -95,7 +95,7 @@ Future<bool> createEcource({required context, required AddVideo data}) async {
             progress = 100 - (((max - progress) / max) * 100).round() > 90 ? 90 : 100 - (((max - progress) / max) * 100).round();
           },
     changeConfig: RequestApiHelperConfigData(
-      // logResponse: true,
+      // 
       withLoading: Redirects(toogle: fileUpload[0].isEmpty ? true : false),
       timeout: const Duration(hours: 1),
       successMessage: 'default',
@@ -128,7 +128,7 @@ Future<String?> getCourceAdmin({required context}) async {
       },
     ),
     changeConfig: RequestApiHelperConfigData(
-      logResponse: true,
+      
       onSuccess: (data) {
         url = data['next_page_url'];
         AdminCourceBloc.init(data);
@@ -337,7 +337,7 @@ Future<bool> updateEcource({required context, required Cource data, List<VideoDa
             print(progress);
           },
     changeConfig: RequestApiHelperConfigData(
-      logResponse: true,
+      
       withLoading: Redirects(toogle: false),
       timeout: const Duration(hours: 1),
       successMessage: 'default',

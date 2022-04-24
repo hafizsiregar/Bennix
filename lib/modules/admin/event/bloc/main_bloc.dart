@@ -143,6 +143,7 @@ class BlocEvent extends Bloc {
     _listEvent.clear();
     if (data['data'] != null) {
       for (var i in data['data']) {
+        print(i['name']);
         addEvent(i);
       }
     }
@@ -168,6 +169,8 @@ class BlocEvent extends Bloc {
           organizerName: data['organizer_name'],
           startDate: DateTime.parse(data['start_date']),
           type: data['type'],
+          sk: data['sk'],
+          tages: data['tages'],
           uniqueEmailTransaction: int.parse(data['uniqe_email_transaction']),
           userId: int.parse(data['user_id']),
           locationName: data['location_name'],
@@ -206,6 +209,7 @@ class BlocEvent extends Bloc {
           organizerName: data['organizer_name'],
           startDate: DateTime.parse(data['start_date']),
           type: data['type'],
+          sk: data['sk'],
           uniqueEmailTransaction: int.parse(data['uniqe_email_transaction']),
           userId: int.parse(data['user_id']),
           locationName: data['location_name'],
@@ -244,6 +248,7 @@ class BlocEvent extends Bloc {
           organizerName: data['organizer_name'],
           startDate: DateTime.parse(data['start_date']),
           type: data['type'],
+          sk: data['sk'],
           uniqueEmailTransaction: int.parse(data['uniqe_email_transaction']),
           userId: int.parse(data['user_id']),
           locationName: data['location_name'],

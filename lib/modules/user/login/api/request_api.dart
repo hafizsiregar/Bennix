@@ -49,7 +49,7 @@ Future<bool> loginGoogle({required context, required email, required member}) as
     ),
     changeConfig: RequestApiHelperConfigData(
       successMessage: 'default',
-      logResponse: true,
+      
       authErrorRedirect: Redirects(
         widget: null,
       ),

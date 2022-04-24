@@ -2,20 +2,20 @@ import 'package:benix/modules/admin/event/bloc/model.dart';
 
 class HistoryEvent {
   EventData? event;
-  String? orderNumber, status, paymentMethod;
+  String? orderNumber, status, paymentMethod,isCheckin;
   int? total, id;
   DateTime? date, dueDate;
 
-  HistoryEvent({this.id, this.event, this.date, this.dueDate, this.orderNumber, this.paymentMethod, this.status, this.total});
+  HistoryEvent({this.id, this.event, this.date, this.dueDate, this.orderNumber, this.paymentMethod, this.status, this.total,this.isCheckin});
 }
 
 class DetailHistory {
-  String? orderNumber, status, paymentMethod, buyerName, buyerEmail, buyerPhone, eventName, eventPlace, eventdate, invoicedate;
+  String? orderNumber, status, paymentMethod, buyerName, buyerEmail, buyerPhone, eventName, eventPlace, eventdate, invoicedate,isCheckin,billNumber,billCode;
   int? total;
   DateTime? dueDate;
   List<DetailTicket>? detailTicket;
 
-  DetailHistory({this.detailTicket, this.invoicedate, this.dueDate, this.orderNumber, this.paymentMethod, this.status, this.total, this.buyerName, this.buyerEmail, this.buyerPhone, this.eventName, this.eventPlace, this.eventdate});
+  DetailHistory({this.detailTicket, this.invoicedate, this.dueDate, this.orderNumber, this.paymentMethod, this.status, this.total, this.buyerName, this.buyerEmail, this.buyerPhone, this.eventName, this.eventPlace, this.eventdate,this.isCheckin,this.billNumber,this.billCode});
 }
 
 class DetailTicket {

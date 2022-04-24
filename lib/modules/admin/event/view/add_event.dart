@@ -129,7 +129,7 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
         _urlControl.text = widget.dataEdit?.locationAddress ?? '';
         isOnline = true;
       }
-
+    
       networkImagePath = widget.dataEdit?.banner;
       _name.text = widget.dataEdit?.name ?? '';
       _desc.text = widget.dataEdit?.description ?? '';
@@ -137,6 +137,8 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
       _maxBuy.text = widget.dataEdit?.maxBuyTicket ?? '';
       _orgName.text = widget.dataEdit?.organizerName ?? '';
       _tempat.text = widget.dataEdit?.locationName ?? '';
+      _sk.text = widget.dataEdit?.sk ?? '';
+      _tag.text = widget.dataEdit?.tages ?? '';
       awal = DateTime.parse(widget.dataEdit!.startDate!);
       akhir = DateTime.parse(widget.dataEdit!.endDate!);
       tAwal = TimeOfDay.fromDateTime(awal);
@@ -273,7 +275,9 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
         uniqueEmailTransaction: isOneEmail ? '1' : '0',
         categories: categories,
         tags: tags,
+        tages: _tag.text,
         tickets: tickets,
+        sk: _sk.text,
         buyerDataSettings: settings,
         locationName: _tempat.text,
       ),
@@ -372,8 +376,10 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
         type: isPrivate ? 'private' : 'public',
         uniqueEmailTransaction: isOneEmail ? '1' : '0',
         categories: categories,
+        tages: _tag.text,
         tags: tags,
         tickets: tickets,
+        sk: _sk.text,
         buyerDataSettings: settings,
         locationName: _tempat.text,
         id: widget.dataEdit?.id,
@@ -1194,7 +1200,7 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                                   Text(
                                     BlocEventAdd.listTicket.isEmpty
                                         ? 'Tiket Belum Di Buat'
-                                        : 'Ticket Yang Ditambahkan ${BlocEventAdd.listTicket.length}',
+                                        : 'Tiket Yang Ditambahkan ${BlocEventAdd.listTicket.length}',
                                     style: const TextStyle(
                                       fontSize: 16,
                                     ),

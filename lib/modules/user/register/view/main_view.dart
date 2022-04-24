@@ -44,10 +44,12 @@ class _RegisterViewState extends BaseBackground<RegisterView> {
                   ),
                   const SizedBox(
                     width: double.infinity,
-                    child: Text(
-                      'Daftar',
-                      style: TextStyle(
-                        fontSize: 24,
+                    child: Center(
+                      child: Text(
+                        'Daftar',
+                        style: TextStyle(
+                          fontSize: 24,
+                        ),
                       ),
                     ),
                   ),
@@ -138,39 +140,42 @@ class _RegisterViewState extends BaseBackground<RegisterView> {
                   const SizedBox(
                     height: 30,
                   ),
-                  Button.flat(
-                    onTap: () async {
-                      if (_form.currentState?.validate() != null) {
-                        await _register();
-                      }
-                    },
-                    context: context,
-                    color: BaseColor.theme?.primaryColor,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        SizedBox(
-                          width: 30,
-                        ),
-                        Text(
-                          'DAFTAR',
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
-                        SizedBox(
-                          width: 30,
-                          height: 30,
-                          child: Material(
-                            color: Colors.black38,
-                            borderRadius: BorderRadius.all(Radius.circular(100)),
-                            child: Center(
-                              child: Icon(
-                                Icons.arrow_forward,
-                                color: Colors.white,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Button.flat(
+                      onTap: () async {
+                        if (_form.currentState?.validate() != null) {
+                          await _register();
+                        }
+                      },
+                      context: context,
+                      color: BaseColor.theme?.primaryColor,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          SizedBox(
+                            width: 30,
+                          ),
+                          Text(
+                            'DAFTAR',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                          SizedBox(
+                            width: 30,
+                            height: 30,
+                            child: Material(
+                              color: Colors.black38,
+                              borderRadius: BorderRadius.all(Radius.circular(100)),
+                              child: Center(
+                                child: Icon(
+                                  Icons.arrow_forward,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   // const SizedBox(

@@ -14,6 +14,7 @@ class HistoryDetailView extends StatefulWidget {
 
 class _HistoryDetailViewState extends BaseBackground<HistoryDetailView> {
   _getData() async {
+    print('ASS'+widget.idHistory.toString());
     await getHistoryDetail(context, widget.idHistory);
     setState(() {});
   }
@@ -198,6 +199,32 @@ class _HistoryDetailViewState extends BaseBackground<HistoryDetailView> {
                                 ],
                               ),
                             ),
+                             Padding(
+                              padding: const EdgeInsets.only(bottom: 4.0),
+                              child: Row(
+                                children: [
+                                  const Expanded(
+                                    child: Text('Kode Pembayaran'),
+                                  ),
+                                  Expanded(
+                                    child: Text(': ${DetailHistoryBloc.data.billCode}'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                             Padding(
+                              padding: const EdgeInsets.only(bottom: 4.0),
+                              child: Row(
+                                children: [
+                                  const Expanded(
+                                    child: Text('Nomor Pembayaran (VA)'),
+                                  ),
+                                  Expanded(
+                                    child: Text(': ${DetailHistoryBloc.data.billNumber}'),
+                                  ),
+                                ],
+                              ),
+                            ),
                             Padding(
                               padding: const EdgeInsets.only(bottom: 4.0),
                               child: Row(
@@ -305,7 +332,7 @@ class _HistoryDetailViewState extends BaseBackground<HistoryDetailView> {
                             ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
-                              itemCount: DetailHistoryBloc.data.detailTicket!.length,
+                              itemCount: DetailHistoryBloc.data.detailTicket != null ? DetailHistoryBloc.data.detailTicket!.length : 0,
                               itemBuilder: (context, index) {
                                 var dataTicket = DetailHistoryBloc.data.detailTicket![index];
                                 return Padding(
@@ -398,10 +425,13 @@ class _HistoryDetailViewState extends BaseBackground<HistoryDetailView> {
                             ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
-                              itemCount: DetailHistoryBloc.data.detailTicket!.length,
+                              itemCount: DetailHistoryBloc.data.detailTicket != null ? DetailHistoryBloc.data.detailTicket!.length: 0,
                               itemBuilder: (context, index) {
                                 var dataTicket = DetailHistoryBloc.data.detailTicket![index];
-                                return Padding(
+                                if(DetailHistoryBloc.data.isCheckin != '1'){
+                                  return Container();
+                                }else{
+                                  return Padding(
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   child: Row(
                                     children: [
@@ -418,7 +448,7 @@ class _HistoryDetailViewState extends BaseBackground<HistoryDetailView> {
                                         width: 5,
                                       ),
                                       Button.flat(
-                                        onTap: DetailHistoryBloc.data.status != 'paid' ? null : () async {
+                                        onTap: DetailHistoryBloc.data.status != 'paid' ?  null : DetailHistoryBloc.data.isCheckin != '1' ? null : () async {
                                           if (DateTime.parse(DetailHistoryBloc.data.eventdate!).difference(DateTime.now()).inMinutes < -30) {
                                             launch('https://admin.benix.id/api/certificate-download/${dataTicket.nameEncrypt}/${dataTicket.fileName}',);
                                           } else {
@@ -432,6 +462,8 @@ class _HistoryDetailViewState extends BaseBackground<HistoryDetailView> {
                                     ],
                                   ),
                                 );
+                                }
+                                
                               },
                             ),
                           ],

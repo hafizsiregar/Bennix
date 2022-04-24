@@ -17,7 +17,7 @@ Future<bool> register({required context, required InputRegister data}) async {
       },
     ),
     changeConfig: RequestApiHelperConfigData(
-      logResponse: true,
+      
       exception: true,
       successMessage: 'default',
       onSuccess: (data) {

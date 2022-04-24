@@ -727,16 +727,20 @@ class _AddTicketState extends BaseBackground<AddTicket> {
                                 title: 'Ubah',
                                 onTap: () {
                                   if (_forms.currentState!.validate()) {
+                                    // print(harga.text.replaceAll('.', ''));
+                                    var hargaParse = harga.text.replaceAll('.', '');
+                                    hargaParse = hargaParse.replaceAll(',', '');
+                                    var qtyParse = qty.text.replaceAll('.', '');
+                                    qtyParse = qtyParse.replaceAll(',', '');
+
                                     BlocEventAdd.editTicket(TicketData(
                                       endDate: akhir,
                                       endTime: tAkhir,
-                                      harga: int.parse(
-                                          harga.text.replaceAll(',', '')),
+                                      harga: int.parse(hargaParse),
                                       id: getid,
                                       keterangan: ket.text,
                                       name: name.text,
-                                      qty: int.parse(
-                                          qty.text.replaceAll(',', '')),
+                                      qty: int.parse(qtyParse),
                                       startDate: awal,
                                       startTime: tAwal,
                                       sertifikat: sertifikat,
@@ -775,7 +779,7 @@ class _AddTicketState extends BaseBackground<AddTicket> {
                                 endTime: tAkhir,
                                 harga:
                                     int.parse(harga.text.replaceAll('.', '')),
-                                id: counter,
+                                id: null,
                                 keterangan: ket.text,
                                 name: name.text,
                                 qty: int.parse(qty.text.replaceAll('.', '')),

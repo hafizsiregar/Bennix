@@ -29,7 +29,7 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
   bool isVideo = true;
   int selectedVideo = 0;
   YoutubePlayerController? _controllerGlobal;
-  @override
+  @override 
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {

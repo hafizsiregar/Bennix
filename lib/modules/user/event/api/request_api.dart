@@ -20,6 +20,7 @@ Future<bool> checkout({required context, data, required Function navigator}) asy
     changeConfig: RequestApiHelperConfigData(
       successMessage: 'default',
       onSuccess: (data) {
+        
         if (data['data']['snap_url'] == null || data['data']['snap_url'] == '') {
           Navigator.pushAndRemoveUntil(
               context,
@@ -33,6 +34,7 @@ Future<bool> checkout({required context, data, required Function navigator}) asy
           navigator(
             page: WebView(
               url: data['data']['snap_url'],
+              id: data['data']['transaction']['id'].toString(),
             ),
           );
         }

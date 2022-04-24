@@ -250,11 +250,12 @@ class _PaketViewState extends BaseBackground<PaketView> {
                                                 Button.flat(
                                                   onTap: () async {
                                                     final bol = await upgradePaket(context, data.id.toString());
-                                                    navigator(
-                                                      page: WebView(
-                                                        url: bol.toString(),
-                                                      ),
-                                                    );
+                                                    print(bol);
+                                                    // navigator(
+                                                    //   page: WebView(
+                                                    //     url: bol.toString(),
+                                                    //   ),
+                                                    // );
                                                     // if (bol) {
                                                     //   setState(() {});
                                                     // }

@@ -24,20 +24,20 @@ class _PopularEventsState extends BaseBackground<PopularEvents> {
                   color: Colors.black)),
           backgroundColor: Colors.transparent,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),
             onPressed: () => Navigator.pop(context),
           ),
         ),
         body: SingleChildScrollView(
           child: Container(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: BlocEvent.listEvent.length,
+                  itemCount: 1,
                   itemBuilder: (context, index) {
                     final e = BlocEvent.listEvent[index];
                     return Padding(
@@ -48,14 +48,14 @@ class _PopularEventsState extends BaseBackground<PopularEvents> {
                           navigator(page: const EventView());
                         },
                         child: Container(
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.grey.withOpacity(0.1),
                                   blurRadius: 1,
-                                  offset: Offset(0, 2),
+                                  offset: const Offset(0, 2),
                                 ),
                               ],
                               borderRadius: BorderRadius.circular(10)),

@@ -27,6 +27,7 @@ class _AdminEventViewState extends BaseBackground<AdminEventView> {
 
   @override
   void initState() {
+    print("YYYYY");
     BlocEvent().clean();
     super.initState();
     animatePositionC = AnimationController(
@@ -140,9 +141,10 @@ class _AdminEventViewState extends BaseBackground<AdminEventView> {
                                           locationLat: BlocEvent.listEvent[index].locationLat,
                                           locationLong: BlocEvent.listEvent[index].locationLong,
                                           locationType: BlocEvent.listEvent[index].locationType!,
+                                          tages: BlocEvent.listEvent[index].tages,
                                           maxBuyTicket: BlocEvent.listEvent[index].maxBuyTicket.toString(),
                                           name: BlocEvent.listEvent[index].name!,
-                                          organizerImg: BlocEvent.listEvent[index].organizerImg!,
+                                          organizerImg: BlocEvent.listEvent[index].organizerImg,
                                           organizerName: BlocEvent.listEvent[index].organizerName!,
                                           startDate: BlocEvent.listEvent[index].startDate.toString(),
                                           type: BlocEvent.listEvent[index].type!,
@@ -151,6 +153,7 @@ class _AdminEventViewState extends BaseBackground<AdminEventView> {
                                           categories: getData['data']['events_categories'],
                                           tags: getData['data']['events_categories'],
                                           tickets: getData['data']['tickets'],
+                                          sk:  BlocEvent.listEvent[index].sk,
                                           buyerDataSettings: getData['data']['events_buyer_data_settings'],
                                         ),
                                       ),
