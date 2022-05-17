@@ -99,7 +99,7 @@ class _AddTicketState extends BaseBackground<AddTicket> {
     TextEditingController name = TextEditingController();
     TextEditingController ket = TextEditingController();
     DateTime awal = DateTime.now(), akhir = DateTime.now();
-    DateTime _date = DateTime(2022, 5, 10, 22, 35);
+    DateTime? time;
     TimeOfDay tAwal = TimeOfDay.now(), tAkhir = TimeOfDay.now();
     String? sertifikat;
     if (isEdit) {
@@ -599,11 +599,12 @@ class _AddTicketState extends BaseBackground<AddTicket> {
                             //             SizedBox(
                             //               height: 200,
                             //               child: CupertinoDatePicker(
-                            //                 initialDateTime: _date,
+                            //                 initialDateTime: awal,
                             //                 onDateTimeChanged:
                             //                     (DateTime value) {
                             //                   setState(() {
-                            //                     _date = value;
+                            //                     print(value);
+                            //                     awal = value;
                             //                   });
                             //                 },
                             //                 use24hFormat: true,
@@ -667,52 +668,52 @@ class _AddTicketState extends BaseBackground<AddTicket> {
                             ),
                           ),
                           onTap: () async {
-                            showTimePicker(
-                              context: context,
-                              initialTime: tAkhir,
-                            ).then((value) {
-                              if (value != null) {
-                                int current =
-                                    ((value.hour * 60) + value.minute) * 60;
-                                int start =
-                                    ((tAwal.hour * 60) + tAwal.minute) * 60;
-                                if (current < start) {
-                                  tAwal = value;
-                                }
-                                tAkhir = value;
-                                setState(() {});
-                              }
-                            });
-                            // showModalBottomSheet(
-                            //     context: context,
-                            //     builder: (BuildContext builder) {
-                            //       return Container(
-                            //         height: 300,
-                            //         child: Column(
-                            //           children: [
-                            //             SizedBox(
-                            //               height: 200,
-                            //               child: CupertinoDatePicker(
-                            //                 initialDateTime: _date,
-                            //                 onDateTimeChanged:
-                            //                     (DateTime value) {
-                            //                   setState(() {
-                            //                     _date = value;
-                            //                   });
-                            //                 },
-                            //                 use24hFormat: true,
-                            //                 mode: CupertinoDatePickerMode.time,
-                            //               ),
-                            //             ),
-                            //             CupertinoButton(
-                            //               child: const Text('OK'),
-                            //               onPressed: () =>
-                            //                   Navigator.of(context).pop(),
-                            //             )
-                            //           ],
-                            //         ),
-                            //       );
-                            //     });
+                            // showTimePicker(
+                            //   context: context,
+                            //   initialTime: tAkhir,
+                            // ).then((value) {
+                            //   if (value != null) {
+                            //     int current =
+                            //         ((value.hour * 60) + value.minute) * 60;
+                            //     int start =
+                            //         ((tAwal.hour * 60) + tAwal.minute) * 60;
+                            //     if (current < start) {
+                            //       tAwal = value;
+                            //     }
+                            //     tAkhir = value;
+                            //     setState(() {});
+                            //   }
+                            // });
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (BuildContext builder) {
+                                  return Container(
+                                    height: 300,
+                                    child: Column(
+                                      children: [
+                                        SizedBox(
+                                          height: 200,
+                                          child: CupertinoDatePicker(
+                                            initialDateTime: akhir,
+                                            onDateTimeChanged:
+                                                (DateTime value) {
+                                              setState(() {
+                                                time = value;
+                                              });
+                                            },
+                                            use24hFormat: true,
+                                            mode: CupertinoDatePickerMode.time,
+                                          ),
+                                        ),
+                                        CupertinoButton(
+                                          child: const Text('OK'),
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                });
                           },
                         ),
                       )

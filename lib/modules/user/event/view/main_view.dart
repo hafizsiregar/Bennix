@@ -116,8 +116,6 @@ class _EventViewState extends BaseBackground<EventView> {
   bool isBuyTicket = false;
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-
     return Scaffold(
       body: Stack(
         alignment: Alignment.topCenter,
@@ -145,7 +143,7 @@ class _EventViewState extends BaseBackground<EventView> {
                               ),
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       width: getMaxWidth,
                       height: 463,
                       child: Padding(
@@ -175,8 +173,8 @@ class _EventViewState extends BaseBackground<EventView> {
                                 InkWell(
                                   onTap: () {
                                     Share.share(
-                                        'Temukan acara ${_selectedEvent?.name} aplikasi bennix menyediakan acara dan e-course terupdate serta dapatkan e-sertifikat diakun mu dengan download aplikasi https://benix.id?id=${BlocEvent.selectedEventId}');
-                                  },
+                                        'Temukan acara ${_selectedEvent?.name} di aplikasi Bennix, Bennix menyediakan acara dan e-course terupdate serta dapatkan e-sertifikat diakun mu. Segera download aplikasi https://benix.id?id=${BlocEvent.selectedEventId}');
+                                  },  
                                   child: Container(
                                       width: 35,
                                       height: 35,

@@ -957,7 +957,9 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                                 child: TextFormField(
                                   // focusNode: myFocusNode,
                                   controller: TextEditingController(
-                                      text: tAwal.format(context)),
+                                      text: awal.hour.toString() +
+                                          ':' +
+                                          awal.minute.toString()),
                                   decoration: InputDecoration(
                                     alignLabelWithHint: true,
                                     labelStyle: const TextStyle(
@@ -993,44 +995,47 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                                 ),
                               ),
                               onTap: () async {
-                                showTimePicker(context: context, initialTime: tAwal).then((value) {
-                                  if (value != null) {
-                                    int current = ((value.hour * 60) + value.minute) * 60;
-                                    int end = ((tAwal.hour * 60) + tAwal.minute) * 60;
-                                    if (current > end) {
-                                      tAkhir = value;
-                                    }
-                                    tAwal = value;
-                                    setState(() {});
-                                  }
-                                });
-                                // showModalBottomSheet(
-                                //     context: context,
-                                //     builder: (BuildContext builder) {
-                                //       return Container(
-                                //         height: 300,
-                                //         child: Column(
-                                //           children: [
-                                //             SizedBox(
-                                //                 height: 200,
-                                //                 child: CupertinoTimerPicker(
-                                //                   onTimerDurationChanged:
-                                //                       (Duration value) {
-                                //                     tAwal = value;
-                                //                     setState(() {});
-                                //                   },
-                                //                   mode: CupertinoTimerPickerMode
-                                //                       .hm,
-                                //                 )),
-                                //             CupertinoButton(
-                                //               child: const Text('OK'),
-                                //               onPressed: () =>
-                                //                   Navigator.of(context).pop(),
-                                //             )
-                                //           ],
-                                //         ),
-                                //       );
-                                //     });
+                                // showTimePicker(context: context, initialTime: tAwal).then((value) {
+                                //   if (value != null) {
+                                //     int current = ((value.hour * 60) + value.minute) * 60;
+                                //     int end = ((tAwal.hour * 60) + tAwal.minute) * 60;
+                                //     if (current > end) {
+                                //       tAkhir = value;
+                                //     }
+                                //     tAwal = value;
+                                //     setState(() {});
+                                //   }
+                                // });
+                                showModalBottomSheet(
+                                    context: context,
+                                    builder: (BuildContext builder) {
+                                      return Container(
+                                        height: 300,
+                                        child: Column(
+                                          children: [
+                                            SizedBox(
+                                                height: 200,
+                                                child: CupertinoDatePicker(
+                                                    initialDateTime: awal,
+                                                    onDateTimeChanged: (value) {
+                                                      if (value != null &&
+                                                          value != awal) {
+                                                        awal = value;
+                                                        setState(() {});
+                                                      }
+                                                    },
+                                                    mode:
+                                                        CupertinoDatePickerMode
+                                                            .time)),
+                                            CupertinoButton(
+                                              child: const Text('OK'),
+                                              onPressed: () =>
+                                                  Navigator.of(context).pop(),
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    });
                               },
                             ),
                           ),
@@ -1039,95 +1044,100 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                           ),
                           Expanded(
                             child: GestureDetector(
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 20.0),
-                                child: TextFormField(
-                                  // focusNode: myFocusNode,
-                                  controller: TextEditingController(
-                                      text: tAkhir.format(context)),
-                                  decoration: InputDecoration(
-                                    alignLabelWithHint: true,
-                                    labelStyle: const TextStyle(
-                                        fontSize:
-                                            14.0, //I believe the size difference here is 6.0 to account padding
-                                        color: Colors.grey),
-                                    suffixIcon: const Icon(FeatherIcons.clock),
-                                    labelText: 'Sampai',
-                                    filled: true,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 12),
-                                    fillColor: Colors.white,
-                                    focusColor: BaseColor.theme?.primaryColor,
-                                    enabled: false,
-                                    disabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      borderSide: const BorderSide(
-                                        color: Colors.grey,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 20.0),
+                                  child: TextFormField(
+                                    // focusNode: myFocusNode,
+                                    controller: TextEditingController(
+                                        text: akhir.hour.toString() +
+                                        ':' + akhir.minute.toString()),
+                                    decoration: InputDecoration(
+                                      alignLabelWithHint: true,
+                                      labelStyle: const TextStyle(
+                                          fontSize:
+                                              14.0, //I believe the size difference here is 6.0 to account padding
+                                          color: Colors.grey),
+                                      suffixIcon:
+                                          const Icon(FeatherIcons.clock),
+                                      labelText: 'Sampai',
+                                      filled: true,
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 8, horizontal: 12),
+                                      fillColor: Colors.white,
+                                      focusColor: BaseColor.theme?.primaryColor,
+                                      enabled: false,
+                                      disabledBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                        borderSide: const BorderSide(
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                        borderSide: const BorderSide(
+                                          color: Colors.blue,
+                                        ),
                                       ),
                                     ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      borderSide: const BorderSide(
-                                        color: Colors.blue,
-                                      ),
-                                    ),
+                                    style: const TextStyle(color: Colors.black),
+                                    validator: (data) {
+                                      if (data!.isEmpty)
+                                        return 'Tidak Boleh Kosong!';
+                                    },
                                   ),
-                                  style: const TextStyle(color: Colors.black),
-                                  validator: (data) {
-                                    if (data!.isEmpty)
-                                      return 'Tidak Boleh Kosong!';
-                                  },
                                 ),
-                              ),
-                              onTap: () async {
-                                  showTimePicker(
-                                          context: context, initialTime: tAkhir)
-                                      .then((value) {
-                                    if (value != null) {
-                                      int current =
-                                          ((value.hour * 60) + value.minute) * 60;
-                                      int start =
-                                          ((tAwal.hour * 60) + tAwal.minute) * 60;
-                                      if (current < start) {
-                                        tAwal = value;
-                                      }
-                                      tAkhir = value;
-                                      setState(() {});
-                                    }
-                                  });
-                                },
-                                // showModalBottomSheet(
-                                //     context: context,
-                                //     builder: (BuildContext builder) {
-                                //       return Container(
-                                //         height: 300,
-                                //         child: Column(
-                                //           children: [
-                                //             SizedBox(
-                                //               height: 200,
-                                //               child: CupertinoDatePicker(
-                                //                 initialDateTime: _date,
-                                //                 onDateTimeChanged:
-                                //                     (DateTime value) {
-                                //                   setState(() {
-                                //                     _date = value;
-                                //                   });
-                                //                 },
-                                //                 use24hFormat: true,
-                                //                 mode: CupertinoDatePickerMode
-                                //                     .time,
-                                //               ),
-                                //             ),
-                                //             CupertinoButton(
-                                //               child: const Text('OK'),
-                                //               onPressed: () =>
-                                //                   Navigator.of(context).pop(),
-                                //             )
-                                //           ],
-                                //         ),
-                                //       );
-                                //     });
-                            ),
+                                onTap: () async {
+                                  // showTimePicker(
+                                  //         context: context, initialTime: tAkhir)
+                                  //     .then((value) {
+                                  //   if (value != null) {
+                                  //     int current =
+                                  //         ((value.hour * 60) + value.minute) * 60;
+                                  //     int start =
+                                  //         ((tAwal.hour * 60) + tAwal.minute) * 60;
+                                  //     if (current < start) {
+                                  //       tAwal = value;
+                                  //     }
+                                  //     tAkhir = value;
+                                  //     setState(() {});
+                                  //   }
+                                  // });
+                                  // },
+                                  showModalBottomSheet(
+                                      context: context,
+                                      builder: (BuildContext builder) {
+                                        return Container(
+                                          height: 300,
+                                          child: Column(
+                                            children: [
+                                              SizedBox(
+                                                height: 200,
+                                                child: CupertinoDatePicker(
+                                                  initialDateTime: akhir,
+                                                  use24hFormat: true,
+                                                  onDateTimeChanged: (value) {
+                                                    if (value != null &&
+                                                        value != akhir) {
+                                                      akhir = value;
+                                                      setState(() {});
+                                                    }
+                                                  },
+                                                  mode: CupertinoDatePickerMode.time,
+                                                ),
+                                              ),
+                                              CupertinoButton(
+                                                child: const Text('OK'),
+                                                onPressed: () =>
+                                                    Navigator.of(context).pop(),
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      });
+                                }),
                           )
                         ],
                       ),
