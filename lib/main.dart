@@ -16,13 +16,11 @@ class MyHttpOverrides extends HttpOverrides {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-    statusBarIconBrightness: Brightness.light,
-    statusBarBrightness: Brightness.light));
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
-    statusBarIconBrightness: Brightness.dark,
-    statusBarBrightness: Brightness.dark));
-  await Firebase.initializeApp();
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(statusBarIconBrightness: Brightness.light, statusBarBrightness: Brightness.light));
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(statusBarIconBrightness: Brightness.dark, statusBarBrightness: Brightness.dark));
+  try {
+    await Firebase.initializeApp();
+  } finally {}
   HttpOverrides.global = MyHttpOverrides();
   RequestApiHelperConfig.save(
     RequestApiHelperConfigData(
@@ -56,12 +54,14 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     BaseColor.setColor();
-    final firebaseMessaging = FCM();
-    firebaseMessaging.setNotifications();
+    try {
+      final firebaseMessaging = FCM();
+      firebaseMessaging.setNotifications();
 
-    firebaseMessaging.streamCtlr.stream.listen(_changeData);
-    firebaseMessaging.bodyCtlr.stream.listen(_changeBody);
-    firebaseMessaging.titleCtlr.stream.listen(_changeTitle);
+      firebaseMessaging.streamCtlr.stream.listen(_changeData);
+      firebaseMessaging.bodyCtlr.stream.listen(_changeBody);
+      firebaseMessaging.titleCtlr.stream.listen(_changeTitle);
+    } finally {}
   }
 
   _changeData(String msg) => setState(() => notificationData = msg);
