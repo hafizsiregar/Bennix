@@ -1,117 +1,110 @@
 import 'package:benix/modules/user/cource/home/model/bloc.dart';
-import 'package:request_api_helper/request.dart' as req;
-import 'package:request_api_helper/request_api_helper.dart' show RESTAPI, RequestApiHelperConfigData, RequestData;
-import 'package:intl/intl.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:request_api_helper/request.dart';
+import 'package:request_api_helper/request_api_helper.dart';
 
-Future<void> getEcource(context) async {
-  await req.send(
-    name: 'courses',
-    context: context,
-    type: RESTAPI.get,
-    data: RequestData(
+Future<void> getEcource(context, {required Function onSuccess}) async {
+  await RequestApiHelper.sendRequest(
+    type: Api.get,
+    url: 'courses',
+    replacementId: 19,
+    withLoading: true,
+    config: RequestApiHelperData(
       body: {
         'order_by': 'new',
       },
-    ),
-    changeConfig: RequestApiHelperConfigData(
-      onSuccess: (data) {
+      onSuccess: (data) async {
         CourceBloc.init(data);
+        onSuccess();
       },
     ),
   );
 }
 
-Future<void> getEcourceClose(context) async {
-  await req.send(
-    name: 'courses',
-    context: context,
-    type: RESTAPI.get,
-    data: RequestData(
+Future<void> getEcourceClose(context, {required Function onSuccess}) async {
+  await RequestApiHelper.sendRequest(
+    type: Api.get,
+    url: 'courses',
+    replacementId: 20,
+    withLoading: true,
+    config: RequestApiHelperData(
       body: {
         'order_by': 'terdekat',
       },
-    ),
-    changeConfig: RequestApiHelperConfigData(
-      
-      onSuccess: (data) {
+      onSuccess: (data) async {
         CourceBloc.initCloseData(data);
+        onSuccess();
       },
     ),
   );
 }
 
-Future<void> getDetailEcource(context, id) async {
-  await req.send(
-    name: 'courses/$id',
-    context: context,
-    type: RESTAPI.get,
-    changeConfig: RequestApiHelperConfigData(
-      
+Future<void> getDetailEcource(context, id, {required Function onSuccess}) async {
+  await RequestApiHelper.sendRequest(
+    type: Api.get,
+    url: 'courses/$id',
+    replacementId: 21,
+    withLoading: true,
+    config: RequestApiHelperData(
       onSuccess: (data) async {
         await DetailEcourceBloc.init(data['data']);
+        onSuccess();
       },
     ),
   );
 }
 
-Future<void> getComments(context, id) async {
-  await req.send(
-    name: 'chats?course_id=$id',
-    context: context,
-    type: RESTAPI.get,
-    changeConfig: RequestApiHelperConfigData(
-      
+Future<void> getComments(context, id, {required Function onSuccess}) async {
+  await RequestApiHelper.sendRequest(
+    type: Api.get,
+    url: 'chats',
+    replacementId: 22,
+    withLoading: true,
+    config: RequestApiHelperData(
+      body: {'course_id': id},
       onSuccess: (data) async {
         await CommentsBloc.init(data['data']);
+        onSuccess();
       },
     ),
   );
 }
 
-Future<bool> saveComment(context, id, value) async {
-  bool stat = false;
-  await req.send(
-    name: 'chats',
-    context: context,
-    type: RESTAPI.post,
-    data: RequestData(
+saveComment(context, id, value, {required Function onSuccess}) async {
+  await RequestApiHelper.sendRequest(
+    type: Api.post,
+    url: 'chats',
+    replacementId: 23,
+    withLoading: true,
+    config: RequestApiHelperData(
       body: {
         "chat": value,
         "course_id": id,
       },
-    ),
-    changeConfig: RequestApiHelperConfigData(
-      
-      // successMessage: 'Berhasil Memberi Rating',
       onSuccess: (data) async {
-        stat = true;
+        await CommentsBloc.init(data['data']);
+        onSuccess();
       },
     ),
   );
-
-  return stat;
 }
 
-Future<bool> rating(context, id, value) async {
-  bool stat = false;
-  await req.send(
-    name: 'courses/rating',
-    context: context,
-    type: RESTAPI.post,
-    data: RequestData(
+rating(context, id, value, {required Function onSuccess}) async {
+  await RequestApiHelper.sendRequest(
+    type: Api.post,
+    url: 'courses/rating',
+    replacementId: 24,
+    withLoading: true,
+    config: RequestApiHelperData(
       body: {
-        "value": value,
+        "chat": value,
         "course_id": id,
       },
-    ),
-    changeConfig: RequestApiHelperConfigData(
-      
-      successMessage: 'Berhasil Memberi Rating',
       onSuccess: (data) async {
-        stat = true;
+        Fluttertoast.showToast(msg: 'Berhasil Memberi Rating');
+        await CommentsBloc.init(data['data']);
+        onSuccess();
       },
     ),
   );
-
-  return stat;
 }

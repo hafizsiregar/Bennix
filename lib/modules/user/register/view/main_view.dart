@@ -16,12 +16,13 @@ class _RegisterViewState extends BaseBackground<RegisterView> {
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
 
   _register() async {
-    final bool status = await register(
+    await register(
       context: context,
       data: InputRegister(confirmPassword: confirm.text, email: email.text, name: name.text, password: password.text),
+      onSuccess: () {
+        Navigator.of(context).pop();
+      },
     );
-
-    if (status) Navigator.of(context).pop();
   }
 
   @override

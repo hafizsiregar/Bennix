@@ -25,30 +25,30 @@ class UserBloc extends Bloc {
 
     user.gender = data['gender'];
     user.photoProfile = data['photo_url'];
-    await Session.save('name', user.name);
-    await Session.save('course_type', user.typeCourse);
-    await Session.save('id', user.id);
-    await Session.save('email', user.email);
-    await Session.save('type', user.type);
-    await Session.save('course_expired', user.expiredDateCourse);
-    await Session.save('gender', user.gender);
-    await Session.save('photo_profile', user.photoProfile);
-    await Session.save('date_of_birth', user.tanggalLahir);
-    await Session.save('phone', user.phone);
+    await Session.save(header: 'name', stringData: user.name);
+    await Session.save(header: 'course_type', stringData: user.typeCourse);
+    await Session.save(header: 'id', integerData: user.id);
+    await Session.save(header: 'email', stringData: user.email);
+    await Session.save(header: 'type', stringData: user.type);
+    await Session.save(header: 'course_expired', stringData: user.expiredDateCourse);
+    await Session.save(header: 'gender', stringData: user.gender);
+    await Session.save(header: 'photo_profile', stringData: user.photoProfile);
+    await Session.save(header: 'date_of_birth', stringData: user.tanggalLahir);
+    await Session.save(header: 'phone', stringData: user.phone);
   }
 
   static update(User data) async {
     user = data;
-    await Session.save('name', user.name);
-    await Session.save('course_type', user.typeCourse);
-    await Session.save('id', user.id);
-    await Session.save('email', user.email);
-    await Session.save('type', user.type);
-    await Session.save('course_expired', user.expiredDateCourse);
-    await Session.save('gender', user.gender);
-    await Session.save('photo_profile', user.photoProfile);
-    await Session.save('date_of_birth', user.tanggalLahir);
-    await Session.save('phone', user.phone);
+    await Session.save(header: 'name', stringData: user.name);
+    await Session.save(header: 'course_type', stringData: user.typeCourse);
+    await Session.save(header: 'id', integerData: user.id);
+    await Session.save(header: 'email', stringData: user.email);
+    await Session.save(header: 'type', stringData: user.type);
+    await Session.save(header: 'course_expired', stringData: user.expiredDateCourse);
+    await Session.save(header: 'gender', stringData: user.gender);
+    await Session.save(header: 'photo_profile', stringData: user.photoProfile);
+    await Session.save(header: 'date_of_birth', stringData: user.tanggalLahir);
+    await Session.save(header: 'phone', stringData: user.phone);
   }
 
   static Future<void> load() async {

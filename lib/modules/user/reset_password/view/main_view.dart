@@ -15,17 +15,16 @@ class _ResetPasswordViewState extends BaseBackground<ResetPasswordView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   _send() async {
-    final status = await sendMailReset(
+    await sendMailReset(
       context: context,
       email: _email.text,
+      onSuccess: (status) {
+        navigator(
+            page: VerificationView(
+          email: _email.text,
+        ));
+      },
     );
-
-    if (status != null) {
-      navigator(
-          page: VerificationView(
-        email: _email.text,
-      ));
-    }
   }
 
   @override

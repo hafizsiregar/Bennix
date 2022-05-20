@@ -207,16 +207,16 @@ class _UpdateProfileViewState extends BaseBackground<UpdateProfileView> {
               padding: const EdgeInsets.all(8.0),
               child: Button.flat(
                 onTap: () async {
-                  final update = await saveProfile(
+                  await saveProfile(
                     context: context,
                     phone: phone.text[0] == '0' ? phone.text.substring(1, phone.text.length) : phone.text,
                     name: nama.text,
                     gender: _gender == Gender.L ? 'male' : 'female',
                     date: DateFormat('yyyy-MM-dd').format(lahir),
+                    onSuccess: () {
+                      Navigator.of(context).pop();
+                    },
                   );
-                  if (update) {
-                    Navigator.of(context).pop();
-                  }
                 },
                 context: context,
                 title: 'Ubah',

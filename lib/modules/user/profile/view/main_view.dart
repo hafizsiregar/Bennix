@@ -10,10 +10,11 @@ _getImage(context) async {
   final image = await getImage(context);
   final images = base64.encode(File(image!).readAsBytesSync());
   await saveProfileImage(
-    context: context,
-    image: images,
-  );
-  Navigator.of(context).pop();
+      context: context,
+      image: images,
+      onSuccess: () {
+        Navigator.of(context).pop();
+      });
 }
 
 Widget profileWidget({required context}) {

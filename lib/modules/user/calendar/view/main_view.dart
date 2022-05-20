@@ -1,13 +1,10 @@
-import 'package:benix/modules/admin/event/bloc/model.dart';
 import 'package:benix/modules/user/calendar/api/request_api.dart';
 import 'package:benix/modules/user/history/bloc/main_bloc.dart';
 import 'package:benix/modules/user/history/bloc/model.dart';
 import 'package:benix/modules/user/history/view/detail.dart';
 import 'package:benix/modules/user/login/bloc/main_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/basic.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:request_api_helper/request_api_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../main_library.dart' show AnimateTransition, BaseBackground, BaseColor, BorderRadius, BoxDecoration, BuildContext, Button, CrossAxisAlignment, Column, Container, DecorationImage, EdgeInsets, Expanded, GestureDetector, Icon, Image, InitControl, IntrinsicHeight, Key, ListView, MainAxisAlignment, MainAxisSize, Material, NetworkImage, Padding, Radius, Responsive, Row, Scaffold, SizedBox, StatefulWidget, Text, TextStyle, Widget;
@@ -22,19 +19,17 @@ class CalendarView extends StatefulWidget {
 
 class _CalendarViewState extends BaseBackground<CalendarView> {
   _getData() async {
-    await getUpcomming(context);
+    await getUpcomming(context, onSuccess: () {});
     setState(() {});
   }
 
-  _updateHadir(id,ischeckin) async {
-    final status = await updateHadir(
-      context: context,
-      data: HistoryEvent(
-        id: id,
-        isCheckin: ischeckin.toString()
-      ),
-    );
-    if (status) Navigator.of(context).pop();
+  _updateHadir(id, ischeckin) async {
+    await updateHadir(
+        context: context,
+        data: HistoryEvent(id: id, isCheckin: ischeckin.toString()),
+        onSuccess: () {
+          Navigator.of(context).pop();
+        });
   }
 
   @override
@@ -125,36 +120,30 @@ class _CalendarViewState extends BaseBackground<CalendarView> {
                                           child: GestureDetector(
                                             onTap: BlocHistoryEvent.listEvent[index].status != 'paid'
                                                 ? null
-                                                : BlocHistoryEvent.listEvent[index].isCheckin == '2' ? 
-                                                       null   
-                                                :  () async {
-                                                  var startDate = BlocHistoryEvent.listEvent[index].event!.startDate!;
-                                                  startDate = startDate.subtract(const Duration(minutes: 30));
-                                                  DateTime now = DateTime.now();
+                                                : BlocHistoryEvent.listEvent[index].isCheckin == '2'
+                                                    ? null
+                                                    : () async {
+                                                        var startDate = BlocHistoryEvent.listEvent[index].event!.startDate!;
+                                                        startDate = startDate.subtract(const Duration(minutes: 30));
+                                                        DateTime now = DateTime.now();
 
-                                                 if(now.difference(startDate).inMinutes < 0){
-                                                   showDialog(
-                                                      context: context,
-                                                      builder: (_) => const AlertDialog(
-                                                          title: Text('Peringatan !'),
-                                                          content: Text('Acara belum dimulai, klik 30 menit sebelum mulai'),
-                                                      )
-                                                  );
-
-                                                 }else{
-                                                   if (BlocHistoryEvent.listEvent[index].event!.locationType == 'online') {
-                                                      if (await canLaunch(BlocHistoryEvent.listEvent[index].event!.locationAddress!)) {
-                                                        launch(BlocHistoryEvent.listEvent[index].event!.locationAddress!, forceWebView: false, forceSafariVC: true);
-                                                      } else {
-                                                        launch(BlocHistoryEvent.listEvent[index].event!.locationAddress!);
-                                                      }
-                                                    }
-
-                                                 }
-                                                 
-
-                                                    
-                                                  },
+                                                        if (now.difference(startDate).inMinutes < 0) {
+                                                          showDialog(
+                                                              context: context,
+                                                              builder: (_) => const AlertDialog(
+                                                                    title: Text('Peringatan !'),
+                                                                    content: Text('Acara belum dimulai, klik 30 menit sebelum mulai'),
+                                                                  ));
+                                                        } else {
+                                                          if (BlocHistoryEvent.listEvent[index].event!.locationType == 'online') {
+                                                            if (await canLaunch(BlocHistoryEvent.listEvent[index].event!.locationAddress!)) {
+                                                              launch(BlocHistoryEvent.listEvent[index].event!.locationAddress!, forceWebView: false, forceSafariVC: true);
+                                                            } else {
+                                                              launch(BlocHistoryEvent.listEvent[index].event!.locationAddress!);
+                                                            }
+                                                          }
+                                                        }
+                                                      },
                                             child: Padding(
                                               padding: const EdgeInsets.all(16),
                                               child: Column(
@@ -225,88 +214,81 @@ class _CalendarViewState extends BaseBackground<CalendarView> {
                                                         ),
                                                       ),
                                                       BlocHistoryEvent.listEvent[index].event!.locationType == 'online'
-                                                          ? BlocHistoryEvent.listEvent[index].isCheckin == '2' ? 
-                                                          Container(
-                                                            padding:const EdgeInsets.all(8),
-                                                            decoration: BoxDecoration(
-                                                              color: Colors.red[400]!,
-                                                              borderRadius: const BorderRadius.all(Radius.circular(20))
-                                                            ),
-                                                            child: const Text("Tidak Hadir",style: TextStyle(color: Colors.white),),
-                                                          ) : Button.flat(
-                                                              onTap: BlocHistoryEvent.listEvent[index].status != 'paid'
-                                                                  ? () {
-                                                                      navigator(page: HistoryDetailView(idHistory: BlocHistoryEvent.listEvent[index].id));
-                                                                      // Fluttertoast.showToast(msg: 'Silahkan selesaikan pembayaran terlebih dahulu');
-                                                                    }
-                                                                  : () async {
-                                                                    var startDate = BlocHistoryEvent.listEvent[index].event!.startDate!;
-                                                                    startDate = startDate.subtract(const Duration(minutes: 30));
-                                                                    DateTime now = DateTime.now();
-                                                                     if(now.difference(startDate).inMinutes < 0){
-                                                                      showDialog(
-                                                                          context: context,
-                                                                          builder: (_) => const AlertDialog(
-                                                                              title: Text('Peringatan !'),
-                                                                              content: Text('Acara belum dimulai, klik 30 menit sebelum mulai'),
-                                                                          )
-                                                                      );
-
-                                                                    }else{
-                                                                      if(BlocHistoryEvent.listEvent[index].isCheckin == '1'){
-                                                                          if (await canLaunch(BlocHistoryEvent.listEvent[index].event!.locationAddress!)) {
-                                                                          launch(BlocHistoryEvent.listEvent[index].event!.locationAddress!, forceWebView: false, forceSafariVC: true);
-                                                                        } else {
-                                                                          launch(BlocHistoryEvent.listEvent[index].event!.locationAddress!);
+                                                          ? BlocHistoryEvent.listEvent[index].isCheckin == '2'
+                                                              ? Container(
+                                                                  padding: const EdgeInsets.all(8),
+                                                                  decoration: BoxDecoration(color: Colors.red[400]!, borderRadius: const BorderRadius.all(Radius.circular(20))),
+                                                                  child: const Text(
+                                                                    "Tidak Hadir",
+                                                                    style: TextStyle(color: Colors.white),
+                                                                  ),
+                                                                )
+                                                              : Button.flat(
+                                                                  onTap: BlocHistoryEvent.listEvent[index].status != 'paid'
+                                                                      ? () {
+                                                                          navigator(page: HistoryDetailView(idHistory: BlocHistoryEvent.listEvent[index].id));
+                                                                          // Fluttertoast.showToast(msg: 'Silahkan selesaikan pembayaran terlebih dahulu');
                                                                         }
-                                                                      }else{
-                                                                        showDialog(
-                                                                              context: context,
-                                                                              builder: (_) =>   AlertDialog(
-                                                                                  title:  Text('Selamat Datang ${UserBloc.user.name}'),
-                                                                                  content: Column(
-                                                                                    mainAxisSize: MainAxisSize.min,
-                                                                                    children:  [
-                                                                                        SizedBox(
-                                                                                          width: double.infinity,
-                                                                                          child: ElevatedButton(
-                                                                                           onPressed: () { 
-                                                                                             int? id = BlocHistoryEvent.listEvent[index].id;
-                                                                                             _updateHadir(id,1);
-                                                                                            }, 
-                                                                                            child: const Text("Hadir"),
-                                                                                           
-                                                                                       ),
+                                                                      : () async {
+                                                                          var startDate = BlocHistoryEvent.listEvent[index].event!.startDate!;
+                                                                          startDate = startDate.subtract(const Duration(minutes: 30));
+                                                                          DateTime now = DateTime.now();
+                                                                          if (now.difference(startDate).inMinutes < 0) {
+                                                                            showDialog(
+                                                                                context: context,
+                                                                                builder: (_) => const AlertDialog(
+                                                                                      title: Text('Peringatan !'),
+                                                                                      content: Text('Acara belum dimulai, klik 30 menit sebelum mulai'),
+                                                                                    ));
+                                                                          } else {
+                                                                            if (BlocHistoryEvent.listEvent[index].isCheckin == '1') {
+                                                                              if (await canLaunch(BlocHistoryEvent.listEvent[index].event!.locationAddress!)) {
+                                                                                launch(BlocHistoryEvent.listEvent[index].event!.locationAddress!, forceWebView: false, forceSafariVC: true);
+                                                                              } else {
+                                                                                launch(BlocHistoryEvent.listEvent[index].event!.locationAddress!);
+                                                                              }
+                                                                            } else {
+                                                                              showDialog(
+                                                                                  context: context,
+                                                                                  builder: (_) => AlertDialog(
+                                                                                        title: Text('Selamat Datang ${UserBloc.user.name}'),
+                                                                                        content: Column(
+                                                                                          mainAxisSize: MainAxisSize.min,
+                                                                                          children: [
+                                                                                            SizedBox(
+                                                                                              width: double.infinity,
+                                                                                              child: ElevatedButton(
+                                                                                                onPressed: () {
+                                                                                                  int? id = BlocHistoryEvent.listEvent[index].id;
+                                                                                                  _updateHadir(id, 1);
+                                                                                                },
+                                                                                                child: const Text("Hadir"),
+                                                                                              ),
+                                                                                            ),
+                                                                                            SizedBox(
+                                                                                              width: double.infinity,
+                                                                                              child: ElevatedButton(
+                                                                                                onPressed: () {
+                                                                                                  int? id = BlocHistoryEvent.listEvent[index].id;
+                                                                                                  _updateHadir(id, 2);
+                                                                                                },
+                                                                                                style: ElevatedButton.styleFrom(
+                                                                                                  primary: Colors.red, // background
+                                                                                                  onPrimary: Colors.white, // foreground
+                                                                                                ),
+                                                                                                child: const Text("Tidak Hadir"),
+                                                                                              ),
+                                                                                            )
+                                                                                          ],
                                                                                         ),
-                                                                                        SizedBox(
-                                                                                          width: double.infinity,
-                                                                                          child: ElevatedButton(
-                                                                                           onPressed: () { 
-                                                                                              int? id = BlocHistoryEvent.listEvent[index].id;
-                                                                                             _updateHadir(id,2);
-                                                                                            },
-                                                                                            style: ElevatedButton.styleFrom(
-                                                                                              primary: Colors.red, // background
-                                                                                              onPrimary: Colors.white, // foreground
-                                                                                            ), 
-                                                                                            child: const Text("Tidak Hadir"),
-                                                                                           
-                                                                                       ),
-                                                                                        )
-                                                                                    ],
-                                                                                  ),
-                                                                              )
-                                                                          );
-                                                                      }
-                                                                    }
-                                                                      
-                                                                     
-
-                                                                    },
-                                                              context: context,
-                                                              title: 'Buka',
-                                                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                                                            )
+                                                                                      ));
+                                                                            }
+                                                                          }
+                                                                        },
+                                                                  context: context,
+                                                                  title: 'Buka',
+                                                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                                                                )
                                                           : const SizedBox(),
                                                     ],
                                                   )

@@ -5,7 +5,11 @@ import 'package:benix/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:request_api_helper/loading.dart';
+import 'package:request_api_helper/request.dart';
 import 'package:request_api_helper/request_api_helper.dart';
+
+GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -22,15 +26,17 @@ void main() async {
     await Firebase.initializeApp();
   } finally {}
   HttpOverrides.global = MyHttpOverrides();
-  RequestApiHelperConfig.save(
-    RequestApiHelperConfigData(
-      withLoading: Redirects(toogle: true),
-      noapiurl: 'https://admin.benix.id/',
-      url: 'https://admin.benix.id/api/',
-      errorMessage: 'default',
-      timeout: const Duration(seconds: 120),
-    ),
+  RequestApiHelper.init(
+    RequestApiHelperData(baseUrl: 'https://admin.benix.id/api/', debug: true, navigatorKey: navigatorKey),
   );
+  Loading.widget = (context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+  };
   runApp(const MyApp());
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -46,7 +52,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   DarkThemeProvider themeChangeProvider = DarkThemeProvider();
-  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   String notificationTitle = 'No Title';
   String notificationBody = 'No Body';
   String notificationData = 'No Data';

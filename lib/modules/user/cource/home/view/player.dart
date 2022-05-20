@@ -38,9 +38,9 @@ class _PlayerCourceState extends BaseBackground<PlayerCource> {
             ),
           );
         }
-        print(widget.id);
-        await getComments(context, widget.id.toString());
-        setState(() {});
+        await getComments(context, widget.id.toString(), onSuccess: () {
+          setState(() {});
+        });
       },
     );
   }

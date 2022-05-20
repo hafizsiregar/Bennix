@@ -12,11 +12,9 @@ import 'package:benix/modules/user/cource/home/view/new_course.dart';
 import 'package:benix/modules/user/home/api/request_api.dart';
 import 'package:benix/modules/user/home/bloc/model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../admin/event/view/add_event.dart';
 import 'detail.dart';
 
 import '../../../../../main_library.dart' show Animation, AnimationController, AssetImage, Axis, BaseBackground, BaseColor, Border, BorderRadius, BorderSide, BouncingScrollPhysics, BoxConstraints, BoxDecoration, BoxFit, BoxShape, BuildContext, Button, Center, Color, Colors, Column, ConstrainedBox, Container, CrossAxisAlignment, CurvedAnimation, Curves, DecorationImage, EdgeInsets, Expanded, FontWeight, Forms, GestureDetector, Icon, Icons, Image, InkWell, InputDecoration, IntrinsicHeight, Key, ListView, MainAxisAlignment, MainAxisSize, Material, MaterialType, MediaQuery, Navigator, NetworkImage, OutlineInputBorder, Padding, Positioned, Radius, Responsive, Row, Scaffold, SingleChildScrollView, SizedBox, Stack, StatefulBuilder, StatefulWidget, Text, TextEditingController, TextFormField, TextStyle, Theme, Tween, Widget, bottom, currencyFormat, showDatePicker, showModalBottomSheet;
@@ -74,9 +72,7 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
         maxHeight: 0.95,
         context: context,
         customChild: StatefulBuilder(
-          builder: (context, setState) => Center(
-              child: searchCard(
-                  context: context, navigator: navigator, title: title)),
+          builder: (context, setState) => Center(child: searchCard(context: context, navigator: navigator, title: title)),
         ),
       ),
     );
@@ -86,10 +82,15 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      await getEcource(context);
-      await getEcourceClose(context);
-      banners = await getBanner(context);
-      setState(() {});
+      await getEcource(context, onSuccess: () {
+        setState(() {});
+      });
+      await getEcourceClose(context, onSuccess: () {
+        setState(() {});
+      });
+      await getBanner(context, onSuccess: (datas) {
+        setState(() {});
+      });
     });
   }
 
@@ -99,20 +100,14 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
       // perubahan
       appBar: AppBar(
         title: Text('E-Cource',
-        style: GoogleFonts.poppins(
-          textStyle: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: Colors.black
-          ),
-        )),
+            style: GoogleFonts.poppins(
+              textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black),
+            )),
         actions: [
           IconButton(
             icon: Icon(Icons.add, color: Colors.black),
             onPressed: () {
-              navigator(
-                page: AddVideoView()
-              );
+              navigator(page: AddVideoView());
             },
           ),
         ],
@@ -122,7 +117,11 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 18,),
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: Colors.black,
+            size: 18,
+          ),
         ),
       ),
       body: Material(
@@ -152,13 +151,13 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
                     CarouselSlider(
                       items: banners,
                       options: CarouselOptions(
-                      height: 200,
-                      viewportFraction: 0.95,
-                      aspectRatio: 50 / 16,
-                      autoPlay: true,
-                      autoPlayInterval: Duration(seconds: 2),
-                      onPageChanged: (page, why) {},
-                      scrollDirection: Axis.horizontal,
+                        height: 200,
+                        viewportFraction: 0.95,
+                        aspectRatio: 50 / 16,
+                        autoPlay: true,
+                        autoPlayInterval: Duration(seconds: 2),
+                        onPageChanged: (page, why) {},
+                        scrollDirection: Axis.horizontal,
                       ),
                     ),
                     const SizedBox(
@@ -167,13 +166,14 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
                     Padding(
                       padding: const EdgeInsets.only(left: 16),
                       child: category(
-                      // counter: _counter,
-                      context: context,
-                      navigator: navigator,
-                      state: setState,
-                      onTap: (nama) {
-                        resultSearch(nama);
-                      },),
+                        // counter: _counter,
+                        context: context,
+                        navigator: navigator,
+                        state: setState,
+                        onTap: (nama) {
+                          resultSearch(nama);
+                        },
+                      ),
                     ),
                     const SizedBox(
                       height: 20,
@@ -185,26 +185,23 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
                         children: [
                           Text(
                             "E-Course Terdekat",
-                              style: GoogleFonts.poppins(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                           InkWell(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => NearCourse(
-                                  list: CourceBloc.getList(),
-                                )
-                              ));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => NearCourse(
+                                            list: CourceBloc.getList(),
+                                          )));
                             },
                             child: Text(
                               'Lihat Semua',
-                              style: GoogleFonts.poppins(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.blue
-                              ),
+                              style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w400, color: Colors.blue),
                             ),
                           ),
                         ],
@@ -215,9 +212,7 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: cardHome(
-                        navigator: navigator, 
-                        dataList: CourceBloc.getList(filter: _search.text), setState: setState),
+                      child: cardHome(navigator: navigator, dataList: CourceBloc.getList(filter: _search.text), setState: setState),
                     ),
                     // cardNearby(context),
                     // const SizedBox(
@@ -257,19 +252,16 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
                           ),
                           InkWell(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => NewCourse(
-                                  list: CourceBloc.getList(),
-                                )
-                              ));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => NewCourse(
+                                            list: CourceBloc.getList(),
+                                          )));
                             },
                             child: Text(
                               'Lihat Semua',
-                              style: GoogleFonts.poppins(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.blue
-                              ),
+                              style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w400, color: Colors.blue),
                             ),
                           ),
                         ],
@@ -280,9 +272,7 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: card2(
-                        navigator: navigator, 
-                        dataList: CourceBloc.getList(filter: _search.text), setState: setState),
+                      child: card2(navigator: navigator, dataList: CourceBloc.getList(filter: _search.text), setState: setState),
                     ),
                     const SizedBox(
                       height: 50,

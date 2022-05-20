@@ -1,41 +1,35 @@
 import 'package:benix/modules/user/paket/model/bloc.dart';
 import 'package:request_api_helper/request.dart' as req;
-import 'package:request_api_helper/request_api_helper.dart' show RESTAPI, RequestApiHelperConfigData, RequestData;
+import 'package:request_api_helper/request.dart';
+import 'package:request_api_helper/request_api_helper.dart' show Api, RESTAPI, RequestApiHelper, RequestApiHelperConfigData, RequestData;
 
-Future<List> upgradePaket(context,value) async {
-  var stat = '';
-  List datas = [];
-  await req.send(
-    type: RESTAPI.post,
-    name: 'auth/upgrade',
-     data: RequestData(
+upgradePaket(context, value, {required Function(String) onSuccess}) async {
+  await RequestApiHelper.sendRequest(
+    type: Api.post,
+    url: 'auth/upgrade',
+    replacementId: 9,
+    withLoading: true,
+    config: RequestApiHelperData(
       body: {
         "package_id": value,
       },
-    ),
-    changeConfig: RequestApiHelperConfigData(
-      
-      onSuccess: (data) async {
-        
-        datas.add({
-          'url':data['data']['snap_url']
-        });
-        // stat = data['data']['snap_url'];
+      onSuccess: (data) {
+        onSuccess(data['data']['snap_url']);
       },
     ),
   );
-
-  return datas;
 }
 
-Future<void> getPaket(context) async {
-  await req.send(
-    type: RESTAPI.get,
-    name: 'packages/ecourse',
-    changeConfig: RequestApiHelperConfigData(
-      
+Future<void> getPaket(context, {required Function onSuccess}) async {
+  await RequestApiHelper.sendRequest(
+    type: Api.get,
+    url: 'packages/ecourse',
+    replacementId: 10,
+    withLoading: true,
+    config: RequestApiHelperData(
       onSuccess: (data) async {
         await PackagesBloc.init(data['data']);
+        onSuccess();
       },
     ),
   );

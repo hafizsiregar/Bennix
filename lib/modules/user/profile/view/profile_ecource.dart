@@ -23,8 +23,10 @@ class _ProfileEcourceState extends BaseBackground<ProfileEcource> {
     await saveProfileImage(
       context: context,
       image: images,
+      onSuccess: () {
+        Navigator.of(context).pop();
+      },
     );
-    Navigator.of(context).pop();
   }
 
   @override

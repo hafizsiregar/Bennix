@@ -1,5 +1,6 @@
 import 'package:benix/modules/user/history/api/request_api.dart';
 import 'package:benix/modules/user/history/bloc/main_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:request_api_helper/request_api_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../main_library.dart' show AnimateTransition, BaseBackground, BaseColor, Border, BouncingScrollPhysics, BoxDecoration, BuildContext, Button, Center, Colors, Column, Container, CrossAxisAlignment, DecorationImage, Divider, EdgeInsets, Expanded, GestureDetector, Icon, Image, InitControl, IntrinsicHeight, Key, ListView, MainAxisAlignment, Material, NetworkImage, NeverScrollableScrollPhysics, Padding, Radius, Responsive, Row, Scaffold, SingleChildScrollView, SizedBox, StatefulWidget, Text, TextAlign, TextStyle, Widget;
@@ -14,9 +15,9 @@ class HistoryDetailView extends StatefulWidget {
 
 class _HistoryDetailViewState extends BaseBackground<HistoryDetailView> {
   _getData() async {
-    print('ASS'+widget.idHistory.toString());
-    await getHistoryDetail(context, widget.idHistory);
-    setState(() {});
+    await getHistoryDetail(context, widget.idHistory, onSuccess: () {
+      setState(() {});
+    });
   }
 
   @override
@@ -154,7 +155,7 @@ class _HistoryDetailViewState extends BaseBackground<HistoryDetailView> {
                                     child: Text('Lokasi'),
                                   ),
                                   Expanded(
-                                    child: Text(': ${DetailHistoryBloc.data.status != 'paid' ? 'Alamat Belum Tersedia' :DetailHistoryBloc.data.eventPlace}'),
+                                    child: Text(': ${DetailHistoryBloc.data.status != 'paid' ? 'Alamat Belum Tersedia' : DetailHistoryBloc.data.eventPlace}'),
                                   ),
                                 ],
                               ),
@@ -199,7 +200,7 @@ class _HistoryDetailViewState extends BaseBackground<HistoryDetailView> {
                                 ],
                               ),
                             ),
-                             Padding(
+                            Padding(
                               padding: const EdgeInsets.only(bottom: 4.0),
                               child: Row(
                                 children: [
@@ -212,7 +213,7 @@ class _HistoryDetailViewState extends BaseBackground<HistoryDetailView> {
                                 ],
                               ),
                             ),
-                             Padding(
+                            Padding(
                               padding: const EdgeInsets.only(bottom: 4.0),
                               child: Row(
                                 children: [
@@ -425,45 +426,50 @@ class _HistoryDetailViewState extends BaseBackground<HistoryDetailView> {
                             ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
-                              itemCount: DetailHistoryBloc.data.detailTicket != null ? DetailHistoryBloc.data.detailTicket!.length: 0,
+                              itemCount: DetailHistoryBloc.data.detailTicket != null ? DetailHistoryBloc.data.detailTicket!.length : 0,
                               itemBuilder: (context, index) {
                                 var dataTicket = DetailHistoryBloc.data.detailTicket![index];
-                                if(DetailHistoryBloc.data.isCheckin != '1'){
+                                if (DetailHistoryBloc.data.isCheckin != '1') {
                                   return Container();
-                                }else{
+                                } else {
                                   return Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 30,
-                                        child: Text(
-                                          dataTicket.ticketName ?? '-',
-                                          style: const TextStyle(
-                                            fontSize: 14,
+                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          flex: 30,
+                                          child: Text(
+                                            dataTicket.ticketName ?? '-',
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Button.flat(
-                                        onTap: DetailHistoryBloc.data.status != 'paid' ?  null : DetailHistoryBloc.data.isCheckin != '1' ? null : () async {
-                                          if (DateTime.parse(DetailHistoryBloc.data.eventdate!).difference(DateTime.now()).inMinutes < -30) {
-                                            launch('https://admin.benix.id/api/certificate-download/${dataTicket.nameEncrypt}/${dataTicket.fileName}',);
-                                          } else {
-                                            Fluttertoast.showToast(msg: 'Sertifikat bisa di akses setelah 30 menit event dimulai');
-                                          }
-                                        },
-                                        context: context,
-                                        title: 'Download',
-                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                                      )
-                                    ],
-                                  ),
-                                );
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        Button.flat(
+                                          onTap: DetailHistoryBloc.data.status != 'paid'
+                                              ? null
+                                              : DetailHistoryBloc.data.isCheckin != '1'
+                                                  ? null
+                                                  : () async {
+                                                      if (DateTime.parse(DetailHistoryBloc.data.eventdate!).difference(DateTime.now()).inMinutes < -30) {
+                                                        launchUrl(
+                                                          Uri.parse('https://admin.benix.id/api/certificate-download/${dataTicket.nameEncrypt}/${dataTicket.fileName}'),
+                                                        );
+                                                      } else {
+                                                        Fluttertoast.showToast(msg: 'Sertifikat bisa di akses setelah 30 menit event dimulai');
+                                                      }
+                                                    },
+                                          context: context,
+                                          title: 'Download',
+                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                                        )
+                                      ],
+                                    ),
+                                  );
                                 }
-                                
                               },
                             ),
                           ],

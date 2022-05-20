@@ -43,22 +43,23 @@ class _BuyTicketState extends BaseBackground<BuyTicket> {
     // for (EventData i in _event) {
     //   _selectedEvent = i;
     // }
-    final Map data = await detailEvent(
+    await detailEvent(
       context: context,
       id: BlocEvent.selectedEventId.toString(),
+      onSuccess: (data) {
+        _settings.clear();
+        for (var i in data['data']['events_buyer_data_settings']) {
+          int idSetting = i['buyer_data_settings']['id'];
+          if (idSetting == 4) isKtp = true;
+          if (idSetting == 5) isLahir = true;
+          if (idSetting == 6) isJenisKelamin = true;
+          _settings.add(idSetting);
+        }
+
+        buildForm();
+        setState(() {});
+      },
     );
-
-    _settings.clear();
-    for (var i in data['data']['events_buyer_data_settings']) {
-      int idSetting = i['buyer_data_settings']['id'];
-      if (idSetting == 4) isKtp = true;
-      if (idSetting == 5) isLahir = true;
-      if (idSetting == 6) isJenisKelamin = true;
-      _settings.add(idSetting);
-    }
-
-    buildForm();
-    setState(() {});
   }
 
   _checkout() async {
@@ -88,7 +89,7 @@ class _BuyTicketState extends BaseBackground<BuyTicket> {
       'list_buyer_data_setting': listSettings,
       'list_value_data': listData,
     };
-    await checkout(context: context, data: body, navigator: navigator);
+    await checkout(context: context, data: body, navigator: navigator, onSuccess: (status) {});
 
     // if (req) Navigator.of(context).pop();
   }

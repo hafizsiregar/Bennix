@@ -1,6 +1,7 @@
 part of 'main_view.dart';
 
 enum Waktu { sekarang, besok, mingguini, kosong }
+
 Waktu pilihWaktu = Waktu.sekarang;
 DateTime filterDate = DateTime.now();
 TextEditingController _price = TextEditingController();
@@ -275,21 +276,21 @@ Widget filterCard({required context, Function? onTap, required counter}) {
           onTap: () async {
             List cat = BlocEvent.listCategories.where((e) => e.selected!).toList();
             await filterEvent(
-              context,
-              FilterDataEvent(
-                calender: pilihWaktu == Waktu.kosong ? '' : DateFormat('y-MM-dd').format(filterDate),
-                category: cat.isNotEmpty ? cat[0].id.toString() : '',
-                locationCity: _lokasi.text,
-                name: _eventName.text,
-                startPrice: _price.text.replaceAll('.', ''),
-                today: pilihWaktu == Waktu.sekarang ? '1' : '0',
-                tomorrow: pilihWaktu == Waktu.besok ? '1' : '0',
-                week: pilihWaktu == Waktu.mingguini ? '1' : '0',
-              ),
-            );
+                context,
+                FilterDataEvent(
+                  calender: pilihWaktu == Waktu.kosong ? '' : DateFormat('y-MM-dd').format(filterDate),
+                  category: cat.isNotEmpty ? cat[0].id.toString() : '',
+                  locationCity: _lokasi.text,
+                  name: _eventName.text,
+                  startPrice: _price.text.replaceAll('.', ''),
+                  today: pilihWaktu == Waktu.sekarang ? '1' : '0',
+                  tomorrow: pilihWaktu == Waktu.besok ? '1' : '0',
+                  week: pilihWaktu == Waktu.mingguini ? '1' : '0',
+                ), onSuccess: () {
+              Navigator.of(context).pop();
+              onTap!();
+            });
             // setState(() {});
-            Navigator.of(context).pop();
-            onTap!();
           },
         ),
       ],

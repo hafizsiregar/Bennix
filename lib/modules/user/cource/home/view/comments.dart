@@ -2,10 +2,7 @@ import 'package:benix/main_library.dart';
 import 'package:benix/modules/user/cource/home/api/request_api.dart';
 import 'package:benix/modules/user/cource/home/model/bloc.dart';
 import 'package:benix/modules/user/cource/home/model/model.dart';
-import 'package:benix/modules/user/login/bloc/main_bloc.dart';
 import 'package:timeago/timeago.dart' as timeago;
-
-import 'detail.dart';
 
 class CommentsView extends StatefulWidget {
   final Cource data;
@@ -23,8 +20,9 @@ class _CommentsViewState extends BaseBackground<CommentsView> {
     super.initState();
     timeago.setLocaleMessages('id', timeago.IdMessages());
     Future.delayed(Duration.zero, () async {
-      await getComments(context, widget.data.id.toString());
-      setState(() {});
+      await getComments(context, widget.data.id.toString(), onSuccess: () {
+        setState(() {});
+      });
     });
   }
 
@@ -123,12 +121,13 @@ class _CommentsViewState extends BaseBackground<CommentsView> {
                         child: ElevatedButton(
                           child: const Icon(Icons.send),
                           onPressed: () async {
-                            final bol = await saveComment(context, widget.data.id.toString(), _messageController.text.toString());
-                            if (bol) {
-                              await getComments(context, widget.data.id.toString());
-                              _messageController.clear;
+                            final bol = await saveComment(context, widget.data.id.toString(), _messageController.text.toString(), onSuccess: () {
+                              getComments(context, widget.data.id.toString(), onSuccess: () {
+                                _messageController.clear;
+                                setState(() {});
+                              });
                               setState(() {});
-                            }
+                            });
                           },
                         ))
                   ],

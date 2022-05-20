@@ -1,8 +1,8 @@
 import 'package:benix/main_library.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:request_api_helper/request.dart';
 import 'package:request_api_helper/request_api_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:request_api_helper/request.dart' as req;
 
 class WebView extends StatefulWidget {
   final String url;
@@ -36,40 +36,39 @@ class _WebViewState extends State<WebView> {
               if (progress == 100) {
                 // print(controller.getHitTestResult().then((value) => print(value!.type)));
                 Uri? geturl = await controller.getUrl();
-                
+
                 if (geturl?.host == 'gopay') {
                   try {
-                     await launch(geturl.toString(), forceWebView: false);
+                    await launch(geturl.toString(), forceWebView: false);
                     if (geturl?.host != 'app.midtrans.com') {
                       Navigator.pop(context);
                       // Navigator.pop(context);
                     }
                   } catch (e) {
-                     await req.send(
-                      type: RESTAPI.get,
-                      name: 'transaction/delete/' + widget.id.toString(),
-                      context: context,
-                      changeConfig: RequestApiHelperConfigData(
-                        // withLoading: null,
-                        successMessage: 'Aplikasi tidak ditemukan',
+                    await RequestApiHelper.sendRequest(
+                      type: Api.get,
+                      url: 'transaction/delete/' + widget.id.toString(),
+                      replacementId: 1,
+                      withLoading: true,
+                      config: RequestApiHelperData(
                         onSuccess: (data) {
                           Navigator.pop(context);
                           showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                    title: const Text('Peringatan'),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: const [
-                                        Text('Aplikasi tidak ditemukan'),
-                                      ],
-                                    ),
-                                  ));
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: const Text('Peringatan'),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: const [
+                                  Text('Aplikasi tidak ditemukan'),
+                                ],
+                              ),
+                            ),
+                          );
                         },
                       ),
                     );
                   }
-                
 
                   // launch(geturl.toString(), forceWebView: false);
                   // Navigator.pop(context);

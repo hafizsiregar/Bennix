@@ -6,8 +6,8 @@ import 'package:benix/modules/admin/cource/model/main_bloc.dart';
 import 'package:benix/modules/admin/cource/model/model.dart';
 import 'package:benix/modules/user/cource/home/model/model.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:request_api_helper/request_api_helper.dart';
 
 class AddVideoView extends StatefulWidget {
   final Cource? editData;
@@ -1196,43 +1196,43 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
                                   return;
                                 }
                                 if (widget.editData != null) {
-                                  final bool stat = await updateEcource(
-                                    context: context,
-                                    data: Cource(
-                                      bannerUrl: banner,
-                                      name: _judul.text,
-                                      certificateUrl: '',
-                                      description: _deskripsi.text,
-                                      endDate: end,
-                                      id: widget.editData!.id,
-                                      isExternal: isExtern ? 'eksternal' : 'internal',
-                                      startDate: start,
-                                      trainerName: _pengajar.text,
-                                      kategori: kategori?.id,
-                                    ),
-                                    modul: AddVideoBloc.moduleData,
-                                    video: AddVideoBloc.videoData,
-                                    modulOld: AdminCourceBloc.moduleData,
-                                    videoOld: AdminCourceBloc.videoData,
-                                  );
+                                  await updateEcource(
+                                      context: context,
+                                      data: Cource(
+                                        bannerUrl: banner,
+                                        name: _judul.text,
+                                        certificateUrl: '',
+                                        description: _deskripsi.text,
+                                        endDate: end,
+                                        id: widget.editData!.id,
+                                        isExternal: isExtern ? 'eksternal' : 'internal',
+                                        startDate: start,
+                                        trainerName: _pengajar.text,
+                                        kategori: kategori?.id,
+                                      ),
+                                      modul: AddVideoBloc.moduleData,
+                                      video: AddVideoBloc.videoData,
+                                      modulOld: AdminCourceBloc.moduleData,
+                                      videoOld: AdminCourceBloc.videoData,
+                                      onSuccess: () {});
                                   return;
                                 } else {
-                                  final bool stat = await createEcource(
-                                    context: context,
-                                    data: AddVideo(
-                                      name: _judul.text,
-                                      bannerPath: banner,
-                                      certificatePath: '',
-                                      desc: _deskripsi.text,
-                                      end: DateFormat('yyyy-MM-dd').format(end!),
-                                      modul: AddVideoBloc.moduleData,
-                                      start: DateFormat('yyyy-MM-dd').format(start!),
-                                      trainer: _pengajar.text,
-                                      video: AddVideoBloc.videoData,
-                                      videoType: isExtern ? 'eksternal' : 'internal',
-                                      kategori: kategori?.id,
-                                    ),
-                                  );
+                                  createEcource(
+                                      context: context,
+                                      data: AddVideo(
+                                        name: _judul.text,
+                                        bannerPath: banner,
+                                        certificatePath: '',
+                                        desc: _deskripsi.text,
+                                        end: DateFormat('yyyy-MM-dd').format(end!),
+                                        modul: AddVideoBloc.moduleData,
+                                        start: DateFormat('yyyy-MM-dd').format(start!),
+                                        trainer: _pengajar.text,
+                                        video: AddVideoBloc.videoData,
+                                        videoType: isExtern ? 'eksternal' : 'internal',
+                                        kategori: kategori?.id,
+                                      ),
+                                      onSuccess: () {});
                                 }
                               },
                             ),

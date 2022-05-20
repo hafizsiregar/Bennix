@@ -1,6 +1,7 @@
 part of 'main_view.dart';
 
 enum Waktu { sekarang, besok, mingguini, kosong }
+
 Waktu pilihWaktu = Waktu.sekarang;
 DateTime filterDate = DateTime.now();
 TextEditingController _price = TextEditingController();
@@ -21,8 +22,7 @@ Widget filterCard({required context, Function? onTap, counter}) {
         const SizedBox(
           height: 20,
         ),
-        category(
-            selected: true, context: context, counter: counter, ifSearch: true),
+        category(selected: true, context: context, counter: counter, ifSearch: true),
         const SizedBox(
           height: 26,
         ),
@@ -43,17 +43,10 @@ Widget filterCard({required context, Function? onTap, counter}) {
               Button.option(
                 context: context,
                 title: 'Sekarang',
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                borderColor: pilihWaktu == Waktu.sekarang
-                    ? BaseColor.theme?.borderColor
-                    : null,
-                color: pilihWaktu == Waktu.sekarang
-                    ? BaseColor.theme?.primaryColor
-                    : BaseColor.theme?.borderColor,
-                textColor: pilihWaktu == Waktu.sekarang
-                    ? BaseColor.theme?.textButtonColor
-                    : null,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                borderColor: pilihWaktu == Waktu.sekarang ? BaseColor.theme?.borderColor : null,
+                color: pilihWaktu == Waktu.sekarang ? BaseColor.theme?.primaryColor : BaseColor.theme?.borderColor,
+                textColor: pilihWaktu == Waktu.sekarang ? BaseColor.theme?.textButtonColor : null,
                 onTap: () {
                   pilihWaktu = Waktu.sekarang;
                   setState(() {});
@@ -62,17 +55,10 @@ Widget filterCard({required context, Function? onTap, counter}) {
               Button.option(
                 context: context,
                 title: 'Besok',
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                borderColor: pilihWaktu == Waktu.besok
-                    ? BaseColor.theme?.borderColor
-                    : null,
-                color: pilihWaktu == Waktu.besok
-                    ? BaseColor.theme?.primaryColor
-                    : BaseColor.theme?.borderColor,
-                textColor: pilihWaktu == Waktu.besok
-                    ? BaseColor.theme?.textButtonColor
-                    : null,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                borderColor: pilihWaktu == Waktu.besok ? BaseColor.theme?.borderColor : null,
+                color: pilihWaktu == Waktu.besok ? BaseColor.theme?.primaryColor : BaseColor.theme?.borderColor,
+                textColor: pilihWaktu == Waktu.besok ? BaseColor.theme?.textButtonColor : null,
                 onTap: () {
                   pilihWaktu = Waktu.besok;
                   setState(() {});
@@ -81,17 +67,10 @@ Widget filterCard({required context, Function? onTap, counter}) {
               Button.option(
                 context: context,
                 title: 'Minggu ini',
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                borderColor: pilihWaktu == Waktu.mingguini
-                    ? BaseColor.theme?.borderColor
-                    : null,
-                color: pilihWaktu == Waktu.mingguini
-                    ? BaseColor.theme?.primaryColor
-                    : BaseColor.theme?.borderColor,
-                textColor: pilihWaktu == Waktu.mingguini
-                    ? BaseColor.theme?.textButtonColor
-                    : null,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                borderColor: pilihWaktu == Waktu.mingguini ? BaseColor.theme?.borderColor : null,
+                color: pilihWaktu == Waktu.mingguini ? BaseColor.theme?.primaryColor : BaseColor.theme?.borderColor,
+                textColor: pilihWaktu == Waktu.mingguini ? BaseColor.theme?.textButtonColor : null,
                 onTap: () {
                   pilihWaktu = Waktu.mingguini;
                   setState(() {});
@@ -115,9 +94,7 @@ Widget filterCard({required context, Function? onTap, counter}) {
                 ),
                 Expanded(
                   child: Text(
-                    pilihWaktu != Waktu.kosong
-                        ? 'Pilih Tanggal'
-                        : DateFormat('d MMM y').format(filterDate),
+                    pilihWaktu != Waktu.kosong ? 'Pilih Tanggal' : DateFormat('d MMM y').format(filterDate),
                     style: TextStyle(
                       color: BaseColor.theme?.captionColor,
                     ),
@@ -161,8 +138,7 @@ Widget filterCard({required context, Function? onTap, counter}) {
             decoration: InputDecoration(
               alignLabelWithHint: true,
               labelStyle: const TextStyle(
-                  fontSize:
-                      14.0, //I believe the size difference here is 6.0 to account padding
+                  fontSize: 14.0, //I believe the size difference here is 6.0 to account padding
                   color: Colors.grey),
               labelText: 'Cari Lokasi',
               filled: true,
@@ -173,8 +149,7 @@ Widget filterCard({required context, Function? onTap, counter}) {
                   size: 14,
                 ),
               ),
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+              contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
               fillColor: Colors.white,
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8.0),
@@ -213,15 +188,12 @@ Widget filterCard({required context, Function? onTap, counter}) {
             decoration: InputDecoration(
               alignLabelWithHint: true,
               labelStyle: const TextStyle(
-                  fontSize:
-                      14.0, //I believe the size difference here is 6.0 to account padding
+                  fontSize: 14.0, //I believe the size difference here is 6.0 to account padding
                   color: Colors.grey),
               labelText: 'Dimulai Dari Harga',
               filled: true,
-              prefix: const Padding(
-                  padding: EdgeInsets.only(right: 8.0), child: Text('Rp')),
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+              prefix: const Padding(padding: EdgeInsets.only(right: 8.0), child: Text('Rp')),
+              contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
               fillColor: Colors.white,
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8.0),
@@ -264,13 +236,11 @@ Widget filterCard({required context, Function? onTap, counter}) {
             decoration: InputDecoration(
               alignLabelWithHint: true,
               labelStyle: const TextStyle(
-                  fontSize:
-                      14.0, //I believe the size difference here is 6.0 to account padding
+                  fontSize: 14.0, //I believe the size difference here is 6.0 to account padding
                   color: Colors.grey),
               labelText: 'Cari Berdasarkan Nama',
               filled: true,
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+              contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
               fillColor: Colors.white,
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8.0),
@@ -304,26 +274,22 @@ Widget filterCard({required context, Function? onTap, counter}) {
           context: context,
           title: 'Cari Event',
           onTap: () async {
-            List cat =
-                BlocEvent.listCategories.where((e) => e.selected!).toList();
+            List cat = BlocEvent.listCategories.where((e) => e.selected!).toList();
             await filterEvent(
-              context,
-              FilterDataEvent(
-                calender: pilihWaktu == Waktu.kosong
-                    ? ''
-                    : DateFormat('y-MM-dd').format(filterDate),
-                category: cat.isNotEmpty ? cat[0].id.toString() : '',
-                locationCity: _lokasi.text,
-                name: _eventName.text,
-                startPrice: _price.text.replaceAll('.', ''),
-                today: pilihWaktu == Waktu.sekarang ? '1' : '0',
-                tomorrow: pilihWaktu == Waktu.besok ? '1' : '0',
-                week: pilihWaktu == Waktu.mingguini ? '1' : '0',
-              ),
-            );
-            // setState(() {});
-            Navigator.of(context).pop();
-            onTap!();
+                context,
+                FilterDataEvent(
+                  calender: pilihWaktu == Waktu.kosong ? '' : DateFormat('y-MM-dd').format(filterDate),
+                  category: cat.isNotEmpty ? cat[0].id.toString() : '',
+                  locationCity: _lokasi.text,
+                  name: _eventName.text,
+                  startPrice: _price.text.replaceAll('.', ''),
+                  today: pilihWaktu == Waktu.sekarang ? '1' : '0',
+                  tomorrow: pilihWaktu == Waktu.besok ? '1' : '0',
+                  week: pilihWaktu == Waktu.mingguini ? '1' : '0',
+                ), onSuccess: () {
+              Navigator.of(context).pop();
+              onTap!();
+            });
           },
         ),
       ],
@@ -400,11 +366,7 @@ Widget searchCard({required context, required Function navigator, title}) {
                               ),
                               SizedBox(width: 5),
                               Text(
-                                DateFormat('d MMM, HH:mm')
-                                        .format(e.startDate!) +
-                                    '  -  ' +
-                                    DateFormat('d MMM, HH:mm')
-                                        .format(e.endDate!),
+                                DateFormat('d MMM, HH:mm').format(e.startDate!) + '  -  ' + DateFormat('d MMM, HH:mm').format(e.endDate!),
                                 style: GoogleFonts.poppins(
                                   color: Colors.grey[600],
                                   fontSize: 13,

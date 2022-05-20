@@ -1,20 +1,8 @@
-import 'dart:io';
-
 import 'package:benix/main_library.dart';
-import 'package:benix/modules/user/cource/home/api/request_api.dart';
-import 'package:benix/modules/user/cource/home/model/bloc.dart';
-import 'package:benix/modules/user/cource/home/model/model.dart';
 import 'package:benix/modules/user/login/bloc/main_bloc.dart';
 import 'package:benix/modules/user/paket/api/request_api.dart';
 import 'package:benix/modules/user/paket/model/bloc.dart';
 import 'package:benix/modules/user/paket/model/model.dart';
-import 'package:benix/modules/user/paket/model/static_data.dart';
-import 'package:benix/modules/user/paket/view/detail.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:request_api_helper/background.dart';
-import 'package:request_api_helper/model/redirect_helper.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:intl/intl.dart';
 
 class PaketView extends StatefulWidget {
   const PaketView({Key? key}) : super(key: key);
@@ -28,8 +16,9 @@ class _PaketViewState extends BaseBackground<PaketView> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      await getPaket(context);
-      setState(() {});
+      await getPaket(context, onSuccess: () {
+        setState(() {});
+      });
     });
   }
 
@@ -249,16 +238,13 @@ class _PaketViewState extends BaseBackground<PaketView> {
                                                 ),
                                                 Button.flat(
                                                   onTap: () async {
-                                                    final bol = await upgradePaket(context, data.id.toString());
-                                                    print(bol);
-                                                    // navigator(
-                                                    //   page: WebView(
-                                                    //     url: bol.toString(),
-                                                    //   ),
-                                                    // );
-                                                    // if (bol) {
-                                                    //   setState(() {});
-                                                    // }
+                                                    await upgradePaket(context, data.id.toString(), onSuccess: (data) {
+                                                      navigator(
+                                                        page: WebView(
+                                                          url: data,
+                                                        ),
+                                                      );
+                                                    });
                                                   },
                                                   elevation: 2,
                                                   context: context,

@@ -154,10 +154,15 @@ class _UpdatePasswordViewState extends BaseBackground<UpdatePasswordView> {
                 textColor: Colors.black,
                 onTap: () async {
                   if (_form.currentState!.validate()) {
-                    final status = await updatePassword(context: context, p: password1.text, pp: password2.text, ppk: password2K.text);
-                    if (status) {
-                      Navigator.of(context).pop();
-                    }
+                    await updatePassword(
+                      context: context,
+                      p: password1.text,
+                      pp: password2.text,
+                      ppk: password2K.text,
+                      onSuccess: () {
+                        Navigator.of(context).pop();
+                      },
+                    );
                   }
                 },
               ),

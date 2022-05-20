@@ -10,9 +10,9 @@ import 'package:benix/modules/user/paket/view/main_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:request_api_helper/request_api_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -29,75 +29,72 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
   bool isVideo = true;
   int selectedVideo = 0;
   YoutubePlayerController? _controllerGlobal;
-  @override 
+  @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      await getDetailEcource(context, widget.data.id.toString());
-
-      setState(() {});
+      await getDetailEcource(context, widget.data.id.toString(), onSuccess: () {
+        setState(() {});
+      });
     });
   }
 
   void _launchURL(url) async {
-    if (!await launch(url)) throw 'Could not launch $url';
+    if (!await launchUrl(url)) throw 'Could not launch $url';
   }
 
   void _rating() {
     int selected = 0;
-    BackDark(
-      barrierDismissible: true,
-      view: Redirects(widget: StatefulBuilder(
-        builder: (context, states) {
-          return CupertinoAlertDialog(
-            title: const Text('Beri Rating'),
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (int i = 0; i < 5; i++)
-                  GestureDetector(
-                    onTap: () {
-                      states(
-                        () {
-                          selected = (i + 1);
+    showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, states) {
+              return CupertinoAlertDialog(
+                title: const Text('Beri Rating'),
+                content: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    for (int i = 0; i < 5; i++)
+                      GestureDetector(
+                        onTap: () {
+                          states(
+                            () {
+                              selected = (i + 1);
+                            },
+                          );
                         },
-                      );
+                        child: Icon(
+                          Icons.star_purple500_sharp,
+                          color: selected >= (i + 1) ? Colors.yellow[700] : Colors.black26,
+                          size: 30,
+                        ),
+                      ),
+                  ],
+                ),
+                actions: [
+                  Button.flat(
+                    context: context,
+                    title: 'Kirim',
+                    color: Colors.transparent,
+                    textColor: Colors.black,
+                    onTap: () async {
+                      if (selected == 0) {
+                        Fluttertoast.showToast(msg: 'Isikan rating terlebih dahulu');
+                      }
+                      await rating(context, widget.data.id.toString(), selected.toString(), onSuccess: () {
+                        getDetailEcource(context, widget.data.id.toString(), onSuccess: () {
+                          setState(() {});
+                          Navigator.of(context).pop();
+                        });
+                      });
                     },
-                    child: Icon(
-                      Icons.star_purple500_sharp,
-                      color: selected >= (i + 1)
-                          ? Colors.yellow[700]
-                          : Colors.black26,
-                      size: 30,
-                    ),
                   ),
-              ],
-            ),
-            actions: [
-              Button.flat(
-                context: context,
-                title: 'Kirim',
-                color: Colors.transparent,
-                textColor: Colors.black,
-                onTap: () async {
-                  if (selected == 0) {
-                    Fluttertoast.showToast(
-                        msg: 'Isikan rating terlebih dahulu');
-                  }
-                  final bol = await rating(
-                      context, widget.data.id.toString(), selected.toString());
-                  if (bol) {
-                    await getDetailEcource(context, widget.data.id.toString());
-                    setState(() {});
-                    Navigator.of(context).pop();
-                  }
-                },
-              ),
-            ],
+                ],
+              );
+            },
           );
-        },
-      )),
-    ).dialog(context);
+        });
   }
 
   @override
@@ -109,8 +106,7 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
 
   @override
   Widget build(BuildContext context) {
-    if (MediaQuery.of(context).orientation == Orientation.landscape &&
-        widget.data.isExternal == 'eksternal') {
+    if (MediaQuery.of(context).orientation == Orientation.landscape && widget.data.isExternal == 'eksternal') {
       return AspectRatio(
         aspectRatio: 16 / 9,
         child: YoutubePlayer(
@@ -158,8 +154,7 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                             color: BaseColor.theme?.primaryColor,
                             borderRadius: BorderRadius.circular(50),
                           ),
-                          child: const Icon(Icons.arrow_back_ios_new,
-                              color: Colors.white),
+                          child: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
                         )),
                   ),
                 ),
@@ -184,11 +179,7 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                         ),
                         Text(
                           widget.data.trainerName ?? '',
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.w500
-                          ),
+                          style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[600], fontWeight: FontWeight.w500),
                         ),
                         SizedBox(
                           height: 5,
@@ -196,25 +187,13 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            for (int i = 0;
-                                i <
-                                    double.parse(
-                                            DetailEcourceBloc.data.avgRate ??
-                                                '0')
-                                        .floor();
-                                i++)
+                            for (int i = 0; i < double.parse(DetailEcourceBloc.data.avgRate ?? '0').floor(); i++)
                               Icon(
                                 Icons.star_purple500_sharp,
                                 color: Colors.yellow[700],
                                 size: 17,
                               ),
-                            for (int i = 0 +
-                                    double.parse(
-                                            DetailEcourceBloc.data.avgRate ??
-                                                '0')
-                                        .floor();
-                                i < 5;
-                                i++)
+                            for (int i = 0 + double.parse(DetailEcourceBloc.data.avgRate ?? '0').floor(); i < 5; i++)
                               const Icon(
                                 Icons.star_purple500_sharp,
                                 color: Colors.black26,
@@ -238,19 +217,13 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                                 blur: 20,
                                 border: 1,
                                 borderRadius: 100,
-                                linearGradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      Color.fromARGB(255, 19, 12, 12)
-                                          .withOpacity(0.1),
-                                      Color.fromARGB(255, 68, 60, 60)
-                                          .withOpacity(0.05),
-                                    ],
-                                    stops: const [
-                                      0.1,
-                                      1,
-                                    ]),
+                                linearGradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [
+                                  Color.fromARGB(255, 19, 12, 12).withOpacity(0.1),
+                                  Color.fromARGB(255, 68, 60, 60).withOpacity(0.05),
+                                ], stops: const [
+                                  0.1,
+                                  1,
+                                ]),
                                 borderGradient: LinearGradient(
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
@@ -263,9 +236,7 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     Text(
-                                      DateFormat('MMM')
-                                          .format(widget.data.startDate!)
-                                          .toUpperCase(),
+                                      DateFormat('MMM').format(widget.data.startDate!).toUpperCase(),
                                       style: GoogleFonts.poppins(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w500,
@@ -295,8 +266,7 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                                   color: Colors.black54,
                                 )),
                             SizedBox(width: 10),
-                            Text(
-                                "${widget.data.episodeMin} - ${widget.data.episodeMax}  Episode",
+                            Text("${widget.data.episodeMin} - ${widget.data.episodeMax}  Episode",
                                 style: GoogleFonts.poppins(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
@@ -310,10 +280,7 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            widget.data.description == '' ||
-                                    widget.data.description == null
-                                ? 'Tidak Ada Deskripsi'
-                                : widget.data.description ?? '',
+                            widget.data.description == '' || widget.data.description == null ? 'Tidak Ada Deskripsi' : widget.data.description ?? '',
                             textAlign: TextAlign.justify,
                             style: GoogleFonts.poppins(
                               fontSize: 14,
@@ -331,19 +298,16 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                             btnContent(
                                 text: 'Komentar',
                                 onTap: () {
-                                  navigator(
-                                      page: CommentsView(data: widget.data));
+                                  navigator(page: CommentsView(data: widget.data));
                                 },
-                                icon: Icon(Icons.chat,
-                                    color: Color.fromARGB(255, 87, 86, 86))),
+                                icon: Icon(Icons.chat, color: Color.fromARGB(255, 87, 86, 86))),
                             SizedBox(width: 20),
                             btnContent(
                                 text: 'Beri Rating',
                                 onTap: () {
                                   _rating();
                                 },
-                                icon: Icon(Icons.add,
-                                    color: Color.fromARGB(255, 87, 86, 86))),
+                                icon: Icon(Icons.add, color: Color.fromARGB(255, 87, 86, 86))),
                           ],
                         ),
                         const SizedBox(
@@ -414,17 +378,13 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                             ? ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                itemCount: DetailEcourceBloc.data.videos == null
-                                    ? 0
-                                    : DetailEcourceBloc.data.videos!.length,
+                                itemCount: DetailEcourceBloc.data.videos == null ? 0 : DetailEcourceBloc.data.videos!.length,
                                 itemBuilder: (context, i) {
-                                  final data =
-                                      DetailEcourceBloc.data.videos?[i];
+                                  final data = DetailEcourceBloc.data.videos?[i];
                                   late YoutubePlayerController _controller;
                                   if (data!.videoUrl!.contains('youtube.com')) {
                                     _controller = YoutubePlayerController(
-                                      initialVideoId: Uri.parse(data.videoUrl!)
-                                          .queryParameters['v']!,
+                                      initialVideoId: Uri.parse(data.videoUrl!).queryParameters['v']!,
                                       flags: const YoutubePlayerFlags(
                                         autoPlay: false,
                                         mute: false,
@@ -438,317 +398,205 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                                     child: Center(
                                       child: GestureDetector(
                                         onTap: () {
-                                          if (data.isFree != '0' &&
-                                              (UserBloc.user.typeCourse ==
-                                                      'Gratis' ||
-                                                  UserBloc.user.typeCourse ==
-                                                      null)) {
-                                            Fluttertoast.showToast(
-                                                msg:
-                                                    'Video Berbayar Tidak Bisa Di Buka, Silahkan Membeli Paket');
+                                          if (data.isFree != '0' && (UserBloc.user.typeCourse == 'Gratis' || UserBloc.user.typeCourse == null)) {
+                                            Fluttertoast.showToast(msg: 'Video Berbayar Tidak Bisa Di Buka, Silahkan Membeli Paket');
                                             navigator(page: const PaketView());
                                             return;
                                           }
                                         },
-                                        child:
-                                            data.videoUrl!
-                                                    .contains('youtube.com')
-                                                // dimulai dari sini
-                                                ? Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                        child: data.videoUrl!.contains('youtube.com')
+                                            // dimulai dari sini
+                                            ? Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Row(
                                                     children: <Widget>[
-                                                      Row(
-                                                        children: <Widget>[
-                                                          GestureDetector(
-                                                            onTap: () {
-                                                              if (data.videoUrl ==
-                                                                  null) {
-                                                                Fluttertoast
-                                                                    .showToast(
-                                                                        msg:
-                                                                            'Video Tidak Valid');
-                                                              }
-                                                              if (data.isFree !=
-                                                                      '0' &&
-                                                                  (UserBloc.user
-                                                                              .typeCourse ==
-                                                                          'Gratis' ||
-                                                                      UserBloc.user
-                                                                              .typeCourse ==
-                                                                          null)) {
-                                                                _controller
-                                                                    .pause();
-                                                                Fluttertoast
-                                                                    .showToast(
-                                                                        msg:
-                                                                            'Video Berbayar Tidak Bisa Di Buka, Silahkan Membeli Paket');
-                                                                navigator(
-                                                                    page:
-                                                                        const PaketView());
-                                                              } else {
-                                                                navigator(
-                                                                  page:
-                                                                      PlayerCource(
-                                                                    type: Types
-                                                                        .external,
-                                                                    url: data
-                                                                        .videoUrl!,
-                                                                    desc: data
-                                                                        .description!,
-                                                                    title: data
-                                                                        .name!,
-                                                                    id: widget
-                                                                        .data.id
-                                                                        .toString(),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          if (data.videoUrl == null) {
+                                                            Fluttertoast.showToast(msg: 'Video Tidak Valid');
+                                                          }
+                                                          if (data.isFree != '0' && (UserBloc.user.typeCourse == 'Gratis' || UserBloc.user.typeCourse == null)) {
+                                                            _controller.pause();
+                                                            Fluttertoast.showToast(msg: 'Video Berbayar Tidak Bisa Di Buka, Silahkan Membeli Paket');
+                                                            navigator(page: const PaketView());
+                                                          } else {
+                                                            navigator(
+                                                              page: PlayerCource(
+                                                                type: Types.external,
+                                                                url: data.videoUrl!,
+                                                                desc: data.description!,
+                                                                title: data.name!,
+                                                                id: widget.data.id.toString(),
+                                                              ),
+                                                            );
+                                                          }
+                                                        },
+                                                        child: Container(
+                                                          height: 100,
+                                                          width: 170,
+                                                          child: data.videoUrl!.contains('youtube.com')
+                                                              ? YoutubePlayer(
+                                                                  thumbnail: Container(),
+                                                                  controller: _controller,
+                                                                  showVideoProgressIndicator: true,
+                                                                  progressColors: const ProgressBarColors(
+                                                                    playedColor: Colors.amber,
+                                                                    handleColor: Colors.amberAccent,
                                                                   ),
-                                                                );
-                                                              }
-                                                            },
-                                                            child: Container(
-                                                              height: 100,
-                                                              width: 170,
-                                                              child: data
-                                                                      .videoUrl!
-                                                                      .contains(
-                                                                          'youtube.com')
-                                                                  ? YoutubePlayer(
-                                                                      thumbnail:
-                                                                          Container(),
-                                                                      controller:
-                                                                          _controller,
-                                                                      showVideoProgressIndicator:
-                                                                          true,
-                                                                      progressColors:
-                                                                          const ProgressBarColors(
-                                                                        playedColor:
-                                                                            Colors.amber,
-                                                                        handleColor:
-                                                                            Colors.amberAccent,
-                                                                      ),
-                                                                      onReady:
-                                                                          () {
-                                                                        if (data.isFree !=
-                                                                                '0' &&
-                                                                            (UserBloc.user.typeCourse == 'Gratis' ||
-                                                                                UserBloc.user.typeCourse == null)) {
-                                                                          return;
-                                                                        }
-                                                                        _controller
-                                                                            .addListener(() {
-                                                                          if (_controllerGlobal !=
-                                                                              _controller) {
-                                                                            _controllerGlobal =
-                                                                                _controller;
-                                                                          }
-                                                                          selectedVideo = DetailEcourceBloc
-                                                                              .data
-                                                                              .videos!
-                                                                              .indexWhere((element) => element.courceId == data.courceId);
-                                                                        });
-                                                                      },
-                                                                    )
-                                                                  : const SizedBox(),
-                                                            ),
-                                                          ),
-                                                          SizedBox(width: 15),
-                                                          Expanded(
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: <
-                                                                  Widget>[
-                                                                Text(
-                                                                  data.name ??
-                                                                      '',
-                                                                  style: GoogleFonts
-                                                                      .poppins(
-                                                                    fontSize:
-                                                                        16,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 5,
-                                                                ),
-                                                                Row(
-                                                                  children: <
-                                                                      Widget>[
-                                                                    Text(
-                                                                      data.episode ==
-                                                                              99
-                                                                          ? '${data.episode} Episode'
-                                                                          : '${data.episode} Episode',
-                                                                      style: GoogleFonts
-                                                                          .poppins(
-                                                                        fontSize:
-                                                                            12,
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                        color: Colors
-                                                                            .black54,
-                                                                      ),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width: 5,
-                                                                    ),
-                                                                    Icon(
-                                                                      (data.isFree != '0' &&
-                                                                              (UserBloc.user.typeCourse == 'Gratis' || UserBloc.user.typeCourse == null))
-                                                                          ? Icons.lock
-                                                                          : null,
-                                                                      size: 15,
-                                                                      color: Colors
-                                                                          .amberAccent,
-                                                                    )
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      Text(
-                                                        data.description ?? '',
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          color: BaseColor.theme
-                                                              ?.captionColor,
+                                                                  onReady: () {
+                                                                    if (data.isFree != '0' && (UserBloc.user.typeCourse == 'Gratis' || UserBloc.user.typeCourse == null)) {
+                                                                      return;
+                                                                    }
+                                                                    _controller.addListener(() {
+                                                                      if (_controllerGlobal != _controller) {
+                                                                        _controllerGlobal = _controller;
+                                                                      }
+                                                                      selectedVideo = DetailEcourceBloc.data.videos!.indexWhere((element) => element.courceId == data.courceId);
+                                                                    });
+                                                                  },
+                                                                )
+                                                              : const SizedBox(),
                                                         ),
                                                       ),
-                                                    ],
-                                                  )
-                                                : GestureDetector(
-                                                    onTap: () {
-                                                      navigator(
-                                                        page: PlayerCource(
-                                                          type: Types.internal,
-                                                          url: data.videoUrl!,
-                                                          desc:
-                                                              data.description!,
-                                                          title: data.name!,
-                                                          id: widget.data.id
-                                                              .toString(),
-                                                        ),
-                                                      );
-                                                    },
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: <Widget>[
-                                                        Row(
+                                                      SizedBox(width: 15),
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
                                                           children: <Widget>[
-                                                            Container(
-                                                              height: 100,
-                                                              width: 170,
-                                                              child: data.isFree !=
-                                                                          '0' &&
-                                                                      (UserBloc.user.typeCourse ==
-                                                                              'Gratis' ||
-                                                                          UserBloc.user.typeCourse ==
-                                                                              null)
-                                                                  ? Container(
-                                                                      width:
-                                                                          150,
-                                                                      height:
-                                                                          100,
-                                                                      decoration: data
-                                                                              .videoUrl!
-                                                                              .contains('youtube.com')
-                                                                          ? null
-                                                                          : BoxDecoration(
-                                                                              image: data.thumnail == null
-                                                                                  ? null
-                                                                                  : DecorationImage(
-                                                                                      image: FileImage(File(data.thumnail ?? '')),
-                                                                                      fit: BoxFit.cover,
-                                                                                    ),
-                                                                            ),
-                                                                    )
-                                                                  : Container(
-                                                                      decoration:
-                                                                          BoxDecoration(
-                                                                        image:
-                                                                            DecorationImage(
-                                                                          image:
-                                                                              FileImage(File(data.thumnail ?? '')),
-                                                                          fit: BoxFit
-                                                                              .cover,
-                                                                          colorFilter: ColorFilter.mode(
-                                                                              Colors.black.withOpacity(0.3),
-                                                                              BlendMode.darken),
-                                                                        ),
-                                                                      ),
-                                                                    ),
+                                                            Text(
+                                                              data.name ?? '',
+                                                              style: GoogleFonts.poppins(
+                                                                fontSize: 16,
+                                                                fontWeight: FontWeight.w600,
+                                                              ),
                                                             ),
-                                                            SizedBox(width: 15),
-                                                            Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: <
-                                                                  Widget>[
+                                                            SizedBox(
+                                                              height: 5,
+                                                            ),
+                                                            Row(
+                                                              children: <Widget>[
                                                                 Text(
-                                                                  data.name ??
-                                                                      '',
-                                                                  style: GoogleFonts
-                                                                      .poppins(
-                                                                    fontSize:
-                                                                        16,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
+                                                                  data.episode == 99 ? '${data.episode} Episode' : '${data.episode} Episode',
+                                                                  style: GoogleFonts.poppins(
+                                                                    fontSize: 12,
+                                                                    fontWeight: FontWeight.w500,
+                                                                    color: Colors.black54,
                                                                   ),
                                                                 ),
                                                                 SizedBox(
-                                                                  height: 5,
+                                                                  width: 5,
                                                                 ),
-                                                                Text(
-                                                                  data.episode ==
-                                                                          99
-                                                                      ? '${data.episode} Episode'
-                                                                      : '${data.episode} Episode',
-                                                                  style: GoogleFonts
-                                                                      .poppins(
-                                                                    fontSize:
-                                                                        12,
-                                                                    fontWeight:
-                                                                        FontWeight.w500,
-                                                                    color: Colors
-                                                                        .black54,
-                                                                  ),
-                                                                ),
+                                                                Icon(
+                                                                  (data.isFree != '0' && (UserBloc.user.typeCourse == 'Gratis' || UserBloc.user.typeCourse == null)) ? Icons.lock : null,
+                                                                  size: 15,
+                                                                  color: Colors.amberAccent,
+                                                                )
                                                               ],
                                                             ),
                                                           ],
                                                         ),
-                                                        SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      Text(
-                                                        data.description ?? '',
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                            FontWeight.w500,
-                                                          color: BaseColor.theme?.captionColor,
-                                                        ),
                                                       ),
                                                     ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    data.description ?? '',
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w500,
+                                                      color: BaseColor.theme?.captionColor,
                                                     ),
                                                   ),
+                                                ],
+                                              )
+                                            : GestureDetector(
+                                                onTap: () {
+                                                  navigator(
+                                                    page: PlayerCource(
+                                                      type: Types.internal,
+                                                      url: data.videoUrl!,
+                                                      desc: data.description!,
+                                                      title: data.name!,
+                                                      id: widget.data.id.toString(),
+                                                    ),
+                                                  );
+                                                },
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    Row(
+                                                      children: <Widget>[
+                                                        Container(
+                                                          height: 100,
+                                                          width: 170,
+                                                          child: data.isFree != '0' && (UserBloc.user.typeCourse == 'Gratis' || UserBloc.user.typeCourse == null)
+                                                              ? Container(
+                                                                  width: 150,
+                                                                  height: 100,
+                                                                  decoration: data.videoUrl!.contains('youtube.com')
+                                                                      ? null
+                                                                      : BoxDecoration(
+                                                                          image: data.thumnail == null
+                                                                              ? null
+                                                                              : DecorationImage(
+                                                                                  image: FileImage(File(data.thumnail ?? '')),
+                                                                                  fit: BoxFit.cover,
+                                                                                ),
+                                                                        ),
+                                                                )
+                                                              : Container(
+                                                                  decoration: BoxDecoration(
+                                                                    image: DecorationImage(
+                                                                      image: FileImage(File(data.thumnail ?? '')),
+                                                                      fit: BoxFit.cover,
+                                                                      colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.darken),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                        ),
+                                                        SizedBox(width: 15),
+                                                        Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Text(
+                                                              data.name ?? '',
+                                                              style: GoogleFonts.poppins(
+                                                                fontSize: 16,
+                                                                fontWeight: FontWeight.w600,
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                              height: 5,
+                                                            ),
+                                                            Text(
+                                                              data.episode == 99 ? '${data.episode} Episode' : '${data.episode} Episode',
+                                                              style: GoogleFonts.poppins(
+                                                                fontSize: 12,
+                                                                fontWeight: FontWeight.w500,
+                                                                color: Colors.black54,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Text(
+                                                      data.description ?? '',
+                                                      style: GoogleFonts.poppins(
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.w500,
+                                                        color: BaseColor.theme?.captionColor,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
                                       ),
                                     ),
                                   );
@@ -757,49 +605,38 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                             : ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                itemCount: DetailEcourceBloc.data.modules ==
-                                        null
-                                    ? 0
-                                    : DetailEcourceBloc.data.modules!.length,
+                                itemCount: DetailEcourceBloc.data.modules == null ? 0 : DetailEcourceBloc.data.modules!.length,
                                 itemBuilder: (context, i) {
-                                  final data =
-                                      DetailEcourceBloc.data.modules?[i];
+                                  final data = DetailEcourceBloc.data.modules?[i];
                                   return Padding(
-                                    padding:
-                                        const EdgeInsets.only(bottom: 12.0),
+                                    padding: const EdgeInsets.only(bottom: 12.0),
                                     child: Center(
                                       child: InkWell(
                                         onTap: () {
                                           _launchURL(data!.moduleUrl!);
                                         },
                                         child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
                                             const Icon(FeatherIcons.fileText),
                                             Expanded(
                                               child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(12.0),
+                                                padding: const EdgeInsets.all(12.0),
                                                 child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
                                                       data?.name ?? '',
                                                       style: const TextStyle(
                                                         fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w600,
+                                                        fontWeight: FontWeight.w600,
                                                       ),
                                                     ),
                                                     Text(
-                                                      data?.description ??
-                                                          'Tidak Ada Deskripsi',
+                                                      data?.description ?? 'Tidak Ada Deskripsi',
                                                       style: const TextStyle(
                                                         fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w500,
+                                                        fontWeight: FontWeight.w500,
                                                         color: Colors.black54,
                                                       ),
                                                     ),
@@ -826,8 +663,7 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
     );
   }
 
-  Widget btnContent(
-      {required String text, required Function() onTap, required Icon icon}) {
+  Widget btnContent({required String text, required Function() onTap, required Icon icon}) {
     return InkWell(
       onTap: onTap,
       child: Container(

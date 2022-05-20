@@ -1,69 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:benix/main_library.dart'
-    show
-        TextAlign,
-        AnimateTransition,
-        BaseBackground,
-        BaseColor,
-        Border,
-        BorderRadius,
-        BorderSide,
-        BoxDecoration,
-        BoxFit,
-        BoxShape,
-        BuildContext,
-        Button,
-        Center,
-        Checkbox,
-        Colors,
-        Column,
-        Container,
-        CrossAxisAlignment,
-        DecorationImage,
-        EdgeInsets,
-        Expanded,
-        FileImage,
-        FocusManager,
-        FocusScope,
-        FocusScopeNode,
-        FormState,
-        GestureDetector,
-        GlobalKey,
-        Icon,
-        InitControl,
-        InkWell,
-        InputDecoration,
-        Key,
-        MainAxisAlignment,
-        MainAxisSize,
-        Navigator,
-        NetworkImage,
-        OutlineInputBorder,
-        Padding,
-        Radius,
-        Row,
-        Scaffold,
-        Select,
-        SelectResult,
-        SingleChildScrollView,
-        SizedBox,
-        StatefulWidget,
-        Switch,
-        Text,
-        TextEditingController,
-        TextFormField,
-        TextInputType,
-        TextStyle,
-        Theme,
-        TimeOfDay,
-        Widget,
-        Wrap,
-        getImage,
-        getMaxWidth,
-        showDatePicker,
-        showTimePicker;
+import 'package:benix/main_library.dart' show AnimateTransition, BaseBackground, BaseColor, Border, BorderRadius, BorderSide, BoxDecoration, BoxFit, BuildContext, Button, Center, Checkbox, Colors, Column, Container, CrossAxisAlignment, DecorationImage, EdgeInsets, Expanded, FileImage, FocusManager, FocusScope, FocusScopeNode, FormState, GestureDetector, GlobalKey, Icon, InitControl, InkWell, InputDecoration, Key, MainAxisSize, Navigator, NetworkImage, OutlineInputBorder, Padding, Radius, Row, Scaffold, Select, SelectResult, SingleChildScrollView, SizedBox, StatefulWidget, Switch, Text, TextEditingController, TextFormField, TextInputType, TextStyle, Theme, TimeOfDay, Widget, Wrap, getImage, getMaxWidth, showDatePicker;
 import 'package:benix/modules/admin/event/api/request_api.dart';
 import 'package:benix/modules/admin/event/bloc/main_bloc.dart';
 import 'package:benix/modules/admin/event/bloc/model.dart';
@@ -117,77 +55,83 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
   }
 
   _getResource() async {
-    await getFormat(context: context);
-    await getTopik(context: context);
-    await getSettings(context: context);
-    if (widget.dataEdit != null) {
-      isEdit = true;
-      if (widget.dataEdit?.locationType == 'offline') {
-        _address.text = widget.dataEdit?.locationAddress ?? '';
-        isOnline = false;
-      } else {
-        _urlControl.text = widget.dataEdit?.locationAddress ?? '';
-        isOnline = true;
-      }
-    
-      networkImagePath = widget.dataEdit?.banner;
-      _name.text = widget.dataEdit?.name ?? '';
-      _desc.text = widget.dataEdit?.description ?? '';
-      _city.text = widget.dataEdit?.locationCity ?? '';
-      _maxBuy.text = widget.dataEdit?.maxBuyTicket ?? '';
-      _orgName.text = widget.dataEdit?.organizerName ?? '';
-      _tempat.text = widget.dataEdit?.locationName ?? '';
-      _sk.text = widget.dataEdit?.sk ?? '';
-      _tag.text = widget.dataEdit?.tages ?? '';
-      awal = DateTime.parse(widget.dataEdit!.startDate!);
-      akhir = DateTime.parse(widget.dataEdit!.endDate!);
-      tAwal = TimeOfDay.fromDateTime(awal);
-      tAkhir = TimeOfDay.fromDateTime(akhir);
-      isOneEmail =
-          widget.dataEdit?.uniqueEmailTransaction == '1' ? true : false;
-      isPrivate = widget.dataEdit?.type == 'public' ? false : true;
+    await getFormat(
+        context: context,
+        onSuccess: () {
+          getTopik(
+              context: context,
+              onSuccess: () {
+                getSettings(
+                    context: context,
+                    onSuccess: () {
+                      if (widget.dataEdit != null) {
+                        isEdit = true;
+                        if (widget.dataEdit?.locationType == 'offline') {
+                          _address.text = widget.dataEdit?.locationAddress ?? '';
+                          isOnline = false;
+                        } else {
+                          _urlControl.text = widget.dataEdit?.locationAddress ?? '';
+                          isOnline = true;
+                        }
 
-      for (var i in widget.dataEdit?.tickets ?? []) {
-        BlocEventAdd.addTicket(
-          TicketData(
-            name: i['name'],
-            id: i['id'],
-            endDate: DateTime.parse(i['end_date']),
-            endTime: TimeOfDay.fromDateTime(DateTime.parse(i['end_date'])),
-            harga: int.tryParse(i['price'].replaceAll('.00', '')),
-            keterangan: i['description'],
-            qty: int.tryParse(i['remaining_stock']),
-            sertifikat: i['certificate_url'],
-            startDate: DateTime.parse(i['start_date']),
-            startTime: TimeOfDay.fromDateTime(DateTime.parse(i['start_date'])),
-          ),
-        );
-      }
+                        networkImagePath = widget.dataEdit?.banner;
+                        _name.text = widget.dataEdit?.name ?? '';
+                        _desc.text = widget.dataEdit?.description ?? '';
+                        _city.text = widget.dataEdit?.locationCity ?? '';
+                        _maxBuy.text = widget.dataEdit?.maxBuyTicket ?? '';
+                        _orgName.text = widget.dataEdit?.organizerName ?? '';
+                        _tempat.text = widget.dataEdit?.locationName ?? '';
+                        _sk.text = widget.dataEdit?.sk ?? '';
+                        _tag.text = widget.dataEdit?.tages ?? '';
+                        awal = DateTime.parse(widget.dataEdit!.startDate!);
+                        akhir = DateTime.parse(widget.dataEdit!.endDate!);
+                        tAwal = TimeOfDay.fromDateTime(awal);
+                        tAkhir = TimeOfDay.fromDateTime(akhir);
+                        isOneEmail = widget.dataEdit?.uniqueEmailTransaction == '1' ? true : false;
+                        isPrivate = widget.dataEdit?.type == 'public' ? false : true;
 
-      for (var i in widget.dataEdit?.categories ?? []) {
-        if (i['categories']['type'] == 'topik') {
-          topik.name.text = i['categories']['name'];
-          topik.id = i['categories']['id'].toString();
-        } else if (i['categories']['type'] == 'format') {
-          format.name.text = i['categories']['name'];
-          format.id = i['categories']['id'].toString();
-        }
-      }
+                        for (var i in widget.dataEdit?.tickets ?? []) {
+                          BlocEventAdd.addTicket(
+                            TicketData(
+                              name: i['name'],
+                              id: i['id'],
+                              endDate: DateTime.parse(i['end_date']),
+                              endTime: TimeOfDay.fromDateTime(DateTime.parse(i['end_date'])),
+                              harga: int.tryParse(i['price'].replaceAll('.00', '')),
+                              keterangan: i['description'],
+                              qty: int.tryParse(i['remaining_stock']),
+                              sertifikat: i['certificate_url'],
+                              startDate: DateTime.parse(i['start_date']),
+                              startTime: TimeOfDay.fromDateTime(DateTime.parse(i['start_date'])),
+                            ),
+                          );
+                        }
 
-      for (int i = 0; i < widget.dataEdit!.buyerDataSettings.length; i++) {
-        if (BlocEventAdd.checkboxSetting[i].id ==
-            widget.dataEdit!.buyerDataSettings[i]['buyer_data_settings']
-                ['id']) {
-          BlocEventAdd.checkboxSetting[i].checked = true;
-        }
-      }
+                        for (var i in widget.dataEdit?.categories ?? []) {
+                          if (i['categories']['type'] == 'topik') {
+                            topik.name.text = i['categories']['name'];
+                            topik.id = i['categories']['id'].toString();
+                          } else if (i['categories']['type'] == 'format') {
+                            format.name.text = i['categories']['name'];
+                            format.id = i['categories']['id'].toString();
+                          }
+                        }
 
-      // _listTag.add({
-      //   'name': '',
-      //   'id': '',
-      // });
-    }
-    setState(() {});
+                        for (int i = 0; i < widget.dataEdit!.buyerDataSettings.length; i++) {
+                          if (BlocEventAdd.checkboxSetting[i].id == widget.dataEdit!.buyerDataSettings[i]['buyer_data_settings']['id']) {
+                            BlocEventAdd.checkboxSetting[i].checked = true;
+                          }
+                        }
+
+                        // _listTag.add({
+                        //   'name': '',
+                        //   'id': '',
+                        // });
+                      }
+                      setState(() {});
+                    });
+              });
+        });
   }
 
   _parseTanggal(tanggal) {
@@ -215,9 +159,7 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
       'type': 'format',
     });
 
-    for (CheckBoxSetting i in BlocEventAdd.checkboxSetting
-        .where((element) => element.checked)
-        .toList()) {
+    for (CheckBoxSetting i in BlocEventAdd.checkboxSetting.where((element) => element.checked).toList()) {
       settings.add({
         'id': i.id,
       });
@@ -229,66 +171,45 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
         'type': i.harga == 0 ? 'gratis' : 'berbayar',
         'stock_in': i.qty,
         'price': i.harga,
-        'start_date': DateFormat('y-MM-dd').format(i.startDate!) +
-            ' ' +
-            i.startTime!
-                .format(context)
-                .replaceAll(' AM', '')
-                .replaceAll(' PM', '') +
-            ':00',
-        'end_date': DateFormat('y-MM-dd').format(i.endDate!) +
-            ' ' +
-            i.endTime!
-                .format(context)
-                .replaceAll(' AM', '')
-                .replaceAll(' PM', '') +
-            ':00',
-        'certificate': i.sertifikat == null
-            ? ''
-            : base64Encode(File(i.sertifikat!).readAsBytesSync()),
+        'start_date': DateFormat('y-MM-dd').format(i.startDate!) + ' ' + i.startTime!.format(context).replaceAll(' AM', '').replaceAll(' PM', '') + ':00',
+        'end_date': DateFormat('y-MM-dd').format(i.endDate!) + ' ' + i.endTime!.format(context).replaceAll(' AM', '').replaceAll(' PM', '') + ':00',
+        'certificate': i.sertifikat == null ? '' : base64Encode(File(i.sertifikat!).readAsBytesSync()),
         'description': i.keterangan,
       });
     }
 
     final status = await createEvent(
-      context: context,
-      data: InputEventData(
-        banner: banner,
-        description: _desc.text,
-        endDate: DateFormat('y-MM-dd').format(akhir) +
-            ' ' +
-            tAkhir.format(context).replaceAll(' AM', '').replaceAll(' PM', '') +
-            ':00',
-        startDate: DateFormat('y-MM-dd').format(awal) +
-            ' ' +
-            tAwal.format(context).replaceAll(' AM', '').replaceAll(' PM', '') +
-            ':00',
-        locationAddress: isOnline ? _urlControl.text : _address.text,
-        locationCity: _city.text,
-        locationLat: '',
-        locationLong: '',
-        locationType: isOnline ? 'online' : 'offline',
-        maxBuyTicket: _maxBuy.text,
-        name: _name.text,
-        organizerName: _orgName.text,
-        type: isPrivate ? 'private' : 'public',
-        uniqueEmailTransaction: isOneEmail ? '1' : '0',
-        categories: categories,
-        tags: tags,
-        tages: _tag.text,
-        tickets: tickets,
-        sk: _sk.text,
-        buyerDataSettings: settings,
-        locationName: _tempat.text,
-      ),
-    );
-    if (status) Navigator.of(context).pop();
+        context: context,
+        data: InputEventData(
+          banner: banner,
+          description: _desc.text,
+          endDate: DateFormat('y-MM-dd').format(akhir) + ' ' + tAkhir.format(context).replaceAll(' AM', '').replaceAll(' PM', '') + ':00',
+          startDate: DateFormat('y-MM-dd').format(awal) + ' ' + tAwal.format(context).replaceAll(' AM', '').replaceAll(' PM', '') + ':00',
+          locationAddress: isOnline ? _urlControl.text : _address.text,
+          locationCity: _city.text,
+          locationLat: '',
+          locationLong: '',
+          locationType: isOnline ? 'online' : 'offline',
+          maxBuyTicket: _maxBuy.text,
+          name: _name.text,
+          organizerName: _orgName.text,
+          type: isPrivate ? 'private' : 'public',
+          uniqueEmailTransaction: isOneEmail ? '1' : '0',
+          categories: categories,
+          tags: tags,
+          tages: _tag.text,
+          tickets: tickets,
+          sk: _sk.text,
+          buyerDataSettings: settings,
+          locationName: _tempat.text,
+        ),
+        onSuccess: () {
+          Navigator.of(context).pop();
+        });
   }
 
   _update() async {
-    final banner = imagePath == null
-        ? null
-        : base64.encode(File(imagePath!).readAsBytesSync());
+    final banner = imagePath == null ? null : base64.encode(File(imagePath!).readAsBytesSync());
     final List tags = [];
     final List categories = [];
     final List tickets = [];
@@ -305,9 +226,7 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
       'type': 'format',
     });
 
-    for (CheckBoxSetting i in BlocEventAdd.checkboxSetting
-        .where((element) => element.checked)
-        .toList()) {
+    for (CheckBoxSetting i in BlocEventAdd.checkboxSetting.where((element) => element.checked).toList()) {
       settings.add({
         'id': i.id,
       });
@@ -317,9 +236,7 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
       ++counter;
       String? sertifikat;
       try {
-        sertifikat = i.sertifikat == null
-            ? ''
-            : base64Encode(File(i.sertifikat!).readAsBytesSync());
+        sertifikat = i.sertifikat == null ? '' : base64Encode(File(i.sertifikat!).readAsBytesSync());
       } catch (_) {
         sertifikat = null;
       }
@@ -329,20 +246,8 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
         'type': i.harga == 0 ? 'gratis' : 'berbayar',
         'stock_in': i.qty,
         'price': i.harga,
-        'start_date': DateFormat('y-MM-dd').format(i.startDate!) +
-            ' ' +
-            i.startTime!
-                .format(context)
-                .replaceAll(' AM', '')
-                .replaceAll(' PM', '') +
-            ':00',
-        'end_date': DateFormat('y-MM-dd').format(i.endDate!) +
-            ' ' +
-            i.endTime!
-                .format(context)
-                .replaceAll(' AM', '')
-                .replaceAll(' PM', '') +
-            ':00',
+        'start_date': DateFormat('y-MM-dd').format(i.startDate!) + ' ' + i.startTime!.format(context).replaceAll(' AM', '').replaceAll(' PM', '') + ':00',
+        'end_date': DateFormat('y-MM-dd').format(i.endDate!) + ' ' + i.endTime!.format(context).replaceAll(' AM', '').replaceAll(' PM', '') + ':00',
         'description': i.keterangan,
       });
 
@@ -353,39 +258,34 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
       }
     }
     final status = await updateEvent(
-      context: context,
-      data: InputEventData(
-        banner: banner,
-        description: _desc.text,
-        endDate: DateFormat('y-MM-dd').format(akhir) +
-            ' ' +
-            tAkhir.format(context).replaceAll(' AM', '').replaceAll(' PM', '') +
-            ':00',
-        startDate: DateFormat('y-MM-dd').format(awal) +
-            ' ' +
-            tAwal.format(context).replaceAll(' AM', '').replaceAll(' PM', '') +
-            ':00',
-        locationAddress: isOnline ? _urlControl.text : _address.text,
-        locationCity: _city.text,
-        locationLat: '',
-        locationLong: '',
-        locationType: isOnline ? 'online' : 'offline',
-        maxBuyTicket: _maxBuy.text,
-        name: _name.text,
-        organizerName: _orgName.text,
-        type: isPrivate ? 'private' : 'public',
-        uniqueEmailTransaction: isOneEmail ? '1' : '0',
-        categories: categories,
-        tages: _tag.text,
-        tags: tags,
-        tickets: tickets,
-        sk: _sk.text,
-        buyerDataSettings: settings,
-        locationName: _tempat.text,
-        id: widget.dataEdit?.id,
-      ),
-    );
-    if (status) Navigator.of(context).pop();
+        context: context,
+        data: InputEventData(
+          banner: banner,
+          description: _desc.text,
+          endDate: DateFormat('y-MM-dd').format(akhir) + ' ' + tAkhir.format(context).replaceAll(' AM', '').replaceAll(' PM', '') + ':00',
+          startDate: DateFormat('y-MM-dd').format(awal) + ' ' + tAwal.format(context).replaceAll(' AM', '').replaceAll(' PM', '') + ':00',
+          locationAddress: isOnline ? _urlControl.text : _address.text,
+          locationCity: _city.text,
+          locationLat: '',
+          locationLong: '',
+          locationType: isOnline ? 'online' : 'offline',
+          maxBuyTicket: _maxBuy.text,
+          name: _name.text,
+          organizerName: _orgName.text,
+          type: isPrivate ? 'private' : 'public',
+          uniqueEmailTransaction: isOneEmail ? '1' : '0',
+          categories: categories,
+          tages: _tag.text,
+          tags: tags,
+          tickets: tickets,
+          sk: _sk.text,
+          buyerDataSettings: settings,
+          locationName: _tempat.text,
+          id: widget.dataEdit?.id,
+        ),
+        onSuccess: () {
+          Navigator.of(context).pop();
+        });
   }
 
   @override
@@ -417,12 +317,7 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                   child: Container(
                     width: getMaxWidth,
                     height: 200,
-                    child: imagePath == null
-                        ? (networkImagePath == null
-                            ? const Center(
-                                child: Text('Unggah Poster / Banner'))
-                            : const SizedBox())
-                        : const SizedBox(),
+                    child: imagePath == null ? (networkImagePath == null ? const Center(child: Text('Unggah Poster / Banner')) : const SizedBox()) : const SizedBox(),
                     decoration: BoxDecoration(
                       color: BaseColor.theme?.borderColor,
                       image: imagePath == null
@@ -461,13 +356,11 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                           decoration: InputDecoration(
                             alignLabelWithHint: true,
                             labelStyle: const TextStyle(
-                                fontSize:
-                                    14.0, //I believe the size difference here is 6.0 to account padding
+                                fontSize: 14.0, //I believe the size difference here is 6.0 to account padding
                                 color: Colors.grey),
                             labelText: 'Nama Organizer',
                             filled: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 12),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                             fillColor: Colors.white,
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.0),
@@ -508,14 +401,12 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                           decoration: InputDecoration(
                             alignLabelWithHint: true,
                             labelStyle: const TextStyle(
-                              fontSize:
-                                  14.0, //I believe the size difference here is 6.0 to account padding
+                              fontSize: 14.0, //I believe the size difference here is 6.0 to account padding
                               color: Colors.grey,
                             ),
                             labelText: 'Judul Acara',
                             filled: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 12),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                             fillColor: Colors.white,
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.0),
@@ -557,14 +448,12 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                             decoration: InputDecoration(
                               alignLabelWithHint: true,
                               labelStyle: const TextStyle(
-                                  fontSize:
-                                      14.0, //I believe the size difference here is 6.0 to account padding
+                                  fontSize: 14.0, //I believe the size difference here is 6.0 to account padding
                                   color: Colors.grey),
                               suffixIcon: const Icon(FeatherIcons.chevronDown),
                               labelText: 'Format',
                               filled: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 12),
+                              contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                               fillColor: Colors.white,
                               focusColor: BaseColor.theme?.primaryColor,
                               enabled: false,
@@ -626,14 +515,12 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                             decoration: InputDecoration(
                               alignLabelWithHint: true,
                               labelStyle: const TextStyle(
-                                  fontSize:
-                                      14.0, //I believe the size difference here is 6.0 to account padding
+                                  fontSize: 14.0, //I believe the size difference here is 6.0 to account padding
                                   color: Colors.grey),
                               suffixIcon: const Icon(FeatherIcons.chevronDown),
                               labelText: 'Topik',
                               filled: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 12),
+                              contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                               fillColor: Colors.white,
                               focusColor: BaseColor.theme?.primaryColor,
                               enabled: false,
@@ -693,13 +580,11 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                           decoration: InputDecoration(
                             alignLabelWithHint: true,
                             labelStyle: const TextStyle(
-                                fontSize:
-                                    14.0, //I believe the size difference here is 6.0 to account padding
+                                fontSize: 14.0, //I believe the size difference here is 6.0 to account padding
                                 color: Colors.grey),
                             labelText: 'Tag',
                             filled: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 12),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                             fillColor: Colors.white,
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.0),
@@ -714,35 +599,39 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                           ),
                           style: const TextStyle(color: Colors.black),
                           onEditingComplete: () async {
-                            final FocusScopeNode currentScope =
-                                FocusScope.of(context);
-                            if (!currentScope.hasPrimaryFocus &&
-                                currentScope.hasFocus) {
+                            final FocusScopeNode currentScope = FocusScope.of(context);
+                            if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
                               FocusManager.instance.primaryFocus!.unfocus();
                             }
                             SystemChrome.restoreSystemUIOverlays();
                             if (_tag.text.isNotEmpty) {
-                              final getData = await getTags(
-                                  context: context, name: _tag.text);
-                              if (getData.isNotEmpty) {
-                                _listTag.add({
-                                  'name': getData[1],
-                                  'id': getData[0],
-                                });
-                                _tag.text = '';
-                                setState(() {});
-                              } else {
-                                final addData = await addTags(
-                                    context: context, name: _tag.text);
-                                if (addData.isNotEmpty) {
-                                  _listTag.add({
-                                    'name': addData[1],
-                                    'id': addData[0],
+                              await getTags(
+                                  context: context,
+                                  name: _tag.text,
+                                  onSuccess: (getData) {
+                                    if (getData.isNotEmpty) {
+                                      _listTag.add({
+                                        'name': getData[1],
+                                        'id': getData[0],
+                                      });
+                                      _tag.text = '';
+                                      setState(() {});
+                                    } else {
+                                      addTags(
+                                          context: context,
+                                          name: _tag.text,
+                                          onSuccess: (addData) {
+                                            if (addData.isNotEmpty) {
+                                              _listTag.add({
+                                                'name': addData[1],
+                                                'id': addData[0],
+                                              });
+                                              _tag.text = '';
+                                              setState(() {});
+                                            }
+                                          });
+                                    }
                                   });
-                                  _tag.text = '';
-                                  setState(() {});
-                                }
-                              }
                             }
                           },
                         ),
@@ -757,40 +646,30 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                                   padding: const EdgeInsets.only(right: 10),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(100)),
+                                      borderRadius: const BorderRadius.all(Radius.circular(100)),
                                       color: BaseColor.theme?.primaryColor,
                                     ),
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12, vertical: 8),
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 8.0),
+                                            padding: const EdgeInsets.only(right: 8.0),
                                             child: Text(
                                               e['name'],
-                                              style: TextStyle(
-                                                  color: BaseColor
-                                                      .theme?.textButtonColor,
-                                                  fontSize: 11),
+                                              style: TextStyle(color: BaseColor.theme?.textButtonColor, fontSize: 11),
                                             ),
                                           ),
                                           InkWell(
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(100)),
+                                            borderRadius: const BorderRadius.all(Radius.circular(100)),
                                             child: Icon(
                                               FeatherIcons.x,
-                                              color: BaseColor
-                                                  .theme?.textButtonColor,
+                                              color: BaseColor.theme?.textButtonColor,
                                               size: 16,
                                             ),
                                             onTap: () {
-                                              _listTag.removeWhere((element) =>
-                                                  element['id'] == e['id']);
+                                              _listTag.removeWhere((element) => element['id'] == e['id']);
                                               setState(() {});
                                             },
                                           )
@@ -820,20 +699,16 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                                 padding: const EdgeInsets.only(bottom: 20.0),
                                 child: TextFormField(
                                   // focusNode: myFocusNode,
-                                  controller: TextEditingController(
-                                      text: _parseTanggal(awal)),
+                                  controller: TextEditingController(text: _parseTanggal(awal)),
                                   decoration: InputDecoration(
                                     alignLabelWithHint: true,
                                     labelStyle: const TextStyle(
-                                        fontSize:
-                                            14.0, //I believe the size difference here is 6.0 to account padding
+                                        fontSize: 14.0, //I believe the size difference here is 6.0 to account padding
                                         color: Colors.grey),
-                                    suffixIcon:
-                                        const Icon(FeatherIcons.calendar),
+                                    suffixIcon: const Icon(FeatherIcons.calendar),
                                     labelText: 'Mulai',
                                     filled: true,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 12),
+                                    contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                                     fillColor: Colors.white,
                                     focusColor: BaseColor.theme?.primaryColor,
                                     enabled: false,
@@ -852,8 +727,7 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                                   ),
                                   style: const TextStyle(color: Colors.black),
                                   validator: (data) {
-                                    if (data!.isEmpty)
-                                      return 'Tidak Boleh Kosong!';
+                                    if (data!.isEmpty) return 'Tidak Boleh Kosong!';
                                   },
                                 ),
                               ),
@@ -867,8 +741,7 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                                   ),
                                 ).then((value) {
                                   if (value != null) {
-                                    int getRange =
-                                        value.difference(akhir).inDays;
+                                    int getRange = value.difference(akhir).inDays;
                                     if (getRange == 0) {
                                       if (akhir.day < value.day) {
                                         akhir = value;
@@ -892,20 +765,16 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                                 padding: const EdgeInsets.only(bottom: 20.0),
                                 child: TextFormField(
                                   // focusNode: myFocusNode,
-                                  controller: TextEditingController(
-                                      text: _parseTanggal(akhir)),
+                                  controller: TextEditingController(text: _parseTanggal(akhir)),
                                   decoration: InputDecoration(
                                     alignLabelWithHint: true,
                                     labelStyle: const TextStyle(
-                                        fontSize:
-                                            14.0, //I believe the size difference here is 6.0 to account padding
+                                        fontSize: 14.0, //I believe the size difference here is 6.0 to account padding
                                         color: Colors.grey),
-                                    suffixIcon:
-                                        const Icon(FeatherIcons.calendar),
+                                    suffixIcon: const Icon(FeatherIcons.calendar),
                                     labelText: 'Sampai',
                                     filled: true,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 12),
+                                    contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                                     fillColor: Colors.white,
                                     focusColor: BaseColor.theme?.primaryColor,
                                     enabled: false,
@@ -924,8 +793,7 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                                   ),
                                   style: const TextStyle(color: Colors.black),
                                   validator: (data) {
-                                    if (data!.isEmpty)
-                                      return 'Tidak Boleh Kosong!';
+                                    if (data!.isEmpty) return 'Tidak Boleh Kosong!';
                                   },
                                 ),
                               ),
@@ -956,21 +824,16 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                                 padding: const EdgeInsets.only(bottom: 20.0),
                                 child: TextFormField(
                                   // focusNode: myFocusNode,
-                                  controller: TextEditingController(
-                                      text: awal.hour.toString() +
-                                          ':' +
-                                          awal.minute.toString()),
+                                  controller: TextEditingController(text: awal.hour.toString() + ':' + awal.minute.toString()),
                                   decoration: InputDecoration(
                                     alignLabelWithHint: true,
                                     labelStyle: const TextStyle(
-                                        fontSize:
-                                            14.0, //I believe the size difference here is 6.0 to account padding
+                                        fontSize: 14.0, //I believe the size difference here is 6.0 to account padding
                                         color: Colors.grey),
                                     suffixIcon: const Icon(FeatherIcons.clock),
                                     labelText: 'Mulai',
                                     filled: true,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 12),
+                                    contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                                     fillColor: Colors.white,
                                     focusColor: BaseColor.theme?.primaryColor,
                                     enabled: false,
@@ -989,8 +852,7 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                                   ),
                                   style: const TextStyle(color: Colors.black),
                                   validator: (data) {
-                                    if (data!.isEmpty)
-                                      return 'Tidak Boleh Kosong!';
+                                    if (data!.isEmpty) return 'Tidak Boleh Kosong!';
                                   },
                                 ),
                               ),
@@ -1018,19 +880,15 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                                                 child: CupertinoDatePicker(
                                                     initialDateTime: awal,
                                                     onDateTimeChanged: (value) {
-                                                      if (value != null &&
-                                                          value != awal) {
+                                                      if (value != null && value != awal) {
                                                         awal = value;
                                                         setState(() {});
                                                       }
                                                     },
-                                                    mode:
-                                                        CupertinoDatePickerMode
-                                                            .time)),
+                                                    mode: CupertinoDatePickerMode.time)),
                                             CupertinoButton(
                                               child: const Text('OK'),
-                                              onPressed: () =>
-                                                  Navigator.of(context).pop(),
+                                              onPressed: () => Navigator.of(context).pop(),
                                             )
                                           ],
                                         ),
@@ -1048,35 +906,27 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                                   padding: const EdgeInsets.only(bottom: 20.0),
                                   child: TextFormField(
                                     // focusNode: myFocusNode,
-                                    controller: TextEditingController(
-                                        text: akhir.hour.toString() +
-                                        ':' + akhir.minute.toString()),
+                                    controller: TextEditingController(text: akhir.hour.toString() + ':' + akhir.minute.toString()),
                                     decoration: InputDecoration(
                                       alignLabelWithHint: true,
                                       labelStyle: const TextStyle(
-                                          fontSize:
-                                              14.0, //I believe the size difference here is 6.0 to account padding
+                                          fontSize: 14.0, //I believe the size difference here is 6.0 to account padding
                                           color: Colors.grey),
-                                      suffixIcon:
-                                          const Icon(FeatherIcons.clock),
+                                      suffixIcon: const Icon(FeatherIcons.clock),
                                       labelText: 'Sampai',
                                       filled: true,
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 8, horizontal: 12),
+                                      contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                                       fillColor: Colors.white,
                                       focusColor: BaseColor.theme?.primaryColor,
                                       enabled: false,
                                       disabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
+                                        borderRadius: BorderRadius.circular(8.0),
                                         borderSide: const BorderSide(
                                           color: Colors.grey,
                                         ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
+                                        borderRadius: BorderRadius.circular(8.0),
                                         borderSide: const BorderSide(
                                           color: Colors.blue,
                                         ),
@@ -1084,8 +934,7 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                                     ),
                                     style: const TextStyle(color: Colors.black),
                                     validator: (data) {
-                                      if (data!.isEmpty)
-                                        return 'Tidak Boleh Kosong!';
+                                      if (data!.isEmpty) return 'Tidak Boleh Kosong!';
                                     },
                                   ),
                                 ),
@@ -1119,8 +968,7 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                                                   initialDateTime: akhir,
                                                   use24hFormat: true,
                                                   onDateTimeChanged: (value) {
-                                                    if (value != null &&
-                                                        value != akhir) {
+                                                    if (value != null && value != akhir) {
                                                       akhir = value;
                                                       setState(() {});
                                                     }
@@ -1130,8 +978,7 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                                               ),
                                               CupertinoButton(
                                                 child: const Text('OK'),
-                                                onPressed: () =>
-                                                    Navigator.of(context).pop(),
+                                                onPressed: () => Navigator.of(context).pop(),
                                               )
                                             ],
                                           ),
@@ -1187,9 +1034,7 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                           ],
                         ),
                       ),
-                      isOnline
-                          ? onlineLocation(context, _urlControl)
-                          : offlineLocation(context, _address, _city, _tempat),
+                      isOnline ? onlineLocation(context, _urlControl) : offlineLocation(context, _address, _city, _tempat),
                       const Padding(
                         padding: EdgeInsets.only(bottom: 20.0),
                         child: Text(
@@ -1208,9 +1053,7 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    BlocEventAdd.listTicket.isEmpty
-                                        ? 'Tiket Belum Di Buat'
-                                        : 'Tiket Yang Ditambahkan ${BlocEventAdd.listTicket.length}',
+                                    BlocEventAdd.listTicket.isEmpty ? 'Tiket Belum Di Buat' : 'Tiket Yang Ditambahkan ${BlocEventAdd.listTicket.length}',
                                     style: const TextStyle(
                                       fontSize: 16,
                                     ),
@@ -1222,15 +1065,13 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                               padding: const EdgeInsets.only(right: 4.0),
                               child: Button.flat(
                                 onTap: () {
-                                  navigator(page: const AddTicket())
-                                      .then((value) async {
+                                  navigator(page: const AddTicket()).then((value) async {
                                     setState(() {});
                                   });
                                 },
                                 context: context,
                                 title: 'Atur',
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 12),
+                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                               ),
                             ),
                           ],
@@ -1275,13 +1116,11 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                           decoration: InputDecoration(
                             alignLabelWithHint: true,
                             labelStyle: const TextStyle(
-                                fontSize:
-                                    14.0, //I believe the size difference here is 6.0 to account padding
+                                fontSize: 14.0, //I believe the size difference here is 6.0 to account padding
                                 color: Colors.grey),
                             labelText: 'Maksimal Tiket Per Transaksi',
                             filled: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 12),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                             fillColor: Colors.white,
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.0),
@@ -1332,13 +1171,11 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                           decoration: InputDecoration(
                             alignLabelWithHint: true,
                             labelStyle: const TextStyle(
-                                fontSize:
-                                    14.0, //I believe the size difference here is 6.0 to account padding
+                                fontSize: 14.0, //I believe the size difference here is 6.0 to account padding
                                 color: Colors.grey),
                             labelText: 'Detail / Keterangan',
                             filled: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 12),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                             fillColor: Colors.white,
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.0),
@@ -1369,13 +1206,11 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                           decoration: InputDecoration(
                             alignLabelWithHint: true,
                             labelStyle: const TextStyle(
-                                fontSize:
-                                    14.0, //I believe the size difference here is 6.0 to account padding
+                                fontSize: 14.0, //I believe the size difference here is 6.0 to account padding
                                 color: Colors.grey),
                             labelText: 'Syarat & Ketentuan',
                             filled: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 12),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                             fillColor: Colors.white,
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.0),
@@ -1397,8 +1232,7 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             border: Border.all(
                               width: 0.5,
@@ -1509,12 +1343,12 @@ class _AddEventViewState extends BaseBackground<AddEventView> {
                                     title: 'Delete',
                                     color: Theme.of(context).errorColor,
                                     onTap: () async {
-                                      final bool resp = await deleteEvent(
-                                        context: context,
-                                        id: widget.dataEdit!.id.toString(),
-                                      );
-
-                                      if (resp) Navigator.of(context).pop();
+                                      await deleteEvent(
+                                          context: context,
+                                          id: widget.dataEdit!.id.toString(),
+                                          onSuccess: () {
+                                            Navigator.of(context).pop();
+                                          });
                                     },
                                   ),
                                 ),

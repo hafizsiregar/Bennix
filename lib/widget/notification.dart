@@ -1,7 +1,5 @@
 import 'package:benix/widget/base_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:request_api_helper/background.dart';
-import 'package:request_api_helper/model/redirect_helper.dart';
 import 'package:benix/theme.dart';
 import 'package:benix/widget/buttons.dart';
 
@@ -87,61 +85,60 @@ Widget notification({required context, String? title, String? message, Widget? c
 }
 
 confirmation({required context, required String message, required String title, required Function onTap, required String buttonText}) async {
-  return await BackDark(
-    view: Redirects(
-      widget: notification(
-        context: context,
-        icon: isDarkTheme ? 'assets/icon/edit_dark.gif' : 'assets/icon/edit_light.gif',
-        height: 300,
-        customBody: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.headline1,
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                Text(
-                  message,
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Button.flat(
-                  context: context,
-                  color: Colors.transparent,
-                  child: const Text(
-                    'Batal',
+  return await showDialog(
+      context: context,
+      builder: (context) {
+        return notification(
+          context: context,
+          icon: isDarkTheme ? 'assets/icon/edit_dark.gif' : 'assets/icon/edit_light.gif',
+          height: 300,
+          customBody: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                children: [
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.headline1,
                   ),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                Button.flat(
-                  padding: const EdgeInsets.all(10),
-                  context: context,
-                  title: buttonText,
-                  onTap: () async {
-                    onTap();
-                  },
-                ),
-              ],
-            )
-          ],
-        ),
-      ),
-    ),
-    barrierDismissible: true,
-  ).dialog(context);
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Text(
+                    message,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Button.flat(
+                    context: context,
+                    color: Colors.transparent,
+                    child: const Text(
+                      'Batal',
+                    ),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  Button.flat(
+                    padding: const EdgeInsets.all(10),
+                    context: context,
+                    title: buttonText,
+                    onTap: () async {
+                      onTap();
+                    },
+                  ),
+                ],
+              )
+            ],
+          ),
+        );
+      });
 }

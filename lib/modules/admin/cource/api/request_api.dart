@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:benix/main_library.dart';
 import 'package:benix/modules/admin/cource/model/main_bloc.dart';
 import 'package:benix/modules/admin/cource/model/model.dart';
 import 'package:benix/modules/user/cource/home/api/request_api.dart';
@@ -8,14 +9,12 @@ import 'package:benix/modules/user/cource/home/model/model.dart';
 import 'package:benix/modules/user/login/bloc/main_bloc.dart';
 import 'package:benix/widget/upload.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:request_api_helper/request.dart' as req;
-import 'package:request_api_helper/request_api_helper.dart' show BackDark, RESTAPI, Redirects, RequestApiHelperConfigData, RequestData, RequestFileData;
 import 'package:intl/intl.dart';
-import 'package:request_api_helper/response.dart';
+import 'package:request_api_helper/request.dart';
+import 'package:request_api_helper/request_api_helper.dart';
 
-Future<bool> createEcource({required context, required AddVideo data}) async {
+createEcource({required context, required AddVideo data, required Function onSuccess}) async {
   int progress = 0;
-  bool status = false;
   List<List<String>> fileUpload = [[], []];
   int counter = 0;
   Map<String, String?> body = {
@@ -65,86 +64,72 @@ Future<bool> createEcource({required context, required AddVideo data}) async {
     ++counters;
   }
   if (fileUpload[0].isNotEmpty) {
-    BackDark(
-      view: Redirects(
-        widget: UploadProgress(
+    showDialog(
+      context: context,
+      builder: (context) {
+        return UploadProgress(
           progress: () => progress,
           requestBack: true,
-        ),
-      ),
-    ).dialog(context);
+        );
+      },
+    );
   }
 
-  await req.send(
-    type: RESTAPI.post,
-    context: context,
-    name: 'courses',
-    data: RequestData(
+  await RequestApiHelper.sendRequest(
+    type: Api.post,
+    url: 'courses',
+    replacementId: 34,
+    withLoading: true,
+    config: RequestApiHelperData(
       body: body,
-      // rawJson: json.encode(body),
       file: fileUpload[0].isEmpty
           ? null
-          : RequestFileData(
-              filePath: fileUpload[0],
-              fileRequestName: fileUpload[1],
+          : FileData(
+              path: fileUpload[0],
+              requestName: fileUpload[1],
             ),
+      onSuccess: (data) async {
+        progress = 100;
+        // status = true;
+        getEcource(context, onSuccess: () {});
+        if (fileUpload[0].isEmpty) Navigator.of(context).pop();
+        onSuccess();
+      },
     ),
     onUploadProgress: fileUpload[0].isEmpty
         ? null
         : (progress, max) {
             progress = 100 - (((max - progress) / max) * 100).round() > 90 ? 90 : 100 - (((max - progress) / max) * 100).round();
           },
-    changeConfig: RequestApiHelperConfigData(
-      // 
-      withLoading: Redirects(toogle: fileUpload[0].isEmpty ? true : false),
-      timeout: const Duration(hours: 1),
-      successMessage: 'default',
-      onSuccess: (data) async {
-        // print("STATUS ${data['status']}");
-        if (data['status'] == 'ok') {
-          status = true;
-        }
-        progress = 100;
-        // status = true;
-        await getEcource(context);
-        if (fileUpload[0].isEmpty) Navigator.of(context).pop();
-      },
-    ),
   );
-
-  return status;
 }
 
-Future<String?> getCourceAdmin({required context}) async {
-  print("USERID ${UserBloc.user.email.toString()}");
-  String? url;
-  await req.send(
-    type: RESTAPI.get,
-    context: context,
-    name: 'courses',
-    data: RequestData(
+getCourceAdmin({required context, required Function(String) onSuccess}) async {
+  await RequestApiHelper.sendRequest(
+    type: Api.get,
+    url: 'courses',
+    replacementId: 35,
+    withLoading: true,
+    config: RequestApiHelperData(
       body: {
         'user_id': UserBloc.user.id.toString(),
       },
-    ),
-    changeConfig: RequestApiHelperConfigData(
-      
-      onSuccess: (data) {
-        url = data['next_page_url'];
+      onSuccess: (data) async {
         AdminCourceBloc.init(data);
+        onSuccess(data['next_page_url']);
       },
     ),
   );
-  return url;
 }
 
 Future<void> detailCourceAdmin({required context, id}) async {
-  await req.send(
-    type: RESTAPI.get,
-    context: context,
-    name: 'courses/$id',
-    changeConfig: RequestApiHelperConfigData(
-      onSuccess: (data) {
+  await RequestApiHelper.sendRequest(
+    type: Api.get,
+    url: 'courses/$id',
+    replacementId: 36,
+    withLoading: true,
+    config: RequestApiHelperData(
+      onSuccess: (data) async {
         AdminCourceBloc.initEdit(data);
       },
     ),
@@ -152,12 +137,13 @@ Future<void> detailCourceAdmin({required context, id}) async {
 }
 
 Future<void> category({required context}) async {
-  await req.send(
-    type: RESTAPI.get,
-    context: context,
-    name: 'misc/categories/ecourse',
-    changeConfig: RequestApiHelperConfigData(
-      onSuccess: (data) {
+  await RequestApiHelper.sendRequest(
+    type: Api.get,
+    url: 'misc/categories/ecourse',
+    replacementId: 37,
+    withLoading: true,
+    config: RequestApiHelperData(
+      onSuccess: (data) async {
         AddVideoBloc.addKategori(data);
       },
     ),
@@ -165,17 +151,16 @@ Future<void> category({required context}) async {
 }
 
 Future<void> deleteCource({required context, id}) async {
-  await req.send(
-    type: RESTAPI.post,
-    context: context,
-    name: 'courses/$id',
-    data: RequestData(
+  await RequestApiHelper.sendRequest(
+    type: Api.post,
+    url: 'courses/$id',
+    replacementId: 38,
+    withLoading: true,
+    config: RequestApiHelperData(
       body: {
         '_method': 'DELETE',
       },
-    ),
-    changeConfig: RequestApiHelperConfigData(
-      onSuccess: (data) {
+      onSuccess: (data) async {
         Navigator.pop(context);
       },
     ),
@@ -183,40 +168,37 @@ Future<void> deleteCource({required context, id}) async {
 }
 
 Future<void> deleteCourceVideo({required context, id}) async {
-  await req.send(
-    type: RESTAPI.post,
-    context: context,
-    name: 'courses/videos/$id',
-    data: RequestData(
+  await RequestApiHelper.sendRequest(
+    type: Api.post,
+    url: 'courses/videos/$id',
+    replacementId: 39,
+    withLoading: true,
+    config: RequestApiHelperData(
       body: {
         '_method': 'DELETE',
       },
-    ),
-    changeConfig: RequestApiHelperConfigData(
-      onSuccess: (data) {},
+      onSuccess: (data) async {},
     ),
   );
 }
 
 Future<void> deleteCourceModule({required context, id}) async {
-  await req.send(
-    type: RESTAPI.post,
-    context: context,
-    name: 'courses/modules/$id',
-    data: RequestData(
+  await RequestApiHelper.sendRequest(
+    type: Api.post,
+    url: 'courses/modules/$id',
+    replacementId: 40,
+    withLoading: true,
+    config: RequestApiHelperData(
       body: {
         '_method': 'DELETE',
       },
-    ),
-    changeConfig: RequestApiHelperConfigData(
-      onSuccess: (data) {},
+      onSuccess: (data) async {},
     ),
   );
 }
 
-Future<bool> updateEcource({required context, required Cource data, List<VideoData>? video, List<ModulData>? modul, List<VideoEditData>? videoOld, List<ModulEditData>? modulOld}) async {
+updateEcource({required context, required Cource data, List<VideoData>? video, List<ModulData>? modul, List<VideoEditData>? videoOld, List<ModulEditData>? modulOld, required Function onSuccess}) async {
   int progress = 0;
-  bool status = false;
   List<List<String>> fileUpload = [[], []];
   int counter = 0;
   Map<String, String?> body = {
@@ -303,52 +285,40 @@ Future<bool> updateEcource({required context, required Cource data, List<VideoDa
     ++counters;
   }
 
-  Response.start(body);
-  // Response.start(fileUpload[0]);
-  // Response.start(fileUpload[1]);
-
-  BackDark(
-    view: Redirects(
-      widget: UploadProgress(
+  showDialog(
+    context: context,
+    builder: (context) {
+      return UploadProgress(
         progress: () => progress,
         requestBack: true,
-      ),
-    ),
-  ).dialog(context);
+      );
+    },
+  );
 
-  await req.send(
-    type: RESTAPI.post,
-    context: context,
-    name: 'courses/${data.id}',
-    data: RequestData(
+  await RequestApiHelper.sendRequest(
+    type: Api.post,
+    url: 'courses/${data.id}',
+    replacementId: 34,
+    withLoading: true,
+    config: RequestApiHelperData(
       body: body,
-      // rawJson: json.encode(body),
       file: fileUpload[0].isEmpty
           ? null
-          : RequestFileData(
-              filePath: fileUpload[0],
-              fileRequestName: fileUpload[1],
+          : FileData(
+              path: fileUpload[0],
+              requestName: fileUpload[1],
             ),
+      onSuccess: (data) async {
+        progress = 100;
+        // status = true;
+        getEcource(context, onSuccess: () {});
+        onSuccess();
+      },
     ),
     onUploadProgress: fileUpload[0].isEmpty
         ? null
         : (progress, max) {
             progress = 100 - (((max - progress) / max) * 100).round() > 90 ? 90 : 100 - (((max - progress) / max) * 100).round();
-            print(progress);
           },
-    changeConfig: RequestApiHelperConfigData(
-      
-      withLoading: Redirects(toogle: false),
-      timeout: const Duration(hours: 1),
-      successMessage: 'default',
-      onSuccess: (data) async {
-        print("Data RESP ${data}");
-        progress = 100;
-        status = true;
-        await getEcource(context);
-      },
-    ),
   );
-
-  return status;
 }
