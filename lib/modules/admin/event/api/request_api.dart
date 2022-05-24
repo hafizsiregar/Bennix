@@ -7,7 +7,7 @@ import 'package:request_api_helper/request_api_helper.dart';
 Future<void> getFormat({required context, required Function onSuccess}) async {
   await RequestApiHelper.sendRequest(
     type: Api.get,
-    url: 'misc/format',
+    url: 'misc/topics',
     replacementId: 21,
     withLoading: true,
     config: RequestApiHelperData(
@@ -209,8 +209,10 @@ getTags({required context, required String name, required Function(List<String>)
         'name': name,
       },
       onSuccess: (data) async {
-        if (data['data'] != null) {
+        if (data['data'].isNotEmpty) {
           onSuccess([data['data'][0]['id'].toString(), data['data'][0]['name']]);
+        } else {
+          onSuccess([]);
         }
       },
     ),
@@ -222,7 +224,6 @@ detailEvent({required context, required String id, required Function(Map) onSucc
     type: Api.get,
     url: 'events/' + id,
     replacementId: 30,
-    withLoading: true,
     config: RequestApiHelperData(
       onSuccess: (data) async {
         onSuccess(data);

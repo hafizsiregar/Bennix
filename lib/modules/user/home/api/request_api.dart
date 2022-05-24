@@ -98,7 +98,7 @@ Future<void> getBanner(context, {required Function(List<Widget>) onSuccess}) asy
             ),
           );
         }
-        BlocEvent.initNewEvent(data['data']);
+        // BlocEvent.initNewEvent(data['data']);
         onSuccess(res);
       },
     ),

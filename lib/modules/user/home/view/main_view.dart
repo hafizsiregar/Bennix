@@ -88,19 +88,20 @@ class _HomeViewState extends BaseBackground<HomeView> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      await newEvent(context, onSuccess: () {
+      getBanner(context, onSuccess: (list) {
+        banners = list;
         setState(() {});
       });
-      await popularEvent(context, onSuccess: () {
+      newEvent(context, onSuccess: () {
         setState(() {});
       });
-      await getEcource(context, onSuccess: () {
+      popularEvent(context, onSuccess: () {
         setState(() {});
       });
-      await getEcourceClose(context, onSuccess: () {
+      getEcource(context, onSuccess: () {
         setState(() {});
       });
-      await getBanner(context, onSuccess: (list) {
+      getEcourceClose(context, onSuccess: () {
         setState(() {});
       });
     });

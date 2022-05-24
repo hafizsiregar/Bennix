@@ -6,6 +6,7 @@ import 'package:benix/modules/admin/event/bloc/static_data.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:intl/intl.dart';
 import '../../../../main_library.dart' show AnimateTransition, Animation, AnimationController, BaseBackground, BaseColor, BorderRadius, BouncingScrollPhysics, BoxDecoration, BuildContext, Column, Container, CrossAxisAlignment, CurvedAnimation, Curves, DecorationImage, DrawerBack, EdgeInsets, Expanded, GestureDetector, Icon, Icons, InitControl, InkWell, IntrinsicHeight, Key, ListView, MainAxisAlignment, MainAxisSize, Material, MediaQuery, NetworkImage, Padding, Radius, Responsive, Row, Scaffold, SizedBox, StatefulWidget, Text, TextStyle, Tween, Widget, getMaxWidth;
+import '../../dashboard/view/main_view.dart';
 
 class AdminEventView extends StatefulWidget {
   final Animation? animatePosition;
@@ -28,7 +29,6 @@ class _AdminEventViewState extends BaseBackground<AdminEventView> {
 
   @override
   void initState() {
-    print("YYYYY");
     BlocEvent().clean();
     super.initState();
     animatePositionC = AnimationController(
@@ -47,6 +47,7 @@ class _AdminEventViewState extends BaseBackground<AdminEventView> {
   @override
   void dispose() async {
     BlocEvent().clean();
+    animatePositionC!.dispose();
     super.dispose();
   }
 
@@ -127,40 +128,10 @@ class _AdminEventViewState extends BaseBackground<AdminEventView> {
                                 padding: const EdgeInsets.only(bottom: 16.0),
                                 child: GestureDetector(
                                   onTap: () async {
-                                    await detailEvent(
-                                      context: context,
-                                      id: BlocEvent.listEvent[index].id.toString(),
-                                      onSuccess: (getData) async {
-                                        await navigator(
-                                          page: AddEventView(
-                                            dataEdit: InputEventData(
-                                              banner: BlocEvent.listEvent[index].banner!,
-                                              description: BlocEvent.listEvent[index].description!,
-                                              endDate: BlocEvent.listEvent[index].endDate!.toString(),
-                                              locationAddress: BlocEvent.listEvent[index].locationAddress!,
-                                              locationCity: BlocEvent.listEvent[index].locationCity,
-                                              locationLat: BlocEvent.listEvent[index].locationLat,
-                                              locationLong: BlocEvent.listEvent[index].locationLong,
-                                              locationType: BlocEvent.listEvent[index].locationType!,
-                                              tages: BlocEvent.listEvent[index].tages,
-                                              maxBuyTicket: BlocEvent.listEvent[index].maxBuyTicket.toString(),
-                                              name: BlocEvent.listEvent[index].name!,
-                                              organizerImg: BlocEvent.listEvent[index].organizerImg,
-                                              organizerName: BlocEvent.listEvent[index].organizerName!,
-                                              startDate: BlocEvent.listEvent[index].startDate.toString(),
-                                              type: BlocEvent.listEvent[index].type!,
-                                              uniqueEmailTransaction: BlocEvent.listEvent[index].uniqueEmailTransaction.toString(),
-                                              id: BlocEvent.listEvent[index].id,
-                                              categories: getData['data']['events_categories'],
-                                              tags: getData['data']['events_categories'],
-                                              tickets: getData['data']['tickets'],
-                                              sk: BlocEvent.listEvent[index].sk,
-                                              buyerDataSettings: getData['data']['events_buyer_data_settings'],
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
+                                    navigator(
+                                        page: DashboardAdmin(
+                                      id: index,
+                                    ));
                                   },
                                   child: Material(
                                     child: IntrinsicHeight(

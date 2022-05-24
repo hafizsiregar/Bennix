@@ -131,7 +131,7 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: Container(
-                  padding: EdgeInsets.all(15),
+                  padding: const EdgeInsets.all(15),
                   height: 220,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
@@ -166,6 +166,45 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              widget.data.trainerName ?? '',
+                              style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[600], fontWeight: FontWeight.w500),
+                            ),
+                            Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    navigator(page: CommentsView(data: widget.data));
+                                  },
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  child: const Icon(FeatherIcons.messageCircle),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    _rating();
+                                  },
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  child: const Icon(FeatherIcons.star),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
                         Text(
                           widget.data.name ?? '',
                           style: GoogleFonts.poppins(
@@ -174,108 +213,73 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        SizedBox(
-                          height: 5,
+                        const SizedBox(
+                          height: 12,
                         ),
-                        Text(
-                          widget.data.trainerName ?? '',
-                          style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[600], fontWeight: FontWeight.w500),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            for (int i = 0; i < double.parse(DetailEcourceBloc.data.avgRate ?? '0').floor(); i++)
-                              Icon(
-                                Icons.star_purple500_sharp,
-                                color: Colors.yellow[700],
-                                size: 17,
+                        IntrinsicHeight(
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: const [
+                                        Icon(FeatherIcons.clock),
+                                        SizedBox(
+                                          width: 12,
+                                        ),
+                                        Text('1 Jam 30 Menit'),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 12,
+                                    ),
+                                    Row(
+                                      children: const [
+                                        Icon(FeatherIcons.star),
+                                        SizedBox(
+                                          width: 12,
+                                        ),
+                                        Text('4.7'),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            for (int i = 0 + double.parse(DetailEcourceBloc.data.avgRate ?? '0').floor(); i < 5; i++)
-                              const Icon(
-                                Icons.star_purple500_sharp,
-                                color: Colors.black26,
-                                size: 17,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const Icon(FeatherIcons.video),
+                                        const SizedBox(
+                                          width: 12,
+                                        ),
+                                        Text('${widget.data.episodeMax} Episode'),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 12,
+                                    ),
+                                    Row(
+                                      children: const [
+                                        Icon(FeatherIcons.user),
+                                        SizedBox(
+                                          width: 12,
+                                        ),
+                                        Text('200 Penonton'),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                          ],
+                            ],
+                          ),
                         ),
                         const SizedBox(
                           height: 20,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: GlassmorphicContainer(
-                                alignment: Alignment.center,
-                                width: 70,
-                                height: 30,
-                                padding: EdgeInsets.all(5),
-                                blur: 20,
-                                border: 1,
-                                borderRadius: 100,
-                                linearGradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [
-                                  Color.fromARGB(255, 19, 12, 12).withOpacity(0.1),
-                                  Color.fromARGB(255, 68, 60, 60).withOpacity(0.05),
-                                ], stops: const [
-                                  0.1,
-                                  1,
-                                ]),
-                                borderGradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    const Color(0xFFffffff).withOpacity(0.5),
-                                    const Color((0xFFFFFFFF)).withOpacity(0.5),
-                                  ],
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      DateFormat('MMM').format(widget.data.startDate!).toUpperCase(),
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    SizedBox(width: 2),
-                                    Text(
-                                      widget.data.startDate!.day.toString(),
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Text(widget.data.videoType ?? '',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black54,
-                                )),
-                            SizedBox(width: 10),
-                            Text('•',
-                                style: GoogleFonts.poppins(
-                                  color: Colors.black54,
-                                )),
-                            SizedBox(width: 10),
-                            Text("${widget.data.episodeMin} - ${widget.data.episodeMax}  Episode",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black54,
-                                )),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
                         ),
                         Align(
                           alignment: Alignment.centerLeft,
@@ -288,27 +292,6 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            btnContent(
-                                text: 'Komentar',
-                                onTap: () {
-                                  navigator(page: CommentsView(data: widget.data));
-                                },
-                                icon: Icon(Icons.chat, color: Color.fromARGB(255, 87, 86, 86))),
-                            SizedBox(width: 20),
-                            btnContent(
-                                text: 'Beri Rating',
-                                onTap: () {
-                                  _rating();
-                                },
-                                icon: Icon(Icons.add, color: Color.fromARGB(255, 87, 86, 86))),
-                          ],
                         ),
                         const SizedBox(
                           height: 20,
@@ -558,28 +541,30 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                                                                 ),
                                                         ),
                                                         SizedBox(width: 15),
-                                                        Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: <Widget>[
-                                                            Text(
-                                                              data.name ?? '',
-                                                              style: GoogleFonts.poppins(
-                                                                fontSize: 16,
-                                                                fontWeight: FontWeight.w600,
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: <Widget>[
+                                                              Text(
+                                                                data.name ?? '',
+                                                                style: GoogleFonts.poppins(
+                                                                  fontSize: 16,
+                                                                  fontWeight: FontWeight.w600,
+                                                                ),
                                                               ),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 5,
-                                                            ),
-                                                            Text(
-                                                              data.episode == 99 ? '${data.episode} Episode' : '${data.episode} Episode',
-                                                              style: GoogleFonts.poppins(
-                                                                fontSize: 12,
-                                                                fontWeight: FontWeight.w500,
-                                                                color: Colors.black54,
+                                                              const SizedBox(
+                                                                height: 5,
                                                               ),
-                                                            ),
-                                                          ],
+                                                              Text(
+                                                                data.episode == 99 ? '${data.episode} Episode' : '${data.episode} Episode',
+                                                                style: GoogleFonts.poppins(
+                                                                  fontSize: 12,
+                                                                  fontWeight: FontWeight.w500,
+                                                                  color: Colors.black54,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ],
                                                     ),

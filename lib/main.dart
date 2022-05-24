@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:benix/notification.dart';
 import 'package:benix/splash.dart';
@@ -5,6 +6,7 @@ import 'package:benix/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:request_api_helper/loading.dart';
 import 'package:request_api_helper/request.dart';
 import 'package:request_api_helper/request_api_helper.dart';
@@ -27,7 +29,18 @@ void main() async {
   } finally {}
   HttpOverrides.global = MyHttpOverrides();
   RequestApiHelper.init(
-    RequestApiHelperData(baseUrl: 'https://admin.benix.id/api/', debug: true, navigatorKey: navigatorKey),
+    RequestApiHelperData(
+      baseUrl: 'https://admin.benix.id/api/',
+      debug: true,
+      navigatorKey: navigatorKey,
+      onError: (res) {
+        final parse = json.decode(res.body);
+        print(parse);
+        if (parse['message'] != null) {
+          Fluttertoast.showToast(msg: parse['message']);
+        }
+      },
+    ),
   );
   Loading.widget = (context) {
     showDialog(

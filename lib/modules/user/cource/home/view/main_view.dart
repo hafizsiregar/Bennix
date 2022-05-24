@@ -89,6 +89,7 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
         setState(() {});
       });
       await getBanner(context, onSuccess: (datas) {
+        banners = datas;
         setState(() {});
       });
     });
