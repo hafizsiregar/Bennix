@@ -30,12 +30,14 @@ class _DashboardAdminState extends BaseBackground<DashboardAdmin> {
     String dir = await getPlatformDir('');
     HttpClient httpClient = HttpClient();
     File file;
-    String filePath = '$dir/export_${widget.id}';
+    String filePath = '$dir/export_${widget.id}.xlsx';
     String myUrl = '';
 
     if (await File(filePath).exists()) {
       try {
         OpenFile.open(filePath);
+        _loading = false;
+        setState(() {});
       } catch (_) {
         File(filePath).delete();
         checkingData(url);
@@ -279,19 +281,6 @@ class _DashboardAdminState extends BaseBackground<DashboardAdmin> {
                           ),
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         ),
-                        Button.flat(
-                          onTap: () async {
-                            checkingData('https://admin.benix.id/api/events/${widget.id}/peserta?export=1');
-                          },
-                          context: context,
-                          title: 'Export',
-                          child: _loading ? const CircularProgressIndicator() : null,
-                          textStyle: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.white,
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        ),
                       ],
                     ),
                   ],
@@ -301,6 +290,7 @@ class _DashboardAdminState extends BaseBackground<DashboardAdmin> {
                 height: 20,
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 24),
@@ -310,6 +300,22 @@ class _DashboardAdminState extends BaseBackground<DashboardAdmin> {
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 24),
+                    child: Button.flat(
+                      onTap: () async {
+                        checkingData('https://admin.benix.id/api/events/${widget.id}/peserta?export=1');
+                      },
+                      context: context,
+                      title: 'Export',
+                      child: _loading ? const CircularProgressIndicator(color: Colors.white) : null,
+                      textStyle: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     ),
                   ),
                 ],

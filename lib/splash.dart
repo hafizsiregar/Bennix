@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:benix/main_route.dart' show DashboardView;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:request_api_helper/helper/database.dart';
 import 'package:request_api_helper/session.dart';
 import 'package:uni_links/uni_links.dart';
 import 'main_library.dart' show BaseBackground, BuildContext, Center, EdgeInsets, Image, Key, MediaQuery, Padding, Responsive, Scaffold, StatefulWidget, Text, Widget, setMaxWidth;
@@ -22,7 +24,7 @@ class _SplashState extends BaseBackground<Splash> {
     //   if (!isRemember) {
     //     await UserBloc.logout();
     //   } else {
-    await Session.init();
+    // await Session.init();
     await UserBloc.load();
     // }
     // }

@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:request_api_helper/helper/database.dart';
 import 'package:request_api_helper/loading.dart';
 import 'package:request_api_helper/request.dart';
 import 'package:request_api_helper/request_api_helper.dart';
@@ -29,7 +30,7 @@ void main() async {
     await Firebase.initializeApp();
   } finally {}
   HttpOverrides.global = MyHttpOverrides();
-  RequestApiHelper.init(
+  await RequestApiHelper.init(
     RequestApiHelperData(
       baseUrl: 'https://admin.benix.id/api/',
       debug: true,
