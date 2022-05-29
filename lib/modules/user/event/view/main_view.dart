@@ -37,10 +37,10 @@ class _EventViewState extends BaseBackground<EventView> {
                 endTime: TimeOfDay.fromDateTime(endDate),
                 startDate: startDate,
                 startTime: TimeOfDay.fromDateTime(startDate),
-                harga: double.parse(i['price']).floor(),
+                harga: double.parse(i['price'].toString()).floor(),
                 keterangan: i['description'],
                 name: i['name'],
-                qty: double.parse(i['remaining_stock']).floor(),
+                qty: double.parse(i['remaining_stock'].toString()).floor(),
               ),
             );
           }

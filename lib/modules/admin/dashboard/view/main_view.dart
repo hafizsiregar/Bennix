@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:benix/main_library.dart';
 import 'package:benix/modules/admin/dashboard/bloc/main_bloc.dart';
 import 'package:benix/modules/admin/event/api/request_api.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:open_file/open_file.dart';
 
+import '../../../../widget/downloader.dart';
 import '../../event/bloc/main_bloc.dart';
 import '../../event/bloc/model.dart';
 import '../../event/view/add_event.dart';
@@ -17,6 +22,45 @@ class DashboardAdmin extends StatefulWidget {
 }
 
 class _DashboardAdminState extends BaseBackground<DashboardAdmin> {
+  bool _loading = false;
+
+  checkingData(url) async {
+    _loading = true;
+    setState(() {});
+    String dir = await getPlatformDir('');
+    HttpClient httpClient = HttpClient();
+    File file;
+    String filePath = '$dir/export_${widget.id}';
+    String myUrl = '';
+
+    if (await File(filePath).exists()) {
+      try {
+        OpenFile.open(filePath);
+      } catch (_) {
+        File(filePath).delete();
+        checkingData(url);
+      }
+    } else {
+      try {
+        myUrl = url;
+        var request = await httpClient.getUrl(Uri.parse(myUrl));
+        var response = await request.close();
+        if (response.statusCode == 200) {
+          var bytes = await consolidateHttpClientResponseBytes(response);
+          file = File(filePath);
+          await file.writeAsBytes(bytes);
+          _loading = false;
+          setState(() {});
+          OpenFile.open(file.path);
+        } else {
+          filePath = 'Error code: ' + response.statusCode.toString();
+        }
+      } catch (ex) {
+        filePath = 'Can not fetch url';
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -188,50 +232,68 @@ class _DashboardAdminState extends BaseBackground<DashboardAdmin> {
                         ],
                       ),
                     ),
-                    Button.flat(
-                        onTap: () async {
-                          await detailEvent(
-                            context: context,
-                            id: BlocEvent.listEvent[widget.id].id.toString(),
-                            onSuccess: (getData) async {
-                              await navigator(
-                                page: AddEventView(
-                                  dataEdit: InputEventData(
-                                    banner: BlocEvent.listEvent[widget.id].banner!,
-                                    description: BlocEvent.listEvent[widget.id].description!,
-                                    endDate: BlocEvent.listEvent[widget.id].endDate!.toString(),
-                                    locationAddress: BlocEvent.listEvent[widget.id].locationAddress!,
-                                    locationCity: BlocEvent.listEvent[widget.id].locationCity,
-                                    locationLat: BlocEvent.listEvent[widget.id].locationLat,
-                                    locationLong: BlocEvent.listEvent[widget.id].locationLong,
-                                    locationType: BlocEvent.listEvent[widget.id].locationType!,
-                                    tages: BlocEvent.listEvent[widget.id].tages,
-                                    maxBuyTicket: BlocEvent.listEvent[widget.id].maxBuyTicket.toString(),
-                                    name: BlocEvent.listEvent[widget.id].name!,
-                                    organizerImg: BlocEvent.listEvent[widget.id].organizerImg,
-                                    organizerName: BlocEvent.listEvent[widget.id].organizerName!,
-                                    startDate: BlocEvent.listEvent[widget.id].startDate.toString(),
-                                    type: BlocEvent.listEvent[widget.id].type!,
-                                    uniqueEmailTransaction: BlocEvent.listEvent[widget.id].uniqueEmailTransaction.toString(),
-                                    id: BlocEvent.listEvent[widget.id].id,
-                                    categories: getData['data']['events_categories'],
-                                    tags: getData['data']['events_categories'],
-                                    tickets: getData['data']['tickets'],
-                                    sk: BlocEvent.listEvent[widget.id].sk,
-                                    buyerDataSettings: getData['data']['events_buyer_data_settings'],
+                    Row(
+                      children: [
+                        Button.flat(
+                          onTap: () async {
+                            await detailEvent(
+                              context: context,
+                              id: BlocEvent.listEvent[widget.id].id.toString(),
+                              onSuccess: (getData) async {
+                                await navigator(
+                                  page: AddEventView(
+                                    dataEdit: InputEventData(
+                                      banner: BlocEvent.listEvent[widget.id].banner!,
+                                      description: BlocEvent.listEvent[widget.id].description!,
+                                      endDate: BlocEvent.listEvent[widget.id].endDate!.toString(),
+                                      locationAddress: BlocEvent.listEvent[widget.id].locationAddress!,
+                                      locationCity: BlocEvent.listEvent[widget.id].locationCity,
+                                      locationLat: BlocEvent.listEvent[widget.id].locationLat,
+                                      locationLong: BlocEvent.listEvent[widget.id].locationLong,
+                                      locationType: BlocEvent.listEvent[widget.id].locationType!,
+                                      tages: BlocEvent.listEvent[widget.id].tages,
+                                      maxBuyTicket: BlocEvent.listEvent[widget.id].maxBuyTicket.toString(),
+                                      name: BlocEvent.listEvent[widget.id].name!,
+                                      organizerImg: BlocEvent.listEvent[widget.id].organizerImg,
+                                      organizerName: BlocEvent.listEvent[widget.id].organizerName!,
+                                      startDate: BlocEvent.listEvent[widget.id].startDate.toString(),
+                                      type: BlocEvent.listEvent[widget.id].type!,
+                                      uniqueEmailTransaction: BlocEvent.listEvent[widget.id].uniqueEmailTransaction.toString(),
+                                      id: BlocEvent.listEvent[widget.id].id,
+                                      categories: getData['data']['events_categories'],
+                                      tags: getData['data']['events_categories'],
+                                      tickets: getData['data']['tickets'],
+                                      sk: BlocEvent.listEvent[widget.id].sk,
+                                      buyerDataSettings: getData['data']['events_buyer_data_settings'],
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        context: context,
-                        title: 'Edit Event',
-                        textStyle: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
+                                );
+                              },
+                            );
+                          },
+                          context: context,
+                          title: 'Edit Event',
+                          textStyle: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
+                        Button.flat(
+                          onTap: () async {
+                            checkingData('https://admin.benix.id/api/events/${widget.id}/peserta?export=1');
+                          },
+                          context: context,
+                          title: 'Export',
+                          child: _loading ? const CircularProgressIndicator() : null,
+                          textStyle: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),

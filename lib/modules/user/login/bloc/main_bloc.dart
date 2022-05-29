@@ -27,7 +27,7 @@ class UserBloc extends Bloc {
     user.photoProfile = data['photo_url'];
     await Session.save(header: 'name', stringData: user.name);
     await Session.save(header: 'course_type', stringData: user.typeCourse);
-    await Session.save(header: 'id', integerData: user.id);
+    await Session.save(header: 'idsss', integerData: user.id);
     await Session.save(header: 'email', stringData: user.email);
     await Session.save(header: 'type', stringData: user.type);
     await Session.save(header: 'course_expired', stringData: user.expiredDateCourse);
@@ -41,7 +41,7 @@ class UserBloc extends Bloc {
     user = data;
     await Session.save(header: 'name', stringData: user.name);
     await Session.save(header: 'course_type', stringData: user.typeCourse);
-    await Session.save(header: 'id', integerData: user.id);
+    await Session.save(header: 'idsss', integerData: user.id);
     await Session.save(header: 'email', stringData: user.email);
     await Session.save(header: 'type', stringData: user.type);
     await Session.save(header: 'course_expired', stringData: user.expiredDateCourse);
@@ -52,6 +52,7 @@ class UserBloc extends Bloc {
   }
 
   static Future<void> load() async {
+    print(await Session.load('saved_list'));
     user.name = await Session.load('name');
     user.id = await Session.load('id');
     user.email = await Session.load('email');
@@ -74,7 +75,7 @@ class UserBloc extends Bloc {
     await Session.delete(
       nameList: [
         'name',
-        'id',
+        'idsss',
         'email',
         'type',
         'gender',
