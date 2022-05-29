@@ -1,10 +1,12 @@
 import 'package:benix/main_library.dart';
+import 'package:benix/modules/admin/dashboard/bloc/main_bloc.dart';
 import 'package:benix/modules/admin/event/api/request_api.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../event/bloc/main_bloc.dart';
 import '../../event/bloc/model.dart';
 import '../../event/view/add_event.dart';
+import '../api/request_api.dart';
 
 class DashboardAdmin extends StatefulWidget {
   final int id;
@@ -15,6 +17,17 @@ class DashboardAdmin extends StatefulWidget {
 }
 
 class _DashboardAdminState extends BaseBackground<DashboardAdmin> {
+  @override
+  void initState() {
+    super.initState();
+    getDataDashboard(widget.id, onSuccess: () {
+      setState(() {});
+    });
+    getDetailPeserta(widget.id, onSuccess: () {
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return InitControl(
@@ -90,7 +103,7 @@ class _DashboardAdminState extends BaseBackground<DashboardAdmin> {
                                   height: 8,
                                 ),
                                 Text(
-                                  '521',
+                                  DashboardAdminBloc.data.pesertaHadir.toString(),
                                   style: GoogleFonts.poppins(
                                     fontSize: 40,
                                     fontWeight: FontWeight.bold,
@@ -125,7 +138,7 @@ class _DashboardAdminState extends BaseBackground<DashboardAdmin> {
                                   height: 8,
                                 ),
                                 Text(
-                                  '256',
+                                  DashboardAdminBloc.data.pesertaTidakHadir.toString(),
                                   style: GoogleFonts.poppins(
                                     fontSize: 40,
                                     fontWeight: FontWeight.bold,
@@ -144,9 +157,9 @@ class _DashboardAdminState extends BaseBackground<DashboardAdmin> {
                   ),
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24.0),
-                child: Text('Event ini telah diikuti sebanyak 777 Peserta dengan spesifikasi sebagai berikut'),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Text('Event ini telah diikuti sebanyak ${DashboardAdminBloc.data.jumlahPeserta} Peserta dengan spesifikasi sebagai berikut'),
               ),
               const SizedBox(
                 height: 20,
@@ -167,9 +180,9 @@ class _DashboardAdminState extends BaseBackground<DashboardAdmin> {
                           ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text('50 Peserta Berbayar'),
-                              Text('17 Peserta Tidak Berbayar'),
+                            children: [
+                              Text('${DashboardAdminBloc.data.pesetaBerbayar} Peserta Berbayar'),
+                              Text('${DashboardAdminBloc.data.pesertaTidakBayar} Peserta Tidak Berbayar'),
                             ],
                           ),
                         ],
@@ -380,9 +393,9 @@ class _DashboardAdminState extends BaseBackground<DashboardAdmin> {
                           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 50),
                           child: Row(
                             children: [
-                              const Text('Previous'),
-                              const SizedBox(
-                                width: 16,
+                              DashboardAdminBloc.data.table.page > 1 ? const Text('Previous') : const SizedBox(),
+                              SizedBox(
+                                width: DashboardAdminBloc.data.table.page > 1 ? 16 : 0,
                               ),
                               const Text('Page'),
                               const SizedBox(
@@ -393,18 +406,18 @@ class _DashboardAdminState extends BaseBackground<DashboardAdmin> {
                                   border: Border.all(width: 1, color: Colors.black87),
                                 ),
                                 padding: const EdgeInsets.all(4),
-                                child: const Center(
-                                  child: Text('1'),
+                                child: Center(
+                                  child: Text(DashboardAdminBloc.data.table.page.toString()),
                                 ),
                               ),
                               const SizedBox(
                                 width: 16,
                               ),
-                              const Text('of 4'),
+                              Text('of ${DashboardAdminBloc.data.table.lastPage.toString()}'),
                               const SizedBox(
                                 width: 16,
                               ),
-                              const Text('Next'),
+                              DashboardAdminBloc.data.table.page < DashboardAdminBloc.data.table.lastPage ? const Text('Next') : const SizedBox(),
                             ],
                           ),
                         ),

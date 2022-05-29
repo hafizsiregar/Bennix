@@ -31,7 +31,7 @@ class CourceBloc {
         name: i['name'],
         status: i['status'],
         trainerName: i['trainer_name'],
-        userId: i['user_id'],
+        userId: i['user_id'].toString(),
         videoType: i['video_type'],
         endDate: DateTime.parse(i['end_date']),
         startDate: DateTime.parse(i['start_date']),

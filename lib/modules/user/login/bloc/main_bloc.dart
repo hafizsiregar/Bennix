@@ -52,7 +52,9 @@ class UserBloc extends Bloc {
   }
 
   static Future<void> load() async {
+    print('start');
     user.name = await Session.load('name');
+    print(user.name);
     user.id = await Session.load('id');
     user.email = await Session.load('email');
     user.type = await Session.load('type');
@@ -62,6 +64,7 @@ class UserBloc extends Bloc {
     user.photoProfile = await Session.load('photo_profile');
     user.tanggalLahir = await Session.load('date_of_birth');
     user.phone = await Session.load('phone');
+    print('end');
   }
 
   @override

@@ -1,7 +1,6 @@
 import 'package:benix/modules/user/login/bloc/main_bloc.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:request_api_helper/request.dart' as req;
 import 'package:request_api_helper/request.dart';
 import 'package:request_api_helper/request_api_helper.dart';
 import 'package:request_api_helper/session.dart';
@@ -19,6 +18,7 @@ login({required context, required email, required password, required Function on
       onSuccess: (data) async {
         await UserBloc.save(data['data']);
         await Session.save(header: 'token', stringData: 'Bearer ' + data['credential']);
+        print(await Session.load('saved_list'));
         onSuccess();
       },
     ),

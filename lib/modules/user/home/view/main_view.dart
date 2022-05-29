@@ -170,18 +170,18 @@ class _HomeViewState extends BaseBackground<HomeView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                CarouselSlider(
-                  items: banners,
-                  options: CarouselOptions(
-                    height: 160,
-                    viewportFraction: 0.95,
-                    aspectRatio: 50 / 16,
-                    autoPlay: true,
-                    autoPlayInterval: const Duration(seconds: 2),
-                    onPageChanged: (page, why) {},
-                    scrollDirection: Axis.horizontal,
-                  ),
-                ),
+                // CarouselSlider(
+                //   items: banners,
+                //   options: CarouselOptions(
+                //     height: 160,
+                //     viewportFraction: 0.95,
+                //     aspectRatio: 50 / 16,
+                //     autoPlay: true,
+                //     autoPlayInterval: const Duration(seconds: 2),
+                //     onPageChanged: (page, why) {},
+                //     scrollDirection: Axis.horizontal,
+                //   ),
+                // ),
                 const SizedBox(height: 15),
                 category(
                   counter: _counter,

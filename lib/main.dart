@@ -10,6 +10,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:request_api_helper/loading.dart';
 import 'package:request_api_helper/request.dart';
 import 'package:request_api_helper/request_api_helper.dart';
+import 'package:request_api_helper/session.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -35,20 +36,22 @@ void main() async {
       navigatorKey: navigatorKey,
       onError: (res) {
         final parse = json.decode(res.body);
-        print(parse);
         if (parse['message'] != null) {
           Fluttertoast.showToast(msg: parse['message']);
         }
       },
     ),
   );
-  Loading.widget = (context) {
-    showDialog(
+  Loading.widget = (context) async {
+    await showDialog(
       context: context,
       builder: (context) {
+        Loading.currentContext = context;
+        Loading.lastContext = context;
         return const Center(child: CircularProgressIndicator());
       },
     );
+    Loading.currentContext = context;
   };
   runApp(const MyApp());
 
