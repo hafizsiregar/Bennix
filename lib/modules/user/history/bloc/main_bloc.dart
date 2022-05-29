@@ -12,17 +12,7 @@ class BlocHistoryEvent extends Bloc {
     _listEvent.clear();
     if (data['data'] != null) {
       for (var i in data['data']) {
-        _listEvent.add(HistoryEvent(
-            date: DateTime.parse(i['date']),
-            dueDate:
-                i['due_date'] == null ? null : DateTime.parse(i['due_date']),
-            orderNumber: i['order_number'],
-            paymentMethod: i['payment_method'],
-            status: i['status'],
-            isCheckin: i['is_checkin'],
-            total: int.parse(i['total_net'].replaceAll('.00', '')),
-            event: addEvent(i['event']),
-            id: i['id']));
+        _listEvent.add(HistoryEvent(date: DateTime.parse(i['date']), dueDate: i['due_date'] == null ? null : DateTime.parse(i['due_date']), orderNumber: i['order_number'], paymentMethod: i['payment_method'], status: i['status'], isCheckin: i['is_checkin'], total: int.parse(i['total_net'].replaceAll('.00', '')), event: addEvent(i['event']), id: i['id']));
       }
     }
   }
@@ -67,12 +57,9 @@ class DetailHistoryBloc {
   static DetailHistory get data => _data;
 
   static Future<void> init(data) async {
-    
     List<DetailTicket> tickets = [];
     //  _data = DetailHistory();
-    print("dataa ${_data.eventName}");
     for (var i in data['details'] ?? []) {
-    
       tickets.add(
         DetailTicket(
           ticketName: i['ticket']['name'],
@@ -85,28 +72,18 @@ class DetailHistoryBloc {
         ),
       );
     }
-   
+
     _data = DetailHistory(
       detailTicket: tickets,
       buyerEmail: data['buyer_user']['email'],
       buyerName: data['buyer_user']['name'],
-      buyerPhone: data['buyer_user']['phone'] == null ||
-              data['buyer_user']['phone'] == 'null'
-          ? '-'
-          : data['buyer_user']['phone'],
+      buyerPhone: data['buyer_user']['phone'] == null || data['buyer_user']['phone'] == 'null' ? '-' : data['buyer_user']['phone'],
       eventName: data['event']['name'],
       eventPlace: data['event']['location_address'],
-      eventdate: DateFormat('yyyy-MM-dd hh:mm')
-          .format(DateTime.parse(data['event']['start_date'].toString()))
-          .toString(),
-      invoicedate: DateFormat('yyyy-MM-dd')
-          .format(DateTime.parse(data['date'].toString()))
-          .toString(),
+      eventdate: DateFormat('yyyy-MM-dd hh:mm').format(DateTime.parse(data['event']['start_date'].toString())).toString(),
+      invoicedate: DateFormat('yyyy-MM-dd').format(DateTime.parse(data['date'].toString())).toString(),
       orderNumber: data['order_number'],
-      paymentMethod:
-          data['payment_method'] == null || data['payment_method'] == 'null'
-              ? '-'
-              : data['payment_method'],
+      paymentMethod: data['payment_method'] == null || data['payment_method'] == 'null' ? '-' : data['payment_method'],
       status: data['status'],
       billNumber: data['bill_number'],
       billCode: data['bill_code'],

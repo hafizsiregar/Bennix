@@ -233,7 +233,6 @@ detailEvent({required context, required String id, required Function(Map) onSucc
 }
 
 getEventAdmin({required Function(String?) onSuccess}) async {
-  print(UserBloc.user.id);
   await RequestApiHelper.sendRequest(
     type: Api.get,
     url: 'events',
@@ -244,7 +243,6 @@ getEventAdmin({required Function(String?) onSuccess}) async {
         'user_id': UserBloc.user.id.toString(),
       },
       onSuccess: (data) async {
-        print(data);
         BlocEvent.initEvent(data['data']);
         onSuccess(data['next_page_url']);
       },

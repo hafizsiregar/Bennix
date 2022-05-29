@@ -14,7 +14,6 @@ Future<void> getEcource(context, {required Function onSuccess}) async {
         'order_by': 'new',
       },
       onSuccess: (data) async {
-        print(data);
         CourceBloc.init(data);
         onSuccess();
       },
@@ -33,7 +32,6 @@ Future<void> getEcourceClose(context, {required Function onSuccess}) async {
         'order_by': 'terdekat',
       },
       onSuccess: (data) async {
-        print(data);
         CourceBloc.initCloseData(data);
         onSuccess();
       },

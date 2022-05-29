@@ -18,7 +18,6 @@ login({required context, required email, required password, required Function on
       onSuccess: (data) async {
         await UserBloc.save(data['data']);
         await Session.save(header: 'token', stringData: 'Bearer ' + data['credential']);
-        print(await Session.load('saved_list'));
         onSuccess();
       },
     ),

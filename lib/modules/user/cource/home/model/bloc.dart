@@ -153,7 +153,6 @@ class CommentsBloc {
   static init(data) {
     _dataComment.clear();
     // ignore: avoid_print
-    print(data['data']);
     for (var i in data['data'] ?? []) {
       add(Comment(id: i['id'], name: i['user']['name'], courseId: i['course_id'], userId: i['user_id'], chat: i['chat'], created: DateTime.parse(i['created_at'])));
     }
