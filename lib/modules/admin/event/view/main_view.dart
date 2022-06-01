@@ -1,7 +1,6 @@
 import 'package:benix/main_route.dart' show AddEventView;
 import 'package:benix/modules/admin/event/api/request_api.dart';
 import 'package:benix/modules/admin/event/bloc/main_bloc.dart';
-import 'package:benix/modules/admin/event/bloc/model.dart';
 import 'package:benix/modules/admin/event/bloc/static_data.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:intl/intl.dart';
@@ -129,9 +128,10 @@ class _AdminEventViewState extends BaseBackground<AdminEventView> {
                                 child: GestureDetector(
                                   onTap: () async {
                                     navigator(
-                                        page: DashboardAdmin(
-                                      id: index,
-                                    ));
+                                      page: DashboardAdmin(
+                                        id: BlocEvent.listEvent[index].id!,
+                                      ),
+                                    );
                                   },
                                   child: Material(
                                     child: IntrinsicHeight(

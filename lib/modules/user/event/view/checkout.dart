@@ -81,7 +81,7 @@ class _BuyTicketState extends BaseBackground<BuyTicket> {
       listData.add(datas);
     }
 
-    Map body = {
+    Map<String, dynamic> body = {
       'event_id': BlocEvent.selectedEventId,
       'list_ticket': listTicket,
       'list_price': listPrice,

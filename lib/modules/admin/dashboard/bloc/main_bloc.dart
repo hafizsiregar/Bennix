@@ -1,9 +1,15 @@
+class DaftarPeserta {
+  String? nama, email, hp, status, foto;
+
+  DaftarPeserta({this.email, this.hp, this.nama, this.status, this.foto});
+}
+
 class TablePesertaConfig {
   int lastPage, page;
   String? nextUrl;
-  dynamic data;
+  List<DaftarPeserta> data = [];
 
-  TablePesertaConfig({this.lastPage = 1, this.page = 1, this.nextUrl, this.data});
+  TablePesertaConfig({this.lastPage = 1, this.page = 1, this.nextUrl});
 }
 
 class DashboardData {
@@ -27,5 +33,17 @@ class DashboardAdminBloc {
     data.table.lastPage = datas['data']['last_page'];
     data.table.page = datas['data']['current_page'];
     data.table.nextUrl = datas['data']['next_page_url'];
+    data.table.data.clear();
+    for (var i in datas['data']['data'] ?? []) {
+      data.table.data.add(
+        DaftarPeserta(
+          email: i['email'],
+          hp: i['no_hp'],
+          nama: i['nama'],
+          status: i['status'] == 'paid' ? 'Premium' : 'Free',
+          foto: i['photo_url'],
+        ),
+      );
+    }
   }
 }

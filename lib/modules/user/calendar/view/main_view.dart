@@ -19,8 +19,9 @@ class CalendarView extends StatefulWidget {
 
 class _CalendarViewState extends BaseBackground<CalendarView> {
   _getData() async {
-    await getUpcomming(context, onSuccess: () {});
-    setState(() {});
+    await getUpcomming(context, onSuccess: () {
+      setState(() {});
+    });
   }
 
   _updateHadir(id, ischeckin) async {

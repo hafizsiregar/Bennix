@@ -12,7 +12,7 @@ class BlocHistoryEvent extends Bloc {
     _listEvent.clear();
     if (data['data'] != null) {
       for (var i in data['data']) {
-        _listEvent.add(HistoryEvent(date: DateTime.parse(i['date']), dueDate: i['due_date'] == null ? null : DateTime.parse(i['due_date']), orderNumber: i['order_number'], paymentMethod: i['payment_method'], status: i['status'], isCheckin: i['is_checkin'], total: int.parse(i['total_net'].replaceAll('.00', '')), event: addEvent(i['event']), id: i['id']));
+        _listEvent.add(HistoryEvent(date: DateTime.parse(i['date']), dueDate: i['due_date'] == null ? null : DateTime.parse(i['due_date']), orderNumber: i['order_number'], paymentMethod: i['payment_method'], status: i['status'], isCheckin: i['is_checkin'].toString(), total: int.parse(i['total_net'].replaceAll('.00', '')), event: addEvent(i['event']), id: i['id']));
       }
     }
   }
@@ -30,14 +30,14 @@ class BlocHistoryEvent extends Bloc {
         locationLat: data['location_lat'],
         locationLong: data['location_long'],
         locationType: data['location_type'],
-        maxBuyTicket: int.tryParse(data['max_buy_ticket']),
+        maxBuyTicket: int.tryParse(data['max_buy_ticket'].toString()),
         name: data['name'],
         organizerImg: data['organizer_img_url'],
         organizerName: data['organizer_name'],
         startDate: DateTime.parse(data['start_date']),
         type: data['type'],
-        uniqueEmailTransaction: int.parse(data['uniqe_email_transaction']),
-        userId: int.parse(data['user_id']),
+        uniqueEmailTransaction: int.parse(data['uniqe_email_transaction'].toString()),
+        userId: int.parse(data['user_id'].toString()),
         locationName: data['location_name'],
       );
     } else {

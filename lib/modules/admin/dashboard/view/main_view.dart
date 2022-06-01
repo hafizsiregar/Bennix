@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:benix/main_library.dart';
 import 'package:benix/modules/admin/dashboard/bloc/main_bloc.dart';
 import 'package:benix/modules/admin/event/api/request_api.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:open_file/open_file.dart';
@@ -33,34 +34,34 @@ class _DashboardAdminState extends BaseBackground<DashboardAdmin> {
     String filePath = '$dir/export_${widget.id}.xlsx';
     String myUrl = '';
 
-    if (await File(filePath).exists()) {
-      try {
-        OpenFile.open(filePath);
+    // if (await File(filePath).exists()) {
+    //   try {
+    //     OpenFile.open(filePath);
+    //     _loading = false;
+    //     setState(() {});
+    //   } catch (_) {
+    //     File(filePath).delete();
+    //     checkingData(url);
+    //   }
+    // } else {
+    try {
+      myUrl = url;
+      var request = await httpClient.getUrl(Uri.parse(myUrl));
+      var response = await request.close();
+      if (response.statusCode == 200) {
+        var bytes = await consolidateHttpClientResponseBytes(response);
+        file = File(filePath);
+        await file.writeAsBytes(bytes);
         _loading = false;
         setState(() {});
-      } catch (_) {
-        File(filePath).delete();
-        checkingData(url);
+        OpenFile.open(file.path);
+      } else {
+        filePath = 'Error code: ' + response.statusCode.toString();
       }
-    } else {
-      try {
-        myUrl = url;
-        var request = await httpClient.getUrl(Uri.parse(myUrl));
-        var response = await request.close();
-        if (response.statusCode == 200) {
-          var bytes = await consolidateHttpClientResponseBytes(response);
-          file = File(filePath);
-          await file.writeAsBytes(bytes);
-          _loading = false;
-          setState(() {});
-          OpenFile.open(file.path);
-        } else {
-          filePath = 'Error code: ' + response.statusCode.toString();
-        }
-      } catch (ex) {
-        filePath = 'Can not fetch url';
-      }
+    } catch (ex) {
+      filePath = 'Can not fetch url';
     }
+    // }
   }
 
   @override
@@ -377,12 +378,6 @@ class _DashboardAdminState extends BaseBackground<DashboardAdmin> {
                                 child: Text('Paket'),
                               ),
                             ),
-                            SizedBox(
-                              width: 100,
-                              child: Center(
-                                child: Text('Periode'),
-                              ),
-                            ),
                           ],
                         ),
                         const SizedBox(
@@ -390,72 +385,87 @@ class _DashboardAdminState extends BaseBackground<DashboardAdmin> {
                           child: Divider(),
                         ),
                         // content
-                        for (int i = 0; i < 5; i++)
-                          Column(
-                            children: [
-                              Row(
+                        SizedBox(
+                          width: 900,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: DashboardAdminBloc.data.table.data.length,
+                            itemBuilder: (context, index) {
+                              final data = DashboardAdminBloc.data.table.data[index];
+                              return Column(
                                 children: [
-                                  const SizedBox(
-                                    width: 50,
-                                    child: Center(
-                                      child: Text('1'),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 200,
-                                    child: Center(
-                                      child: Text('Fabian Beliza'),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 100,
-                                    child: Center(
-                                      child: Container(
-                                        height: 50,
+                                  Row(
+                                    children: [
+                                      SizedBox(
                                         width: 50,
-                                        decoration: const BoxDecoration(
-                                          color: Colors.black26,
-                                          shape: BoxShape.circle,
+                                        child: Center(
+                                          child: Text((index + 1).toString()),
                                         ),
                                       ),
-                                    ),
+                                      SizedBox(
+                                        width: 200,
+                                        child: Center(
+                                          child: Text(data.nama ?? ''),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 100,
+                                        child: Center(
+                                          child: Container(
+                                            height: 50,
+                                            width: 50,
+                                            decoration: BoxDecoration(
+                                              color: Colors.black26,
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(
+                                                fit: BoxFit.cover,
+                                                image: CachedNetworkImageProvider(
+                                                  data.foto ?? '',
+                                                  errorListener: () {
+                                                    setState(() {
+                                                      data.foto = 'https://thumbs.dreamstime.com/b/not-found-icon-design-line-style-perfect-application-web-logo-presentation-template-not-found-icon-design-line-style-169941512.jpg';
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 200,
+                                        child: Center(
+                                          child: Text(data.email ?? ''),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 150,
+                                        child: Center(
+                                          child: Text(data.hp ?? ''),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 100,
+                                        child: Center(
+                                          child: Text(data.status ?? ''),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                   const SizedBox(
-                                    width: 200,
+                                    width: 900,
+                                    height: 10,
                                     child: Center(
-                                      child: Text('Fabian@mail.com'),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 150,
-                                    child: Center(
-                                      child: Text('085234567678'),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 100,
-                                    child: Center(
-                                      child: Text('Premium'),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 100,
-                                    child: Center(
-                                      child: Text('20'),
-                                    ),
+                                        child: Divider(
+                                      height: 0,
+                                    )),
                                   ),
                                 ],
-                              ),
-                              const SizedBox(
-                                width: 900,
-                                height: 10,
-                                child: Center(
-                                    child: Divider(
-                                  height: 0,
-                                )),
-                              ),
-                            ],
+                              );
+                            },
                           ),
+                        ),
 
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 50),
