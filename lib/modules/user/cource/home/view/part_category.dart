@@ -1,17 +1,19 @@
 part of 'main_view.dart';
 
 Widget category({counter, bool? selected, required context, state, Function(String)? onTap, ifSearch = false, navigator}) {
-  List<EventCategories> limit = BlocEvent.listCategories.take(8).toList();
-  limit.add(EventCategories(
-    name: 'Lainnya',
-    id: 99999,
-    icon: 'https://raw.githubusercontent.com/afandiyusuf/clone-tokopedia-ui-tutorial/master/assets/category-icon/lihat-semua.png',
+  List<SelectData> limit = CourceBloc.category.take(8).toList();
+  limit.add(SelectData(
+    title: 'Lainnya',
+    id: '99999',
+    objectData: {
+      'icon': 'https://raw.githubusercontent.com/afandiyusuf/clone-tokopedia-ui-tutorial/master/assets/category-icon/lihat-semua.png',
+    },
   ));
   return SingleChildScrollView(
     scrollDirection: Axis.horizontal,
     child: StatefulBuilder(
       builder: (context, setState) => Row(
-        children: BlocEvent.listCategories.map((e) {
+        children: CourceBloc.category.map((e) {
           return Padding(
             padding: const EdgeInsets.only(right: 20),
             child: Column(
@@ -19,14 +21,15 @@ Widget category({counter, bool? selected, required context, state, Function(Stri
                 Material(
                   child: InkWell(
                     onTap: () {
-                      if (selected != null) {
-                        BlocEvent.selectCategories(e.id);
-                        setState(() {});
-                      }
+                      filterCategoryEcource(e.id, onSuccess: () {
+                        if (onTap != null) {
+                          onTap(e.title ?? '');
+                        }
+                      });
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8),
-                      child: e.icon == null
+                      child: e.objectData?['icon'] == null
                           ? Image.network(
                               'https://raw.githubusercontent.com/afandiyusuf/clone-tokopedia-ui-tutorial/master/assets/category-icon/lihat-semua.png',
                               width: 38,
@@ -34,7 +37,7 @@ Widget category({counter, bool? selected, required context, state, Function(Stri
                               // height: 25,
                             )
                           : Image.network(
-                              e.icon!,
+                              e.objectData?['icon'],
                               // color: iconColor,
                               width: 38,
                               color: Colors.blue,
@@ -43,7 +46,7 @@ Widget category({counter, bool? selected, required context, state, Function(Stri
                   ),
                 ),
                 Text(
-                  e.name!.substring(0, 4) + '...',
+                  e.title!.substring(0, 4) + '...',
                   style: GoogleFonts.poppins(fontSize: 10
                       // color: textColor,
                       ),

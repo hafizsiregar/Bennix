@@ -17,7 +17,7 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'detail.dart';
 
-import '../../../../../main_library.dart' show Animation, AnimationController, AssetImage, Axis, BaseBackground, BaseColor, Border, BorderRadius, BorderSide, BouncingScrollPhysics, BoxConstraints, BoxDecoration, BoxFit, BoxShape, BuildContext, Button, Center, Color, Colors, Column, ConstrainedBox, Container, CrossAxisAlignment, CurvedAnimation, Curves, DecorationImage, EdgeInsets, Expanded, FontWeight, Forms, GestureDetector, Icon, Icons, Image, InkWell, InputDecoration, IntrinsicHeight, Key, ListView, MainAxisAlignment, MainAxisSize, Material, MaterialType, MediaQuery, Navigator, NetworkImage, OutlineInputBorder, Padding, Positioned, Radius, Responsive, Row, Scaffold, SingleChildScrollView, SizedBox, Stack, StatefulBuilder, StatefulWidget, Text, TextEditingController, TextFormField, TextStyle, Theme, Tween, Widget, bottom, currencyFormat, showDatePicker, showModalBottomSheet;
+import '../../../../../main_library.dart' show Animation, AnimationController, AssetImage, Axis, BaseBackground, BaseColor, Border, BorderRadius, BorderSide, BouncingScrollPhysics, BoxConstraints, BoxDecoration, BoxFit, BoxShape, BuildContext, Button, Center, Color, Colors, Column, ConstrainedBox, Container, CrossAxisAlignment, CurvedAnimation, Curves, DecorationImage, EdgeInsets, Expanded, FontWeight, Forms, GestureDetector, Icon, Icons, Image, InkWell, InputDecoration, IntrinsicHeight, Key, ListView, MainAxisAlignment, MainAxisSize, Material, MaterialType, MediaQuery, Navigator, NetworkImage, OutlineInputBorder, Padding, Positioned, Radius, Responsive, Row, Scaffold, SelectData, SingleChildScrollView, SizedBox, Stack, StatefulBuilder, StatefulWidget, Text, TextEditingController, TextFormField, TextStyle, Theme, Tween, Widget, bottom, currencyFormat, showDatePicker, showModalBottomSheet;
 import 'package:intl/intl.dart';
 part 'part_card.dart';
 part 'part_category.dart';
@@ -82,6 +82,9 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
+      await getCategoryEcource(onSuccess: () {
+        setState(() {});
+      });
       await getEcource(context, onSuccess: () {
         setState(() {});
       });
@@ -194,11 +197,13 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
                           InkWell(
                             onTap: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => NearCourse(
-                                            list: CourceBloc.getList(),
-                                          )));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => NearCourse(
+                                    list: CourceBloc.getList(),
+                                  ),
+                                ),
+                              );
                             },
                             child: Text(
                               'Lihat Semua',
@@ -254,11 +259,13 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
                           InkWell(
                             onTap: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => NewCourse(
-                                            list: CourceBloc.getList(),
-                                          )));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => NewCourse(
+                                    list: CourceBloc.getList(),
+                                  ),
+                                ),
+                              );
                             },
                             child: Text(
                               'Lihat Semua',

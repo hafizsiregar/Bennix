@@ -4,6 +4,7 @@ import 'package:benix/notification.dart';
 import 'package:benix/splash.dart';
 import 'package:benix/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -33,7 +34,7 @@ void main() async {
   await RequestApiHelper.init(
     RequestApiHelperData(
       baseUrl: 'https://admin.benix.id/api/',
-      debug: true,
+      debug: !kReleaseMode,
       navigatorKey: navigatorKey,
       onError: (res) {
         final parse = json.decode(res.body);

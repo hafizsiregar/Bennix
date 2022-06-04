@@ -313,15 +313,19 @@ Widget searchCard({required context, required Function navigator, required title
       ),
       Expanded(
         child: ListView.builder(
-          itemCount: BlocEvent.filteredEvent.length,
+          itemCount: CourceBloc.filterData.length,
           itemBuilder: (context, index) {
-            final e = BlocEvent.filteredEvent[index];
+            final e = CourceBloc.filterData[index];
             return Padding(
               padding: const EdgeInsets.only(bottom: 20.0),
               child: GestureDetector(
                 onTap: () {
-                  BlocEvent.selectEvent(e.id);
-                  navigator(page: const EventView());
+                  Navigator.pop(context);
+
+                  navigator(
+                      page: DetailEcourceView(
+                    data: e,
+                  ));
                 },
                 child: Row(
                   children: [
@@ -333,7 +337,7 @@ Widget searchCard({required context, required Function navigator, required title
                         decoration: BoxDecoration(
                           borderRadius: const BorderRadius.all(Radius.circular(14)),
                           image: DecorationImage(
-                            image: NetworkImage(e.banner!),
+                            image: NetworkImage(e.bannerUrl ?? ''),
                             fit: BoxFit.cover,
                           ),
                         ),

@@ -1,3 +1,4 @@
+import 'package:benix/main_library.dart';
 import 'package:benix/modules/user/cource/home/model/bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:request_api_helper/request.dart';
@@ -103,6 +104,48 @@ rating(context, id, value, {required Function onSuccess}) async {
       onSuccess: (data) async {
         Fluttertoast.showToast(msg: 'Berhasil Memberi Rating');
         await CommentsBloc.init(data['data']);
+        onSuccess();
+      },
+    ),
+  );
+}
+
+Future<void> getCategoryEcource({required Function onSuccess}) async {
+  await RequestApiHelper.sendRequest(
+    type: Api.get,
+    url: 'misc/categories/ecourse',
+    replacementId: 43,
+    withLoading: true,
+    config: RequestApiHelperData(
+      onSuccess: (data) async {
+        CourceBloc.category.clear();
+        for (var i in data['data']) {
+          CourceBloc.category.add(SelectData(
+            id: i['id'].toString(),
+            title: i['name'],
+            objectData: {
+              'icon': i['icon_path'],
+            },
+          ));
+        }
+        onSuccess();
+      },
+    ),
+  );
+}
+
+Future<void> filterCategoryEcource(id, {required Function onSuccess}) async {
+  await RequestApiHelper.sendRequest(
+    type: Api.get,
+    url: 'courses',
+    replacementId: 44,
+    withLoading: true,
+    config: RequestApiHelperData(
+      body: {
+        'category_id': id,
+      },
+      onSuccess: (data) async {
+        CourceBloc.parseFilterCategoryFromResponse(data);
         onSuccess();
       },
     ),

@@ -2,11 +2,15 @@ import 'package:benix/modules/user/cource/home/model/model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
+import '../../../../../widget/model/select_model.dart';
+
 class CourceBloc {
   static final List<Cource> _data = [];
   static final List<Cource> _closeData = [];
   static List<Cource> get data => _data;
   static List<Cource> get closeData => _closeData;
+  static final List<Cource> filterData = [];
+  static List<SelectData> category = [];
 
   static List<Cource> getList({String? filter}) {
     return data.where((element) => element.name!.toUpperCase().contains((filter ?? '').toUpperCase())).toList();
@@ -14,6 +18,31 @@ class CourceBloc {
 
   static List<Cource> getListClose({String? filter}) {
     return closeData.where((element) => element.name!.toUpperCase().contains((filter ?? '').toUpperCase())).toList();
+  }
+
+  static parseFilterCategoryFromResponse(data) {
+    filterData.clear();
+    for (var i in data['data'] ?? []) {
+      filterData.add(Cource(
+        episodeMin: i['episode_min'].toString(),
+        episodeMax: i['episode_max'].toString(),
+        bannerUrl: i['banner_url'],
+        certificateUrl: i['certificate_url'],
+        description: i['description'],
+        id: i['id'],
+        jumlahModule: i['jumlah_module'],
+        jumlahVideo: i['jumlah_video'],
+        name: i['name'],
+        status: i['status'],
+        trainerName: i['trainer_name'],
+        userId: i['user_id'].toString(),
+        videoType: i['video_type'],
+        endDate: DateTime.parse(i['end_date']),
+        startDate: DateTime.parse(i['start_date']),
+        avgRate: i['avg_rate'].toString() != 'null' ? i['avg_rate'].toString()[0] : null,
+        isExternal: i['video_type'],
+      ));
+    }
   }
 
   static init(data) {
