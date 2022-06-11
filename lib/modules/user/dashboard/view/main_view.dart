@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:request_api_helper/session.dart';
 import '../../../../main_library.dart' show AnimateTransition, Animation, AnimationController, BackgroundImage, BaseBackground, BuildContext, Colors, Column, CurvedAnimation, Curves, DrawerBack, EdgeInsets, Expanded, Icon, Icons, InitControl, InkWell, Key, MainAxisAlignment, Material, MediaQuery, NeverScrollableScrollPhysics, Padding, PageController, PageView, Row, Scaffold, SizedBox, Stack, StatefulWidget, Text, TextStyle, Tween, Widget, getMaxWidth;
+import '../../reward/view/main_view.dart';
 
 class DashboardView extends StatefulWidget {
   final int selectedPage;
@@ -121,13 +122,13 @@ class _DashboardViewState extends BaseBackground<DashboardView> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 50),
-                    Divider(thickness: 0),
+                    const SizedBox(height: 50),
+                    const Divider(thickness: 0),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: ListView(
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         children: _listDrawer.map((e) {
                           return InkWell(
                             onTap: () async {
@@ -215,7 +216,7 @@ class _DashboardViewState extends BaseBackground<DashboardView> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 22),
+                        const SizedBox(height: 22),
                         Expanded(
                           child: PageView(
                             physics: const NeverScrollableScrollPhysics(),
@@ -230,32 +231,38 @@ class _DashboardViewState extends BaseBackground<DashboardView> {
                                 animatePositionC: animatePositionC,
                               ),
                               const CalendarView(),
+                              const RewardView(),
                               const HistoryView(),
                             ],
                           ),
                         ),
                         BottomNavigationBar(
-                            currentIndex: _currenPage,
-                            selectedItemColor: Colors.blue,
-                            unselectedItemColor: Colors.grey,
-                            showUnselectedLabels: true,
-                            onTap: (index) {
-                              control.jumpToPage(index);
-                            },
-                            items: const [
-                              BottomNavigationBarItem(
-                                icon: Icon(Icons.home),
-                                label: 'Home',
-                              ),
-                              BottomNavigationBarItem(
-                                icon: Icon(Icons.calendar_today),
-                                label: 'Calendar',
-                              ),
-                              BottomNavigationBarItem(
-                                icon: Icon(Icons.history),
-                                label: 'History',
-                              ),
-                            ])
+                          currentIndex: _currenPage,
+                          selectedItemColor: Colors.blue,
+                          unselectedItemColor: Colors.grey,
+                          showUnselectedLabels: true,
+                          onTap: (index) {
+                            control.jumpToPage(index);
+                          },
+                          items: const [
+                            BottomNavigationBarItem(
+                              icon: Icon(Icons.home),
+                              label: 'Home',
+                            ),
+                            BottomNavigationBarItem(
+                              icon: Icon(Icons.calendar_today),
+                              label: 'Calendar',
+                            ),
+                            BottomNavigationBarItem(
+                              icon: ImageIcon(AssetImage('assets/icons/reward.png')),
+                              label: 'Rewards',
+                            ),
+                            BottomNavigationBarItem(
+                              icon: Icon(Icons.history),
+                              label: 'History',
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   ),

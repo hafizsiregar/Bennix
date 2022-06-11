@@ -2,6 +2,7 @@ import 'package:benix/widget/base_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:benix/theme.dart';
 import 'package:benix/widget/buttons.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 Widget notification({required context, String? title, String? message, Widget? customWidget, String? icon, double? height, Widget? customBody}) {
   return SizedBox(
@@ -14,23 +15,10 @@ Widget notification({required context, String? title, String? message, Widget? c
         children: [
           Container(
             decoration: BoxDecoration(
-              border: Border.all(
-                color: Theme.of(context).textTheme.bodyText1!.color!,
-                width: 2,
-              ),
+              color: Theme.of(context).backgroundColor,
               borderRadius: const BorderRadius.all(Radius.circular(20)),
             ),
             child: const Center(),
-          ),
-          Transform.rotate(
-            angle: -0.1,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
-                borderRadius: const BorderRadius.all(Radius.circular(20)),
-              ),
-              child: const Center(),
-            ),
           ),
           SizedBox(
             child: Padding(
@@ -39,10 +27,6 @@ Widget notification({required context, String? title, String? message, Widget? c
                 children: [
                   Column(
                     children: [
-                      Image.asset(
-                        icon ?? 'assets/icon/blocked.gif',
-                        width: 70,
-                      ),
                       customBody ??
                           Column(
                             children: [
@@ -84,61 +68,106 @@ Widget notification({required context, String? title, String? message, Widget? c
   );
 }
 
-confirmation({required context, required String message, required String title, required Function onTap, required String buttonText}) async {
+confirmation({required context, required String message, required String title, required Function onTap, required String buttonText, item}) async {
   return await showDialog(
       context: context,
       builder: (context) {
-        return notification(
-          context: context,
-          icon: isDarkTheme ? 'assets/icon/edit_dark.gif' : 'assets/icon/edit_light.gif',
-          height: 300,
-          customBody: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            notification(
+              context: context,
+              icon: 'assets/images/confirm.png',
+              height: 400,
+              customBody: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.headline1,
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      Center(
+                        child: Image.asset(
+                          'assets/images/confirm.png',
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: message,
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                              ),
+                            ),
+                            TextSpan(
+                              text: item ?? '',
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.blue,
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
                   ),
                   const SizedBox(
-                    height: 12,
+                    height: 20,
                   ),
-                  Text(
-                    message,
-                    textAlign: TextAlign.center,
-                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Button.option(
+                        context: context,
+                        borderColor: Colors.blue,
+                        borderRadius: const BorderRadius.all(Radius.circular(6)),
+                        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
+                        color: Colors.transparent,
+                        textColor: Colors.blue,
+                        child: const Text(
+                          'Batal',
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Button.flat(
+                        borderRadius: const BorderRadius.all(Radius.circular(6)),
+                        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
+                        context: context,
+                        title: buttonText,
+                        onTap: () async {
+                          onTap();
+                        },
+                      ),
+                    ],
+                  )
                 ],
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Button.flat(
-                    context: context,
-                    color: Colors.transparent,
-                    child: const Text(
-                      'Batal',
-                    ),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  Button.flat(
-                    padding: const EdgeInsets.all(10),
-                    context: context,
-                    title: buttonText,
-                    onTap: () async {
-                      onTap();
-                    },
-                  ),
-                ],
-              )
-            ],
-          ),
+            ),
+          ],
         );
       });
 }
