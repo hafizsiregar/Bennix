@@ -208,6 +208,11 @@ updateEcource({required context, required Cource data, List<VideoData>? video, L
     'start_date': DateFormat('yyyy-MM-dd').format(data.startDate!),
     'end_date': DateFormat('yyyy-MM-dd').format(data.endDate!),
     'video_type': data.isExternal,
+    'dipelajari': '',
+    'cocok_untuk': '',
+    'jam': '',
+    'menit': '',
+    'episode': '',
     '_method': 'PUT',
     'category_id': data.kategori,
   };
@@ -224,30 +229,30 @@ updateEcource({required context, required Cource data, List<VideoData>? video, L
     });
   }
 
-  for (VideoData i in video ?? []) {
-    if (data.isExternal == 'internal') {
-      fileUpload[0].add(i.videoPath!);
-      fileUpload[1].add('videos[$counter]');
-      body.addAll({
-        'videos_episode[$counter]': i.episode,
-        'videos_description[$counter]': i.desc,
-        'videos_is_free[$counter]': i.isfree! ? '0' : '1',
-        'videos_name[$counter]': i.name,
-        'videos_id[$counter]': 'null',
-      });
-    } else {
-      body.addAll({
-        'videos_episode[$counter]': i.episode,
-        'videos_name[$counter]': i.name,
-        'videos[$counter]': i.videoPath,
-        'videos_description[$counter]': i.desc,
-        'videos_is_free[$counter]': i.isfree! ? '0' : '1',
-        'videos_id[$counter]': 'null',
-      });
-    }
+  // for (VideoData i in video ?? []) {
+  //   if (data.isExternal == 'internal') {
+  //     fileUpload[0].add(i.videoPath!);
+  //     fileUpload[1].add('videos[$counter]');
+  //     body.addAll({
+  //       'video_detail[$counter][videos_episode]': i.episode,
+  //       'video_detail[$counter][videos_description]': i.desc,
+  //       'videos_is_free[$counter]': i.isfree! ? '0' : '1',
+  //       'videos_name[$counter]': i.name,
+  //       'videos_id[$counter]': 'null',
+  //     });
+  //   } else {
+  //     body.addAll({
+  //       'videos_episode[$counter]': i.episode,
+  //       'videos_name[$counter]': i.name,
+  //       'videos[$counter]': i.videoPath,
+  //       'videos_description[$counter]': i.desc,
+  //       'videos_is_free[$counter]': i.isfree! ? '0' : '1',
+  //       'videos_id[$counter]': 'null',
+  //     });
+  //   }
 
-    ++counter;
-  }
+  //   ++counter;
+  // }
   int counters = 0;
   for (ModulData i in modul ?? []) {
     fileUpload[0].add(i.modulePath!);

@@ -7,7 +7,10 @@ import 'package:benix/modules/admin/cource/model/model.dart';
 import 'package:benix/modules/user/cource/home/model/model.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+
+import 'custom_form.dart';
 
 class AddVideoView extends StatefulWidget {
   final Cource? editData;
@@ -26,6 +29,8 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
   int currentIndex = 0;
   bool isExtern = false;
   String? banner, bannerNetwork;
+  List<bool> error = [false, false, false, false];
+  bool toogle = false;
 
   _datePicker(date, initial) async {
     await showDatePicker(
@@ -58,7 +63,6 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
       builder: (context) {
         return StatefulBuilder(builder: (context, setStates) {
           return bottom(
-            title: 'Tambah Video',
             context: context,
             child: InitControl(
               formKey: _formsS,
@@ -66,6 +70,23 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Center(
+                    child: Text(
+                      'Upload Video',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Divider(),
                   const SizedBox(
                     height: 20,
                   ),
@@ -409,68 +430,31 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
       child: InitControl(
         formKey: _formKey,
         child: Scaffold(
+          backgroundColor: const Color(0xfff7f7f7),
+          appBar: AppBar(
+            title: Text(
+              'Buat E-Cource',
+              style: GoogleFonts.poppins(
+                textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black),
+              ),
+            ),
+            actions: [],
+            centerTitle: true,
+            backgroundColor: Colors.white,
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Icons.arrow_back_ios_new,
+                color: Colors.black,
+                size: 18,
+              ),
+            ),
+          ),
           body: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  color: BaseColor.theme!.primaryColor,
-                  width: MediaQuery.of(context).size.width,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      InkWell(
-                        borderRadius: const BorderRadius.all(Radius.circular(100)),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: Icon(
-                            FeatherIcons.chevronLeft,
-                            color: BaseColor.theme!.textButtonColor,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 4.0),
-                              child: Text(
-                                'Bennix E-Course',
-                                style: TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.w600,
-                                  color: BaseColor.theme!.textButtonColor,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              'Unggah Video',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w400,
-                                color: BaseColor.theme!.textButtonColor,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                    ],
-                  ),
-                ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -481,31 +465,12 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
 
                 step[0]
                     ? const SizedBox()
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Deskripsi',
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xff383838),
-                              ),
-                            ),
-                            const Text(
-                              'Isi Data Dengan Benar',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xff383838),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            GestureDetector(
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: GestureDetector(
                               onTap: () async {
                                 banner = await getImage(context);
                                 setState(() {});
@@ -514,7 +479,11 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
                                 width: double.infinity,
                                 height: 150,
                                 decoration: BoxDecoration(
-                                  color: Colors.black12,
+                                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                                  border: Border.all(
+                                    width: 2,
+                                    color: Colors.black26,
+                                  ),
                                   image: banner == null
                                       ? (bannerNetwork != null)
                                           ? DecorationImage(
@@ -532,210 +501,402 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
                                 child: banner != null || bannerNetwork != null
                                     ? const SizedBox()
                                     : const Center(
-                                        child: Text('Pilih Banner'),
+                                        child: Text(
+                                          'Upload Banner',
+                                          style: TextStyle(
+                                            color: Colors.black54,
+                                          ),
+                                        ),
                                       ),
                               ),
                             ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 4),
-                              child: Forms.border(
-                                context: context,
-                                controller: _judul,
-                                hintText: 'Masukkan Judul',
-                                label: 'Judul',
-                                isfloat: true,
-                                validator: (data) {
-                                  if (data!.isEmpty) {
-                                    return 'harus Di Isi';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(bottom: 24.0),
-                              child: Text(
-                                '(Judul Akan Muncul Di Beranda / Pencarian)',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0xff8a8a8a),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 4),
-                              child: Forms.border(
-                                context: context,
-                                controller: _pengajar,
-                                hintText: 'Masukkan Nama Pelatih / Trainer',
-                                label: 'Pengajar',
-                                isfloat: true,
-                                validator: (data) {
-                                  if (data!.isEmpty) {
-                                    return 'harus Di Isi';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(bottom: 24.0),
-                              child: Text(
-                                '(Nama Pengajar Akan Muncul Di Dalam Deskripsi)',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0xff8a8a8a),
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Select.single(
-                                  title: 'Pilih Kategori',
-                                  context: context,
-                                  data: AddVideoBloc.ketegori,
-                                  selectedId: kategori?.id,
-                                  isSearch: true,
-                                ).then((value) {
-                                  if (value != null) {
-                                    if (value.id != null) {
-                                      kategori = SelectData(
-                                        id: value.id,
-                                        title: value.title,
-                                      );
-                                    }
-                                  }
-                                });
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 24),
-                                child: Forms.border(
-                                  context: context,
-                                  controller: TextEditingController(text: kategori?.title),
-                                  hintText: 'Pilih Kategori',
-                                  label: 'Kategori',
-                                  isfloat: true,
-                                  enabled: false,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 4),
-                              child: Forms.border(
-                                context: context,
-                                controller: _deskripsi,
-                                hintText: 'Masukkan Deskripsi',
-                                label: 'Deskripsi',
-                                height: 3,
-                                isfloat: true,
-                                validator: (data) {
-                                  if (data!.isEmpty) {
-                                    return 'harus Di Isi';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(bottom: 24.0),
-                              child: Text(
-                                '(Masukkan Deskripsi Yang Menjelaskan Video Anda)',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0xff8a8a8a),
-                                ),
-                              ),
-                            ),
-                            Row(
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          addCourceForm(
+                            error: error[0],
+                            control: _judul,
+                            title: 'Judul Course',
+                            isRequired: true,
+                            maxLength: 255,
+                            hint: 'Masukkan Judul',
+                            maxLine: 1,
+                            onChanged: () {
+                              error[0] = false;
+                              setState(() {});
+                            },
+                            onError: () {
+                              error[0] = true;
+                              setState(() {});
+                            },
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          addCourceForm(
+                            error: error[1],
+                            control: _pengajar,
+                            title: 'Nama Pengajar',
+                            maxLength: 255,
+                            isRequired: true,
+                            hint: 'Masukkan Nama Pelatih / Trainer',
+                            maxLine: 1,
+                            onChanged: () {
+                              error[1] = false;
+                              setState(() {});
+                            },
+                            onError: () {
+                              error[1] = true;
+                              setState(() {});
+                            },
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          // GestureDetector(
+                          //   onTap: () {
+                          //     Select.single(
+                          //       title: 'Pilih Kategori',
+                          //       context: context,
+                          //       data: AddVideoBloc.ketegori,
+                          //       selectedId: kategori?.id,
+                          //       isSearch: true,
+                          //     ).then((value) {
+                          //       if (value != null) {
+                          //         if (value.id != null) {
+                          //           kategori = SelectData(
+                          //             id: value.id,
+                          //             title: value.title,
+                          //           );
+                          //         }
+                          //       }
+                          //     });
+                          //   },
+                          //   child: Padding(
+                          //     padding: const EdgeInsets.only(bottom: 24),
+                          //     child: Forms.border(
+                          //       context: context,
+                          //       controller: TextEditingController(text: kategori?.title),
+                          //       hintText: 'Pilih Kategori',
+                          //       label: 'Kategori',
+                          //       isfloat: true,
+                          //       enabled: false,
+                          //     ),
+                          //   ),
+                          // ),
+                          addCourceForm(
+                            error: error[2],
+                            control: _deskripsi,
+                            title: 'Deskripsi Course',
+                            maxLength: 3000,
+                            isRequired: true,
+                            hint: 'Masukkan Deskripsi',
+                            maxLine: null,
+                            onChanged: () {
+                              error[2] = false;
+                              setState(() {});
+                            },
+                            onError: () {
+                              error[2] = true;
+                              setState(() {});
+                            },
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          addCourceForm(
+                            maxLine: null,
+                            title: 'Yang Akan Dipelajari',
+                            hint: 'Masukkan Benefit',
+                            onChanged: () {
+                              setState(() {});
+                            },
+                            onError: () {
+                              setState(() {});
+                            },
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          addCourceForm(
+                            maxLine: null,
+                            title: 'E course ini cocok untuk',
+                            hint: 'Masukkan target audience',
+                            onChanged: () {
+                              setState(() {});
+                            },
+                            onError: () {
+                              setState(() {});
+                            },
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            color: Colors.white,
+                            child: Column(
                               children: [
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      _datePicker(start, 'start');
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(bottom: 4),
-                                      child: Forms.border(
-                                        context: context,
-                                        hintText: DateFormat('dd MMM yyyy').format(start!),
-                                        label: 'Tanggal Mulai',
-                                        isfloat: true,
-                                        enabled: false,
-                                        validator: (data) {
-                                          if (start == null) {
-                                            return 'harus Di Isi';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      _datePicker(end, 'end');
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(bottom: 4),
-                                      child: Forms.border(
-                                        context: context,
-                                        hintText: DateFormat('dd MMM yyyy').format(end!),
-                                        label: 'Tanggal Berakhir',
-                                        enabled: false,
-                                        isfloat: true,
-                                        validator: (data) {
-                                          if (end == null) {
-                                            return 'harus Di Isi';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(bottom: 24.0),
-                              child: Text(
-                                '(Video akan muncul sesuai awal dan akhir)',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0xff8a8a8a),
-                                ),
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'External (Link Video Selain Bennix)',
-                                  style: TextStyle(
-                                    color: BaseColor.theme?.captionColor,
-                                  ),
-                                ),
-                                Switch(
-                                  value: isExtern,
-                                  onChanged: (val) async {
-                                    isExtern = val;
-                                    setState(() {});
+                                InkWell(
+                                  onTap: () {
+                                    Select.single(
+                                      title: 'Pilih Kategori',
+                                      context: context,
+                                      data: AddVideoBloc.ketegori,
+                                      selectedId: kategori?.id,
+                                      isSearch: true,
+                                    ).then((value) {
+                                      if (value != null) {
+                                        if (value.id != null) {
+                                          kategori = SelectData(
+                                            id: value.id,
+                                            title: value.title,
+                                          );
+                                        }
+                                      }
+                                    });
                                   },
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 20, right: 20, top: 12, bottom: 12),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            const Icon(
+                                              FeatherIcons.sliders,
+                                              size: 18,
+                                            ),
+                                            const SizedBox(
+                                              width: 8,
+                                            ),
+                                            const Text(
+                                              'Kategori',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                            const Expanded(child: SizedBox()),
+                                            Text(
+                                              kategori?.title ?? '',
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 8,
+                                            ),
+                                            const Icon(
+                                              FeatherIcons.chevronRight,
+                                              size: 18,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const Divider(
+                                  color: Colors.black38,
+                                  height: 0,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 20, right: 20, top: 12, bottom: 12),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            _datePicker(start, 'start');
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(bottom: 4),
+                                            child: Forms.border(
+                                              context: context,
+                                              hintText: DateFormat('dd MMM yyyy').format(start!),
+                                              label: 'Tanggal Mulai',
+                                              isfloat: true,
+                                              enabled: false,
+                                              validator: (data) {
+                                                if (start == null) {
+                                                  return 'harus Di Isi';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            _datePicker(end, 'end');
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(bottom: 4),
+                                            child: Forms.border(
+                                              context: context,
+                                              hintText: DateFormat('dd MMM yyyy').format(end!),
+                                              label: 'Tanggal Berakhir',
+                                              enabled: false,
+                                              isfloat: true,
+                                              validator: (data) {
+                                                if (end == null) {
+                                                  return 'harus Di Isi';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Divider(
+                                  color: Colors.black38,
+                                  height: 0,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 20,
+                                    right: 20,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'External (Link Video Selain Bennix)',
+                                        style: TextStyle(
+                                          color: BaseColor.theme?.captionColor,
+                                        ),
+                                      ),
+                                      Switch(
+                                        value: isExtern,
+                                        onChanged: (val) async {
+                                          isExtern = val;
+                                          setState(() {});
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+
+                          // const Padding(
+                          //   padding: EdgeInsets.only(bottom: 24.0),
+                          //   child: Text(
+                          //     '(Video akan muncul sesuai awal dan akhir)',
+                          //     style: TextStyle(
+                          //       fontSize: 11,
+                          //       fontWeight: FontWeight.w500,
+                          //       color: Color(0xff8a8a8a),
+                          //     ),
+                          //   ),
+                          // ),
+                          GestureDetector(
+                            onTap: () {
+                              toogle ? toogle = false : toogle = true;
+                              setState(() {});
+                            },
+                            child: Container(
+                              color: Colors.white,
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 20, right: 20, top: 18, bottom: 18),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              toogle ? FeatherIcons.chevronUp : FeatherIcons.chevronDown,
+                                              size: 18,
+                                            ),
+                                            const SizedBox(
+                                              width: 8,
+                                            ),
+                                            const Text(
+                                              'Konten Course',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            height: toogle ? 160 : 0,
+                            child: toogle
+                                ? SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                      child: Column(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () async {
+                                              await _showAddVideo();
+                                              setState(() {});
+                                            },
+                                            child: Container(
+                                              height: 120,
+                                              width: 160,
+                                              decoration: BoxDecoration(
+                                                borderRadius: const BorderRadius.all(Radius.circular(8)),
+                                                border: Border.all(
+                                                  width: 2,
+                                                  color: Colors.black26,
+                                                ),
+                                                image: banner == null
+                                                    ? (bannerNetwork != null)
+                                                        ? DecorationImage(
+                                                            image: NetworkImage(bannerNetwork!),
+                                                            fit: BoxFit.cover,
+                                                          )
+                                                        : null
+                                                    : DecorationImage(
+                                                        image: FileImage(
+                                                          File(banner!),
+                                                        ),
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                              ),
+                                              child: banner != null || bannerNetwork != null
+                                                  ? const SizedBox()
+                                                  : const Center(
+                                                      child: Text(
+                                                        'Upload Video',
+                                                        style: TextStyle(
+                                                          color: Colors.black54,
+                                                        ),
+                                                      ),
+                                                    ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox(),
+                          ),
+                        ],
                       ),
 
                 Padding(
@@ -743,444 +904,240 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 20.0),
-                        child: Row(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text(
-                                  'Video',
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color(0xff383838),
-                                  ),
-                                ),
-                                Text(
-                                  'Minimal 1 Video Untuk Mengupload',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color(0xff8a8a8a),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Expanded(child: SizedBox()),
-                            Button.flat(
-                              context: context,
-                              onTap: () async {
-                                await _showAddVideo();
-                                setState(() {});
-                              },
-                              title: 'Tambah',
-                              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                            ),
-                          ],
-                        ),
-                      ),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: AdminCourceBloc.videoData.length,
-                        itemBuilder: (context, index) {
-                          final datas = AdminCourceBloc.videoData[index];
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 20.0),
-                            child: Stack(
-                              alignment: Alignment.centerLeft,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 16.0),
-                                  child: Material(
-                                    color: Colors.black.withOpacity(0.08),
-                                    borderRadius: const BorderRadius.all(Radius.circular(20)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: Row(
-                                        children: [
-                                          const SizedBox(
-                                            width: 20,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(bottom: 4.0),
-                                                child: Text(
-                                                  datas.name ?? '',
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                              ),
-                                              const Text(
-                                                'Server',
-                                                style: TextStyle(
-                                                  fontSize: 11,
-                                                  color: Color(0xff8a8a8a),
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const Expanded(child: SizedBox()),
-                                          InkWell(
-                                            onTap: () async {
-                                              AdminCourceBloc.delete(index);
-                                              await deleteCourceVideo(context: context, id: datas.id.toString());
-                                              setState(() {});
-                                            },
-                                            borderRadius: const BorderRadius.all(Radius.circular(100)),
-                                            child: Icon(
-                                              FeatherIcons.x,
-                                              color: Theme.of(context).errorColor,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  height: 40,
-                                  width: 40,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.blue,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      datas.episode ?? '',
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                      AddVideoBloc.videoData.isEmpty && AdminCourceBloc.videoData.isEmpty
-                          ? SizedBox(
-                              height: MediaQuery.of(context).size.width * 0.5,
-                              child: Center(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: const [
-                                    Icon(
-                                      FeatherIcons.videoOff,
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    Text('Tidak Ada Data'),
-                                  ],
-                                ),
-                              ),
-                            )
-                          : ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: AddVideoBloc.videoData.length,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                final datas = AddVideoBloc.videoData[index];
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 20.0),
-                                  child: Stack(
-                                    alignment: Alignment.centerLeft,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 16.0),
-                                        child: Material(
-                                          color: Colors.black.withOpacity(0.08),
-                                          borderRadius: const BorderRadius.all(Radius.circular(20)),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(12.0),
-                                            child: Row(
-                                              children: [
-                                                const SizedBox(
-                                                  width: 20,
-                                                ),
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(bottom: 4.0),
-                                                        child: Text(
-                                                          datas.name ?? '',
-                                                          style: const TextStyle(
-                                                            fontSize: 16,
-                                                            fontWeight: FontWeight.w600,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        datas.isExtern! ? datas.videoPath ?? '' : 'Internal',
-                                                        style: const TextStyle(
-                                                          fontSize: 11,
-                                                          color: Color(0xff8a8a8a),
-                                                          fontWeight: FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: 40,
-                                                  child: InkWell(
-                                                    onTap: () async {
-                                                      AddVideoBloc.delete(index);
+                      // Padding(
+                      //   padding: const EdgeInsets.only(bottom: 20.0),
+                      //   child: Row(
+                      //     children: [
+                      //       Column(
+                      //         crossAxisAlignment: CrossAxisAlignment.start,
+                      //         children: const [
+                      //           Text(
+                      //             'Video',
+                      //             style: TextStyle(
+                      //               fontSize: 22,
+                      //               fontWeight: FontWeight.w500,
+                      //               color: Color(0xff383838),
+                      //             ),
+                      //           ),
+                      //           Text(
+                      //             'Minimal 1 Video Untuk Mengupload',
+                      //             style: TextStyle(
+                      //               fontSize: 12,
+                      //               fontWeight: FontWeight.w500,
+                      //               color: Color(0xff8a8a8a),
+                      //             ),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //       const Expanded(child: SizedBox()),
+                      //       Button.flat(
+                      //         context: context,
+                      //         onTap: () async {
+                      //           await _showAddVideo();
+                      //           setState(() {});
+                      //         },
+                      //         title: 'Tambah',
+                      //         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      // ListView.builder(
+                      //   shrinkWrap: true,
+                      //   physics: const NeverScrollableScrollPhysics(),
+                      //   itemCount: AdminCourceBloc.videoData.length,
+                      //   itemBuilder: (context, index) {
+                      //     final datas = AdminCourceBloc.videoData[index];
+                      //     return Padding(
+                      //       padding: const EdgeInsets.only(bottom: 20.0),
+                      //       child: Stack(
+                      //         alignment: Alignment.centerLeft,
+                      //         children: [
+                      //           Padding(
+                      //             padding: const EdgeInsets.only(left: 16.0),
+                      //             child: Material(
+                      //               color: Colors.black.withOpacity(0.08),
+                      //               borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      //               child: Padding(
+                      //                 padding: const EdgeInsets.all(12.0),
+                      //                 child: Row(
+                      //                   children: [
+                      //                     const SizedBox(
+                      //                       width: 20,
+                      //                     ),
+                      //                     Column(
+                      //                       crossAxisAlignment: CrossAxisAlignment.start,
+                      //                       children: [
+                      //                         Padding(
+                      //                           padding: const EdgeInsets.only(bottom: 4.0),
+                      //                           child: Text(
+                      //                             datas.name ?? '',
+                      //                             style: const TextStyle(
+                      //                               fontSize: 16,
+                      //                               fontWeight: FontWeight.w600,
+                      //                             ),
+                      //                           ),
+                      //                         ),
+                      //                         const Text(
+                      //                           'Server',
+                      //                           style: TextStyle(
+                      //                             fontSize: 11,
+                      //                             color: Color(0xff8a8a8a),
+                      //                             fontWeight: FontWeight.w500,
+                      //                           ),
+                      //                         ),
+                      //                       ],
+                      //                     ),
+                      //                     const Expanded(child: SizedBox()),
+                      //                     InkWell(
+                      //                       onTap: () async {
+                      //                         AdminCourceBloc.delete(index);
+                      //                         await deleteCourceVideo(context: context, id: datas.id.toString());
+                      //                         setState(() {});
+                      //                       },
+                      //                       borderRadius: const BorderRadius.all(Radius.circular(100)),
+                      //                       child: Icon(
+                      //                         FeatherIcons.x,
+                      //                         color: Theme.of(context).errorColor,
+                      //                       ),
+                      //                     ),
+                      //                   ],
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //           ),
+                      //           Container(
+                      //             height: 40,
+                      //             width: 40,
+                      //             decoration: const BoxDecoration(
+                      //               color: Colors.blue,
+                      //               shape: BoxShape.circle,
+                      //             ),
+                      //             child: Center(
+                      //               child: Text(
+                      //                 datas.episode ?? '',
+                      //                 style: const TextStyle(
+                      //                   fontSize: 18,
+                      //                   color: Colors.white,
+                      //                   fontWeight: FontWeight.w700,
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     );
+                      //   },
+                      // ),
+                      // AddVideoBloc.videoData.isEmpty && AdminCourceBloc.videoData.isEmpty
+                      //     ? SizedBox(
+                      //         height: MediaQuery.of(context).size.width * 0.5,
+                      //         child: Center(
+                      //           child: Column(
+                      //             mainAxisSize: MainAxisSize.min,
+                      //             children: const [
+                      //               Icon(
+                      //                 FeatherIcons.videoOff,
+                      //               ),
+                      //               SizedBox(
+                      //                 height: 20,
+                      //               ),
+                      //               Text('Tidak Ada Data'),
+                      //             ],
+                      //           ),
+                      //         ),
+                      //       )
+                      //     : ListView.builder(
+                      //         shrinkWrap: true,
+                      //         itemCount: AddVideoBloc.videoData.length,
+                      //         physics: const NeverScrollableScrollPhysics(),
+                      //         itemBuilder: (context, index) {
+                      //           final datas = AddVideoBloc.videoData[index];
+                      //           return Padding(
+                      //             padding: const EdgeInsets.only(bottom: 20.0),
+                      //             child: Stack(
+                      //               alignment: Alignment.centerLeft,
+                      //               children: [
+                      //                 Padding(
+                      //                   padding: const EdgeInsets.only(left: 16.0),
+                      //                   child: Material(
+                      //                     color: Colors.black.withOpacity(0.08),
+                      //                     borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      //                     child: Padding(
+                      //                       padding: const EdgeInsets.all(12.0),
+                      //                       child: Row(
+                      //                         children: [
+                      //                           const SizedBox(
+                      //                             width: 20,
+                      //                           ),
+                      //                           Expanded(
+                      //                             child: Column(
+                      //                               crossAxisAlignment: CrossAxisAlignment.start,
+                      //                               children: [
+                      //                                 Padding(
+                      //                                   padding: const EdgeInsets.only(bottom: 4.0),
+                      //                                   child: Text(
+                      //                                     datas.name ?? '',
+                      //                                     style: const TextStyle(
+                      //                                       fontSize: 16,
+                      //                                       fontWeight: FontWeight.w600,
+                      //                                     ),
+                      //                                   ),
+                      //                                 ),
+                      //                                 Text(
+                      //                                   datas.isExtern! ? datas.videoPath ?? '' : 'Internal',
+                      //                                   style: const TextStyle(
+                      //                                     fontSize: 11,
+                      //                                     color: Color(0xff8a8a8a),
+                      //                                     fontWeight: FontWeight.w500,
+                      //                                   ),
+                      //                                 ),
+                      //                               ],
+                      //                             ),
+                      //                           ),
+                      //                           SizedBox(
+                      //                             width: 40,
+                      //                             child: InkWell(
+                      //                               onTap: () async {
+                      //                                 AddVideoBloc.delete(index);
 
-                                                      setState(() {});
-                                                    },
-                                                    borderRadius: const BorderRadius.all(Radius.circular(100)),
-                                                    child: Icon(
-                                                      FeatherIcons.x,
-                                                      color: Theme.of(context).errorColor,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        height: 40,
-                                        width: 40,
-                                        decoration: const BoxDecoration(
-                                          color: Colors.blue,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            datas.episode ?? '',
-                                            style: const TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 20.0),
-                        child: Row(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text(
-                                  'Modul',
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color(0xff383838),
-                                  ),
-                                ),
-                                Text(
-                                  'Opsional',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color(0xff8a8a8a),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Expanded(child: SizedBox()),
-                            Button.flat(
-                              context: context,
-                              onTap: () async {
-                                await _showAddModul();
-                                setState(() {});
-                              },
-                              title: 'Tambah',
-                              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                            ),
-                          ],
-                        ),
-                      ),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: AdminCourceBloc.moduleData.length,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          final datas = AdminCourceBloc.moduleData[index];
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 20.0),
-                            child: Stack(
-                              alignment: Alignment.centerLeft,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 16.0),
-                                  child: Material(
-                                    color: Colors.black.withOpacity(0.08),
-                                    borderRadius: const BorderRadius.all(Radius.circular(20)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: Row(
-                                        children: [
-                                          const SizedBox(
-                                            width: 20,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(bottom: 4.0),
-                                                child: Text(
-                                                  datas.name ?? '',
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const Expanded(child: SizedBox()),
-                                          InkWell(
-                                            onTap: () async {
-                                              AddVideoBloc.deleteModul(index);
-                                              await deleteCourceModule(context: context, id: datas.id.toString());
-                                              setState(() {});
-                                            },
-                                            borderRadius: const BorderRadius.all(Radius.circular(100)),
-                                            child: Icon(
-                                              FeatherIcons.x,
-                                              color: Theme.of(context).errorColor,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  height: 40,
-                                  width: 40,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.blue,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: const Center(
-                                    child: Icon(
-                                      FeatherIcons.fileText,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                      AddVideoBloc.moduleData.isEmpty
-                          ? SizedBox(
-                              height: MediaQuery.of(context).size.width * 0.5,
-                              child: Center(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: const [
-                                    Icon(
-                                      FeatherIcons.fileText,
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    Text('Tidak Ada Modul'),
-                                  ],
-                                ),
-                              ),
-                            )
-                          : ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: AddVideoBloc.moduleData.length,
-                              itemBuilder: (context, index) {
-                                final datas = AddVideoBloc.moduleData[index];
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 20.0),
-                                  child: Stack(
-                                    alignment: Alignment.centerLeft,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 16.0),
-                                        child: Material(
-                                          color: Colors.black.withOpacity(0.08),
-                                          borderRadius: const BorderRadius.all(Radius.circular(20)),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(12.0),
-                                            child: Row(
-                                              children: [
-                                                const SizedBox(
-                                                  width: 20,
-                                                ),
-                                                Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(bottom: 4.0),
-                                                      child: Text(
-                                                        datas.name ?? '',
-                                                        style: const TextStyle(
-                                                          fontSize: 16,
-                                                          fontWeight: FontWeight.w600,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const Expanded(child: SizedBox()),
-                                                InkWell(
-                                                  onTap: () {
-                                                    AddVideoBloc.deleteModul(index);
-                                                    setState(() {});
-                                                  },
-                                                  borderRadius: const BorderRadius.all(Radius.circular(100)),
-                                                  child: Icon(
-                                                    FeatherIcons.x,
-                                                    color: Theme.of(context).errorColor,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        height: 40,
-                                        width: 40,
-                                        decoration: const BoxDecoration(
-                                          color: Colors.blue,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: const Center(
-                                          child: Icon(
-                                            FeatherIcons.fileText,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
+                      //                                 setState(() {});
+                      //                               },
+                      //                               borderRadius: const BorderRadius.all(Radius.circular(100)),
+                      //                               child: Icon(
+                      //                                 FeatherIcons.x,
+                      //                                 color: Theme.of(context).errorColor,
+                      //                               ),
+                      //                             ),
+                      //                           ),
+                      //                         ],
+                      //                       ),
+                      //                     ),
+                      //                   ),
+                      //                 ),
+                      //                 Container(
+                      //                   height: 40,
+                      //                   width: 40,
+                      //                   decoration: const BoxDecoration(
+                      //                     color: Colors.blue,
+                      //                     shape: BoxShape.circle,
+                      //                   ),
+                      //                   child: Center(
+                      //                     child: Text(
+                      //                       datas.episode ?? '',
+                      //                       style: const TextStyle(
+                      //                         fontSize: 18,
+                      //                         color: Colors.white,
+                      //                         fontWeight: FontWeight.w700,
+                      //                       ),
+                      //                     ),
+                      //                   ),
+                      //                 ),
+                      //               ],
+                      //             ),
+                      //           );
+                      //         },
+                      //       ),
                       Row(
                         children: [
                           Expanded(

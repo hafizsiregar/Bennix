@@ -2,6 +2,7 @@ import 'package:benix/main_library.dart';
 import 'package:benix/modules/user/cource/home/api/request_api.dart';
 import 'package:benix/modules/user/cource/home/model/bloc.dart';
 import 'package:benix/modules/user/cource/home/model/model.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class CommentsView extends StatefulWidget {
@@ -32,106 +33,150 @@ class _CommentsViewState extends BaseBackground<CommentsView> {
       animation: animationTransition!,
       child: InitControl(
         child: Scaffold(
-          body: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 12.0),
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-                  decoration: BoxDecoration(
-                    color: BaseColor.theme?.primaryColor,
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          IconButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              icon: const Icon(
-                                Icons.arrow_back_ios_new,
-                                color: Colors.white,
-                              )),
-                          const Text(
-                            'Komentar',
-                            style: TextStyle(
-                              fontSize: 22,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: ListView.builder(
-                    itemCount: CommentsBloc.getList().take(10).toList().length,
-                    itemBuilder: (context, index) {
-                      List<Comment> dataList = CommentsBloc.getList().take(10).toList();
-                      Comment comment = dataList[index];
-                      return Card(
-                        elevation: 0.5,
-                        child: ListTile(
-                          leading: const Icon(Icons.comment),
-                          title: Text(comment.name ?? ''),
-                          subtitle: Text(comment.chat ?? ''),
-                          // trailing: Text( DateFormat('MMM').format(comment.created!).toUpperCase()),
-                          trailing: Text(
-                            timeago.format(comment.created!, locale: 'id'),
-                            style: const TextStyle(color: Colors.blue, fontSize: 10),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
+          appBar: AppBar(
+            title: Text('Komentar',
+                style: GoogleFonts.poppins(
+                  textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black),
+                )),
+            actions: [
+              SizedBox(),
             ],
+            centerTitle: true,
+            backgroundColor: Colors.white,
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                Icons.arrow_back_ios_new,
+                color: Colors.black,
+                size: 18,
+              ),
+            ),
           ),
-          bottomSheet: Container(
-            color: Colors.white,
-            child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: ListView.builder(
+                      itemCount: CommentsBloc.getList().take(10).toList().length,
+                      itemBuilder: (context, index) {
+                        List<Comment> dataList = CommentsBloc.getList().take(10).toList();
+                        Comment comment = dataList[index];
+                        return Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              height: 50,
+                              width: 50,
+                              decoration: const BoxDecoration(
+                                color: Colors.black12,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    comment.name ?? '',
+                                    style: GoogleFonts.poppins(
+                                      textStyle: const TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    timeago.format(comment.created!, locale: 'id'),
+                                    style: GoogleFonts.poppins(
+                                      textStyle: const TextStyle(fontSize: 11),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 12,
+                                  ),
+                                  Text(
+                                    comment.chat ?? '',
+                                    style: GoogleFonts.poppins(
+                                      textStyle: const TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w600),
+                                    ),
+                                  ),
+                                  Text(
+                                    'Balas',
+                                    style: GoogleFonts.poppins(
+                                      textStyle: const TextStyle(fontSize: 11),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          bottomSheet: Padding(
+            padding: const EdgeInsets.only(bottom: 8.0, left: 20, right: 20),
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  bottom: BorderSide(
+                    width: 1,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
                     Expanded(
                       flex: 4,
                       child: TextField(
                         controller: _messageController,
-                        style: const TextStyle(height: 0.5, color: Colors.black),
+                        // style: const TextStyle(height: 0.5, color: Colors.black),
+                        scrollPadding: EdgeInsets.zero,
                         decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.zero,
                           isDense: true,
-                          hintText: "Pesan komentar",
-                          border: OutlineInputBorder(),
+                          hintText: "Tambahkan Komentar",
+                          border: InputBorder.none,
                         ),
                       ),
                     ),
                     const SizedBox(
                       width: 4,
                     ),
-                    Expanded(
-                        flex: 1,
-                        child: ElevatedButton(
-                          child: const Icon(Icons.send),
-                          onPressed: () async {
-                            final bol = await saveComment(context, widget.data.id.toString(), _messageController.text.toString(), onSuccess: () {
-                              getComments(context, widget.data.id.toString(), onSuccess: () {
-                                _messageController.clear;
-                                setState(() {});
-                              });
-                              setState(() {});
-                            });
-                          },
-                        ))
+                    GestureDetector(
+                      child: Image.asset('assets/icons/send.png'),
+                      onTap: () async {
+                        if (_messageController.text == '') {
+                          return;
+                        }
+                        final bol = await saveComment(context, widget.data.id.toString(), _messageController.text.toString(), onSuccess: () {
+                          getComments(context, widget.data.id.toString(), onSuccess: () {
+                            _messageController.clear;
+                            setState(() {});
+                          });
+                          setState(() {});
+                        });
+                      },
+                    ),
                   ],
-                )),
+                ),
+              ),
+            ),
           ),
         ),
       ),

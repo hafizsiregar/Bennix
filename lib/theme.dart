@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'main_library.dart' show BuildContext, ButtonThemeData, ChangeNotifier, Color, Colors, TextStyle, TextTheme, ThemeData, Brightness;
 
@@ -53,11 +54,11 @@ ThemeData themeDatas(bool isDarkTheme, BuildContext context) {
 //               color: Color(0xffffffff),
 //             ),
       bodyText2: isDarkTheme == true
-          ? const TextStyle(
-              color: Color(0xffffffff),
+          ? GoogleFonts.poppins(
+              textStyle: const TextStyle(color: Color(0xffffffff)),
             )
-          : const TextStyle(
-              color: Color(0xff120D26),
+          : GoogleFonts.poppins(
+              textStyle: const TextStyle(color: Color(0xff120D26)),
             ),
 //       caption: isDarkTheme == true
 //           ? const TextStyle(color: Color(0xffD7D7D7), fontSize: 10, fontWeight: FontWeight.w400)
@@ -116,13 +117,11 @@ ThemeData themeDatas(bool isDarkTheme, BuildContext context) {
 //               color: Color(0xff4D4D4D),
 //             ),
       subtitle2: isDarkTheme == true
-          ? const TextStyle(
-              fontSize: 12,
-              color: Color(0xffffffff),
+          ? GoogleFonts.poppins(
+              textStyle: const TextStyle(fontSize: 12, color: Color(0xffffffff)),
             )
-          : const TextStyle(
-              fontSize: 12,
-              color: Color(0xff747688),
+          : GoogleFonts.poppins(
+              textStyle: const TextStyle(fontSize: 12, color: Color(0xff747688)),
             ),
     ),
     buttonTheme: const ButtonThemeData(

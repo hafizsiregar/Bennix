@@ -25,11 +25,15 @@ class MyHttpOverrides extends HttpOverrides {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+// ignore: prefer_function_declarations_over_variables
+
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(statusBarIconBrightness: Brightness.light, statusBarBrightness: Brightness.light));
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(statusBarIconBrightness: Brightness.dark, statusBarBrightness: Brightness.dark));
   try {
     await Firebase.initializeApp();
   } finally {}
+
   HttpOverrides.global = MyHttpOverrides();
   await RequestApiHelper.init(
     RequestApiHelperData(

@@ -109,9 +109,9 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
             )),
         actions: [
           IconButton(
-            icon: Icon(Icons.add, color: Colors.black),
+            icon: const Icon(Icons.add, color: Colors.black),
             onPressed: () {
-              navigator(page: AddVideoView());
+              navigator(page: const AddVideoView());
             },
           ),
         ],
@@ -121,7 +121,7 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios_new,
             color: Colors.black,
             size: 18,
