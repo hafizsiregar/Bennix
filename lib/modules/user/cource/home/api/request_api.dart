@@ -4,12 +4,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:request_api_helper/request.dart';
 import 'package:request_api_helper/request_api_helper.dart';
 
-Future<void> getEcource(context, {required Function onSuccess}) async {
+Future<void> getEcource(context, {required Function onSuccess, withloading = true}) async {
   await RequestApiHelper.sendRequest(
     type: Api.get,
     url: 'courses',
     replacementId: 19,
-    withLoading: true,
+    withLoading: withloading,
     config: RequestApiHelperData(
       body: {
         'order_by': 'new',
@@ -49,6 +49,21 @@ Future<void> getDetailEcource(context, id, {required Function onSuccess}) async 
     config: RequestApiHelperData(
       onSuccess: (data) async {
         await DetailEcourceBloc.init(data['data']);
+        onSuccess();
+      },
+    ),
+  );
+}
+
+Future<void> getDetailVideo(id, {required Function onSuccess}) async {
+  await RequestApiHelper.sendRequest(
+    type: Api.get,
+    url: 'courses/videos/detail/$id',
+    replacementId: 45,
+    withLoading: true,
+    config: RequestApiHelperData(
+      onSuccess: (data) async {
+        await CourceBloc.parseDetailVideo(data);
         onSuccess();
       },
     ),

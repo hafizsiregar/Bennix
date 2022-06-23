@@ -1,8 +1,10 @@
 class VideoData {
-  String? name, episode, videoPath, desc;
+  int? id;
+  String? name, episode, videoPath, desc, networkPath, thumnail, networkThumnail;
   bool? isExtern, isfree;
+  List<VideoData>? detailVideo;
 
-  VideoData({this.episode, this.name, this.videoPath, this.isExtern = false, this.desc, this.isfree});
+  VideoData({this.episode, this.name, this.videoPath, this.isExtern = false, this.desc, this.isfree, this.detailVideo, this.id, this.networkPath, this.thumnail, this.networkThumnail});
 }
 
 class ModulData {
@@ -12,7 +14,7 @@ class ModulData {
 }
 
 class AddVideo {
-  String? name, trainer, desc, start, end, videoType, bannerPath, certificatePath, kategori;
+  String? name, trainer, desc, start, end, videoType, bannerPath, certificatePath, kategori, dipelajari, cocokUntuk, jam, menit;
   List<VideoData>? video;
   List<ModulData>? modul;
 
@@ -28,6 +30,10 @@ class AddVideo {
     this.videoType,
     this.modul,
     this.kategori,
+    this.cocokUntuk,
+    this.dipelajari,
+    this.jam,
+    this.menit,
   });
 }
 

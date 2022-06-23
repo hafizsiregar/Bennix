@@ -11,6 +11,7 @@ class CourceBloc {
   static List<Cource> get closeData => _closeData;
   static final List<Cource> filterData = [];
   static List<SelectData> category = [];
+  static List<CourceVideo> detailVideo = [];
 
   static List<Cource> getList({String? filter}) {
     return data.where((element) => element.name!.toUpperCase().contains((filter ?? '').toUpperCase())).toList();
@@ -18,6 +19,36 @@ class CourceBloc {
 
   static List<Cource> getListClose({String? filter}) {
     return closeData.where((element) => element.name!.toUpperCase().contains((filter ?? '').toUpperCase())).toList();
+  }
+
+  static parseDetailVideo(data) async {
+    for (var i in data['data'] ?? []) {
+      String? fileName;
+      try {
+        fileName = await VideoThumbnail.thumbnailFile(
+          video: i['video_url'],
+          thumbnailPath: (await getTemporaryDirectory()).path,
+          timeMs: 0,
+          imageFormat: ImageFormat.JPEG,
+          maxHeight: 180,
+          quality: 100,
+        );
+      } catch (_) {}
+      try {
+        detailVideo.add(
+          CourceVideo(
+            courceId: i['course_id'].toString(),
+            description: i['description'],
+            episode: i['episode'].toString(),
+            id: i['id'],
+            isFree: i['is_free'].toString(),
+            name: i['name'],
+            videoUrl: i['video_url'],
+            thumnail: fileName,
+          ),
+        );
+      } catch (_) {}
+    }
   }
 
   static parseFilterCategoryFromResponse(data) {
@@ -66,6 +97,8 @@ class CourceBloc {
         startDate: DateTime.parse(i['start_date']),
         avgRate: i['avg_rate'].toString() != 'null' ? i['avg_rate'].toString()[0] : null,
         isExternal: i['video_type'],
+        dipelajari: i['dipelajari'],
+        cocokUntuk: i['cocok_untuk'],
       ));
     }
   }
@@ -124,27 +157,28 @@ class DetailEcourceBloc {
           quality: 100,
         );
       } catch (_) {}
-
-      videos.add(
-        CourceVideo(
-          courceId: i['course_id'],
-          description: i['description'],
-          episode: i['episode'],
-          id: i['id'],
-          isFree: i['is_free'],
-          name: i['name'],
-          videoUrl: i['video_url'],
-          thumnail: fileName,
-        ),
-      );
+      try {
+        videos.add(
+          CourceVideo(
+            courceId: i['course_id'].toString(),
+            description: i['description'],
+            episode: i['episode'].toString(),
+            id: i['id'],
+            isFree: i['is_free'].toString(),
+            name: i['name'],
+            videoUrl: i['video_url'],
+            thumnail: fileName,
+          ),
+        );
+      } catch (_) {}
     }
 
     for (var i in data['course_modules'] ?? []) {
       modules.add(
         CourceModules(
-          courceId: i['course_id'],
+          courceId: i['course_id'].toString(),
           description: i['description'],
-          episode: i['episode'],
+          episode: i['episode'].toString(),
           id: i['id'],
           moduleUrl: i['module_url'],
           name: i['name'],

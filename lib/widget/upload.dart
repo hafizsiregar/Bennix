@@ -18,6 +18,7 @@ class _UploadProgressState extends State<UploadProgress> {
   void initState() {
     super.initState();
     timers = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      print(widget.progress());
       final value = widget.progress();
       if (value == 100) {
         timer.cancel();
@@ -76,7 +77,7 @@ class _UploadProgressState extends State<UploadProgress> {
               ]),
               const Text(
                 'Proses unggah...',
-                style:  TextStyle(
+                style: TextStyle(
                   fontSize: 30,
                 ),
               ),

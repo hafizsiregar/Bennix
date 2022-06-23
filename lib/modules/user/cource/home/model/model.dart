@@ -1,6 +1,6 @@
 class Cource {
   int? id, jumlahModule, jumlahVideo;
-  String? trainerName, name, description, status, userId, videoType, bannerUrl, certificateUrl, isExternal, avgRate, kategori,episodeMin,episodeMax;
+  String? trainerName, name, description, status, userId, videoType, bannerUrl, certificateUrl, isExternal, avgRate, kategori, episodeMin, episodeMax, dipelajari, cocokUntuk, jam, menit;
   DateTime? startDate, endDate;
 
   Cource({
@@ -22,6 +22,10 @@ class Cource {
     this.isExternal,
     this.avgRate,
     this.kategori,
+    this.cocokUntuk,
+    this.dipelajari,
+    this.jam,
+    this.menit,
   });
 }
 

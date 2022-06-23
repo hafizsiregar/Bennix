@@ -9,7 +9,9 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
+import 'addVideoDetail.dart';
 import 'custom_form.dart';
 
 class AddVideoView extends StatefulWidget {
@@ -23,7 +25,7 @@ class AddVideoView extends StatefulWidget {
 class _AddVideoViewState extends BaseBackground<AddVideoView> {
   List<bool> step = [false, false, false];
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _judul = TextEditingController(), _pengajar = TextEditingController(), _deskripsi = TextEditingController();
+  final TextEditingController _judul = TextEditingController(), _pengajar = TextEditingController(), _deskripsi = TextEditingController(), cocokUntuk = TextEditingController(), pelajaran = TextEditingController();
   DateTime? start = DateTime.now(), end = DateTime.now().add(const Duration(days: 1));
   SelectData? kategori;
   int currentIndex = 0;
@@ -51,11 +53,17 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
     });
   }
 
-  _showAddVideo() {
+  _showAddVideo({index}) {
     String? pathVideo, pathModul;
     TextEditingController? video = TextEditingController(), episode = TextEditingController(), linkVideo = TextEditingController(), deskripsi = TextEditingController();
     GlobalKey<FormState> _formsS = GlobalKey<FormState>();
     bool isFree = true;
+    VideoData data = VideoData();
+    if (index != null) {
+      data = AddVideoBloc.videoData[index];
+      video.text = data.name ?? '';
+      deskripsi.text = data.desc ?? '';
+    }
     return showModalBottomSheet(
       backgroundColor: Colors.transparent,
       context: context,
@@ -87,6 +95,79 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
                     height: 20,
                   ),
                   const Divider(),
+                  // const SizedBox(
+                  //   height: 20,
+                  // ),
+                  isExtern
+                      ? Forms.border(
+                          controller: linkVideo,
+                          context: context,
+                          hintText: 'Masukkan Link Video',
+                          label: 'Link Video',
+                          isfloat: true,
+                          validator: (data) {
+                            if (data!.isEmpty) {
+                              return 'harus Di Isi';
+                            }
+                            return null;
+                          },
+                        )
+                      : GestureDetector(
+                          onTap: () async {
+                            final pathVideo = await getVideo(context);
+                            if (pathVideo != null) {
+                              final fileName = await VideoThumbnail.thumbnailFile(
+                                video: pathVideo,
+                                imageFormat: ImageFormat.PNG,
+                                timeMs: 1,
+                                maxHeight: 100,
+                                quality: 100,
+                              );
+                              data.isExtern = isExtern;
+                              data.episode = '0';
+                              data.videoPath = isExtern ? linkVideo.text : pathVideo;
+                              data.isfree = isFree;
+                              data.thumnail = fileName;
+                              setStates(() {});
+                            }
+                          },
+                          child: data.thumnail != null
+                              ? Center(
+                                  child: Container(
+                                    height: 100,
+                                    width: 160,
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                                      border: Border.all(
+                                        width: 2,
+                                        color: Colors.black26,
+                                      ),
+                                      image: data.thumnail == null
+                                          ? (data.networkThumnail != null)
+                                              ? DecorationImage(
+                                                  image: NetworkImage(data.networkThumnail!),
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : null
+                                          : DecorationImage(
+                                              image: FileImage(
+                                                File(data.thumnail!),
+                                              ),
+                                              fit: BoxFit.cover,
+                                            ),
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  color: Colors.transparent,
+                                  height: 50,
+                                  child: const Center(
+                                    child: Text('Pilih Video'),
+                                  ),
+                                ),
+                        ),
+                  const Divider(),
+
                   const SizedBox(
                     height: 20,
                   ),
@@ -101,37 +182,6 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
                             hintText: 'Masukkan Nama Video',
                             label: 'Nama',
                             isfloat: true,
-                            validator: (data) {
-                              if (data!.isEmpty) {
-                                return 'harus Di Isi';
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      SizedBox(
-                        width: 100,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 4),
-                          child: Forms.border(
-                            controller: episode,
-                            context: context,
-                            hintText: '0 - 100',
-                            label: 'Episode',
-                            isfloat: true,
-                            keyboardType: TextInputType.number,
-                            onChanged: (data) {
-                              if (data.isNotEmpty) {
-                                if (int.parse(data) > 100) {
-                                  episode.text = '100';
-                                  setStates(() {});
-                                }
-                              }
-                            },
                             validator: (data) {
                               if (data!.isEmpty) {
                                 return 'harus Di Isi';
@@ -178,59 +228,68 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  isExtern
-                      ? Forms.border(
-                          controller: linkVideo,
-                          context: context,
-                          hintText: 'Masukkan Link Video',
-                          label: 'Link Video',
-                          isfloat: true,
-                          validator: (data) {
-                            if (data!.isEmpty) {
-                              return 'harus Di Isi';
-                            }
-                            return null;
-                          },
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Button.flat(
-                                width: MediaQuery.of(context).size.width * 0.3,
-                                height: MediaQuery.of(context).size.width * 0.3,
-                                color: pathVideo != null ? null : const Color(0xff595959),
-                                onTap: () async {
-                                  pathVideo = await getVideo(context);
-                                  setStates(() {});
-                                },
-                                context: context,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(bottom: 0),
-                                      child: Icon(
-                                        FeatherIcons.video,
-                                        size: 50,
-                                        color: BaseColor.theme!.textButtonColor,
-                                      ),
-                                    ),
-                                    const Text(
-                                      'Video',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                  GestureDetector(
+                    onTap: () {
+                      try {
+                        data = AddVideoBloc.videoData[index ?? AddVideoBloc.videoData.length - 1];
+                      } catch (_) {}
+                      Navigator.push(
+                        context,
+                        fadeIn(
+                          page: AddVideoDetailView(
+                            data: data,
+                            isExtern: isExtern,
+                            isFree: isFree,
                           ),
                         ),
+                      );
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(FeatherIcons.video, size: 16),
+                            const SizedBox(
+                              width: 6,
+                            ),
+                            Text(
+                              'Tambah Episode Video',
+                              style: TextStyle(
+                                color: BaseColor.theme?.captionColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Icon(Icons.chevron_right),
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      _showAddModul();
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(FeatherIcons.filePlus, size: 16),
+                            const SizedBox(
+                              width: 6,
+                            ),
+                            Text(
+                              'Tambah Modul',
+                              style: TextStyle(
+                                color: BaseColor.theme?.captionColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Icon(Icons.chevron_right),
+                      ],
+                    ),
+                  ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -238,21 +297,15 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
                     context: context,
                     title: 'Tambah Video',
                     onTap: () {
-                      if (pathVideo == null && !isExtern) {
-                        Fluttertoast.showToast(msg: 'File Video Belum Di Pilih');
-                        return;
-                      }
                       if (_formsS.currentState!.validate()) {
-                        AddVideoBloc.add(
-                          VideoData(
-                            isExtern: isExtern,
-                            episode: episode.text,
-                            name: video.text,
-                            videoPath: isExtern ? linkVideo.text : pathVideo,
-                            desc: deskripsi.text,
-                            isfree: isFree,
-                          ),
-                        );
+                        data.isExtern = isExtern;
+                        data.episode = episode.text;
+                        data.name = video.text;
+                        data.desc = deskripsi.text;
+                        data.isfree = isFree;
+                        if (index == null) {
+                          AddVideoBloc.add(data);
+                        }
                         Navigator.of(context).pop();
                       }
                     },
@@ -319,64 +372,91 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
                       return null;
                     },
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Button.flat(
-                          width: MediaQuery.of(context).size.width * 0.3,
-                          height: MediaQuery.of(context).size.width * 0.3,
-                          color: pathModul != null ? null : const Color(0xff595959),
-                          onTap: () async {
-                            pathModul = await getFile(context: context, extension: ['pdf']);
-                            setStates(() {});
-                          },
-                          context: context,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 0),
-                                child: Icon(
-                                  FeatherIcons.video,
-                                  size: 50,
-                                  color: BaseColor.theme!.textButtonColor,
+                      children: AddVideoBloc.moduleData.map<Widget>(
+                        (e) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 12.0),
+                            child: Row(
+                              children: [
+                                const Icon(FeatherIcons.fileText, size: 40),
+                                const SizedBox(
+                                  width: 8,
                                 ),
-                              ),
-                              const Text(
-                                'Modul',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                                Text(e.modulePath!.split('/').last),
+                              ],
+                            ),
+                          );
+                        },
+                      ).toList(),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  const Text('Lampiran'),
+                  const SizedBox(
+                    height: 6,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Button.flat(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        color: Colors.red,
+                        onTap: () async {
+                          final pathModul = await getFile(context: context, extension: ['pdf']);
+                          AddVideoBloc.addModule(
+                            ModulData(
+                              name: modul.text,
+                              modulePath: pathModul,
+                              desc: deskripsi.text,
+                            ),
+                          );
+                          setStates(() {});
+                        },
+                        context: context,
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 0),
+                              child: Icon(
+                                FeatherIcons.link,
+                                size: 20,
+                                color: BaseColor.theme!.textButtonColor,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'Upload Lampiran',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 20,
                   ),
                   Button.flat(
                     context: context,
-                    title: 'Tambah Modul',
+                    title: 'Simpan',
                     onTap: () {
-                      if (pathModul == null) {
-                        Fluttertoast.showToast(msg: 'File Modul Belum Di Pilih');
-                        return;
-                      }
-                      if (_formsS.currentState!.validate()) {
-                        AddVideoBloc.addModule(
-                          ModulData(
-                            name: modul.text,
-                            modulePath: pathModul,
-                            desc: deskripsi.text,
-                          ),
-                        );
-                        Navigator.of(context).pop();
-                        setState(() {});
-                      }
+                      // if (pathModul == null) {
+                      //   Fluttertoast.showToast(msg: 'File Modul Belum Di Pilih');
+                      //   return;
+                      // }
+                      // if (_formsS.currentState!.validate()) {
+                      Navigator.of(context).pop();
+                      setState(() {});
+                      // }
                     },
                   ),
                 ],
@@ -606,6 +686,7 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
                             height: 20,
                           ),
                           addCourceForm(
+                            control: pelajaran,
                             maxLine: null,
                             title: 'Yang Akan Dipelajari',
                             hint: 'Masukkan Benefit',
@@ -620,6 +701,7 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
                             height: 20,
                           ),
                           addCourceForm(
+                            control: cocokUntuk,
                             maxLine: null,
                             title: 'E course ini cocok untuk',
                             hint: 'Masukkan target audience',
@@ -848,48 +930,109 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
                                     scrollDirection: Axis.horizontal,
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                      child: Column(
+                                      child: Row(
                                         children: [
-                                          GestureDetector(
-                                            onTap: () async {
-                                              await _showAddVideo();
-                                              setState(() {});
-                                            },
-                                            child: Container(
-                                              height: 120,
-                                              width: 160,
-                                              decoration: BoxDecoration(
-                                                borderRadius: const BorderRadius.all(Radius.circular(8)),
-                                                border: Border.all(
-                                                  width: 2,
-                                                  color: Colors.black26,
+                                          Padding(
+                                            padding: const EdgeInsets.only(right: 12.0, top: 12),
+                                            child: GestureDetector(
+                                              onTap: () async {
+                                                await _showAddVideo();
+                                                setState(() {});
+                                              },
+                                              child: Container(
+                                                height: 120,
+                                                width: 160,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                                                  border: Border.all(
+                                                    width: 2,
+                                                    color: Colors.black26,
+                                                  ),
                                                 ),
-                                                image: banner == null
-                                                    ? (bannerNetwork != null)
-                                                        ? DecorationImage(
-                                                            image: NetworkImage(bannerNetwork!),
-                                                            fit: BoxFit.cover,
-                                                          )
-                                                        : null
-                                                    : DecorationImage(
-                                                        image: FileImage(
-                                                          File(banner!),
-                                                        ),
-                                                        fit: BoxFit.cover,
-                                                      ),
+                                                child: const Center(
+                                                  child: Text(
+                                                    'Upload Video',
+                                                    style: TextStyle(
+                                                      color: Colors.black54,
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
-                                              child: banner != null || bannerNetwork != null
-                                                  ? const SizedBox()
-                                                  : const Center(
-                                                      child: Text(
-                                                        'Upload Video',
-                                                        style: TextStyle(
-                                                          color: Colors.black54,
+                                            ),
+                                          ),
+                                          Row(
+                                            children: AddVideoBloc.videoData.map((e) {
+                                              return Stack(
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(right: 12.0, top: 12),
+                                                    child: GestureDetector(
+                                                      onTap: () async {
+                                                        await _showAddVideo(
+                                                          index: AddVideoBloc.videoData.indexOf(e),
+                                                        );
+                                                        setState(() {});
+                                                      },
+                                                      child: Container(
+                                                        height: 120,
+                                                        width: 160,
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: const BorderRadius.all(Radius.circular(8)),
+                                                          border: Border.all(
+                                                            width: 2,
+                                                            color: Colors.black26,
+                                                          ),
+                                                          image: e.thumnail == null
+                                                              ? (e.networkThumnail != null)
+                                                                  ? DecorationImage(
+                                                                      image: NetworkImage(e.networkThumnail!),
+                                                                      fit: BoxFit.cover,
+                                                                    )
+                                                                  : null
+                                                              : DecorationImage(
+                                                                  image: FileImage(
+                                                                    File(e.thumnail!),
+                                                                  ),
+                                                                  fit: BoxFit.cover,
+                                                                ),
+                                                        ),
+                                                        child: Center(
+                                                          child: Text(
+                                                            e.thumnail == null && e.networkThumnail == null ? 'Upload Video' : '',
+                                                            style: const TextStyle(
+                                                              color: Colors.black54,
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
-                                            ),
-                                          ),
+                                                  ),
+                                                  Positioned(
+                                                    right: 0,
+                                                    top: 0,
+                                                    child: InkWell(
+                                                      borderRadius: const BorderRadius.all(Radius.circular(100)),
+                                                      onTap: () {
+                                                        AddVideoBloc.delete(AddVideoBloc.videoData.indexOf(e));
+                                                        setState(() {});
+                                                      },
+                                                      child: Container(
+                                                        decoration: const BoxDecoration(
+                                                          shape: BoxShape.circle,
+                                                          color: Colors.black12,
+                                                        ),
+                                                        padding: const EdgeInsets.all(4),
+                                                        child: const Icon(
+                                                          Icons.close,
+                                                          size: 18,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              );
+                                            }).toList(),
+                                          )
                                         ],
                                       ),
                                     ),
@@ -1149,6 +1292,11 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
                                   Fluttertoast.showToast(msg: 'Harap Memilih Banner');
                                   return;
                                 }
+
+                                if (kategori?.id == null) {
+                                  Fluttertoast.showToast(msg: 'Harap Memilih kategori');
+                                  return;
+                                }
                                 if (!_formKey.currentState!.validate()) {
                                   return;
                                 }
@@ -1166,6 +1314,10 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
                                         startDate: start,
                                         trainerName: _pengajar.text,
                                         kategori: kategori?.id,
+                                        cocokUntuk: cocokUntuk.text,
+                                        dipelajari: pelajaran.text,
+                                        jam: '',
+                                        menit: '',
                                       ),
                                       modul: AddVideoBloc.moduleData,
                                       video: AddVideoBloc.videoData,
@@ -1188,6 +1340,10 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
                                         video: AddVideoBloc.videoData,
                                         videoType: isExtern ? 'eksternal' : 'internal',
                                         kategori: kategori?.id,
+                                        cocokUntuk: cocokUntuk.text,
+                                        dipelajari: pelajaran.text,
+                                        jam: '',
+                                        menit: '',
                                       ),
                                       onSuccess: () {});
                                 }

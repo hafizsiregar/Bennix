@@ -7,9 +7,8 @@ import 'package:benix/modules/admin/cource/model/model.dart';
 import 'package:benix/modules/user/cource/home/api/request_api.dart';
 import 'package:benix/modules/user/cource/home/model/model.dart';
 import 'package:benix/modules/user/login/bloc/main_bloc.dart';
-import 'package:benix/widget/upload.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:request_api_helper/loading.dart';
 import 'package:request_api_helper/request.dart';
 import 'package:request_api_helper/request_api_helper.dart';
 
@@ -27,6 +26,10 @@ createEcource({required context, required AddVideo data, required Function onSuc
     'certificate_path': data.certificatePath == null || data.certificatePath == '' ? '' : base64Encode(File(data.certificatePath!).readAsBytesSync()),
     'video_type': data.videoType,
     'category_id': data.kategori,
+    'dipelajari': data.dipelajari,
+    'cocok_untuk': data.cocokUntuk,
+    'jam': data.jam,
+    'menit': data.menit,
   };
 
   for (VideoData i in data.video ?? []) {
@@ -35,9 +38,10 @@ createEcource({required context, required AddVideo data, required Function onSuc
       fileUpload[1].add('videos[$counter]');
       body.addAll({
         'videos_episode[$counter]': i.episode,
-        'videos_name[$counter]': i.name,
         'videos_description[$counter]': i.desc,
         'videos_is_free[$counter]': i.isfree! ? '0' : '1',
+        'videos_name[$counter]': i.name,
+        'videos_id[$counter]': 'null',
       });
     } else {
       body.addAll({
@@ -46,9 +50,32 @@ createEcource({required context, required AddVideo data, required Function onSuc
         'videos[$counter]': i.videoPath,
         'videos_description[$counter]': i.desc,
         'videos_is_free[$counter]': i.isfree! ? '0' : '1',
+        'videos_id[$counter]': 'null',
       });
     }
-
+    int counters = 0;
+    for (VideoData j in i.detailVideo ?? []) {
+      if (!j.isExtern!) {
+        fileUpload[0].add(j.videoPath!);
+        fileUpload[1].add('video_detail[$counter][$counters][videos]');
+        body.addAll({
+          'video_detail[$counter][$counters][videos_episode]': i.episode,
+          'video_detail[$counter][$counters][videos_description]': i.desc,
+          'video_detail[$counter][$counters][videos_is_free]': i.isfree! ? '0' : '1',
+          'video_detail[$counter][$counters][videos_name]': i.name,
+          'video_detail[$counter][$counters][video_id]': 'null',
+        });
+      } else {
+        body.addAll({
+          'video_detail[$counter][$counters][videos_episode]': i.episode,
+          'video_detail[$counter][$counters][videos_description]': i.desc,
+          'video_detail[$counter][$counters][videos_is_free]': i.isfree! ? '0' : '1',
+          'video_detail[$counter][$counters][videos_name]': i.name,
+          'video_detail[$counter][$counters][video_id]': 'null',
+        });
+      }
+      ++counters;
+    }
     ++counter;
   }
   int counters = 0;
@@ -56,29 +83,19 @@ createEcource({required context, required AddVideo data, required Function onSuc
     fileUpload[0].add(i.modulePath!);
     fileUpload[1].add('modules[$counters]');
     body.addAll({
-      'modules_name[$counters]': i.name,
-      'modules_episode[$counters]': '0',
-      'modules_description[$counters]': i.desc,
+      'modules_name[$counters]': i.name ?? '',
+      'modules_episode[$counters]': '',
+      'modules_description[$counters]': i.desc ?? '',
     });
 
     ++counters;
   }
-  if (fileUpload[0].isNotEmpty) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return UploadProgress(
-          progress: () => progress,
-          requestBack: true,
-        );
-      },
-    );
-  }
-
+  // Function? setState;
   await RequestApiHelper.sendRequest(
     type: Api.post,
     url: 'courses',
     replacementId: 34,
+    runInBackground: true,
     withLoading: true,
     config: RequestApiHelperData(
       body: body,
@@ -91,15 +108,18 @@ createEcource({required context, required AddVideo data, required Function onSuc
       onSuccess: (data) async {
         progress = 100;
         // status = true;
-        getEcource(context, onSuccess: () {});
-        if (fileUpload[0].isEmpty) Navigator.of(context).pop();
+        getEcource(context, onSuccess: () {}, withloading: false);
+        Navigator.of(context).pop();
+
         onSuccess();
       },
+      onError: (res) {},
     ),
     onUploadProgress: fileUpload[0].isEmpty
         ? null
         : (progress, max) {
             progress = 100 - (((max - progress) / max) * 100).round() > 90 ? 90 : 100 - (((max - progress) / max) * 100).round();
+            print(progress);
           },
   );
 }
@@ -229,30 +249,52 @@ updateEcource({required context, required Cource data, List<VideoData>? video, L
     });
   }
 
-  // for (VideoData i in video ?? []) {
-  //   if (data.isExternal == 'internal') {
-  //     fileUpload[0].add(i.videoPath!);
-  //     fileUpload[1].add('videos[$counter]');
-  //     body.addAll({
-  //       'video_detail[$counter][videos_episode]': i.episode,
-  //       'video_detail[$counter][videos_description]': i.desc,
-  //       'videos_is_free[$counter]': i.isfree! ? '0' : '1',
-  //       'videos_name[$counter]': i.name,
-  //       'videos_id[$counter]': 'null',
-  //     });
-  //   } else {
-  //     body.addAll({
-  //       'videos_episode[$counter]': i.episode,
-  //       'videos_name[$counter]': i.name,
-  //       'videos[$counter]': i.videoPath,
-  //       'videos_description[$counter]': i.desc,
-  //       'videos_is_free[$counter]': i.isfree! ? '0' : '1',
-  //       'videos_id[$counter]': 'null',
-  //     });
-  //   }
+  for (VideoData i in video ?? []) {
+    if (data.isExternal == 'internal') {
+      fileUpload[0].add(i.videoPath!);
+      fileUpload[1].add('videos[$counter]');
+      body.addAll({
+        'videos_episode[$counter]': i.episode,
+        'videos_description[$counter]': i.desc,
+        'videos_is_free[$counter]': i.isfree! ? '0' : '1',
+        'videos_name[$counter]': i.name,
+        'videos_id[$counter]': 'null',
+      });
+    } else {
+      body.addAll({
+        'videos_episode[$counter]': i.episode,
+        'videos_name[$counter]': i.name,
+        'videos[$counter]': i.videoPath,
+        'videos_description[$counter]': i.desc,
+        'videos_is_free[$counter]': i.isfree! ? '0' : '1',
+        'videos_id[$counter]': 'null',
+      });
+    }
 
-  //   ++counter;
-  // }
+    for (VideoData j in i.detailVideo ?? []) {
+      if (data.isExternal == 'internal') {
+        fileUpload[0].add(i.videoPath!);
+        fileUpload[1].add('videos[$counter]');
+        body.addAll({
+          'video_detail[$counter][videos_episode]': i.episode,
+          'video_detail[$counter][videos_description]': i.desc,
+          'video_detail[$counter][videos_is_free]': i.isfree! ? '0' : '1',
+          'video_detail[$counter][videos_name]': i.name,
+          'videos_id[$counter]': 'null',
+        });
+      } else {
+        body.addAll({
+          'video_detail[$counter][videos_episode]': i.episode,
+          'video_detail[$counter][videos_description]': i.desc,
+          'video_detail[$counter][videos_is_free]': i.isfree! ? '0' : '1',
+          'video_detail[$counter][videos_name]': i.name,
+          'videos_id[$counter]': 'null',
+        });
+      }
+    }
+    ++counter;
+  }
+
   int counters = 0;
   for (ModulData i in modul ?? []) {
     fileUpload[0].add(i.modulePath!);
@@ -304,7 +346,7 @@ updateEcource({required context, required Cource data, List<VideoData>? video, L
     type: Api.post,
     url: 'courses/${data.id}',
     replacementId: 34,
-    withLoading: true,
+    // withLoading: true,
     config: RequestApiHelperData(
       body: body,
       file: fileUpload[0].isEmpty

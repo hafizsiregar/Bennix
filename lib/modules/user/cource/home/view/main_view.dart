@@ -159,7 +159,7 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
                         viewportFraction: 0.95,
                         aspectRatio: 50 / 16,
                         autoPlay: true,
-                        autoPlayInterval: Duration(seconds: 2),
+                        autoPlayInterval: const Duration(seconds: 2),
                         onPageChanged: (page, why) {},
                         scrollDirection: Axis.horizontal,
                       ),

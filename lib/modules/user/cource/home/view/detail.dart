@@ -26,7 +26,7 @@ class DetailEcourceView extends StatefulWidget {
 }
 
 class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
-  bool isVideo = true;
+  bool isVideo = false, isModules = false;
   int selectedVideo = 0;
   YoutubePlayerController? _controllerGlobal;
   @override
@@ -205,13 +205,19 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                         const SizedBox(
                           height: 5,
                         ),
-                        Text(
-                          widget.data.name ?? '',
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w600,
-                          ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                widget.data.name ?? '',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(
                           height: 12,
@@ -224,24 +230,24 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
-                                      children: const [
-                                        Icon(FeatherIcons.clock),
-                                        SizedBox(
+                                      children: [
+                                        const Icon(FeatherIcons.clock),
+                                        const SizedBox(
                                           width: 12,
                                         ),
-                                        Text('1 Jam 30 Menit'),
+                                        Text(widget.data.jam == null && widget.data.menit == null ? 'Tidak Ada Durasi' : '${widget.data.jam} Jam ${widget.data.menit} Menit'),
                                       ],
                                     ),
                                     const SizedBox(
                                       height: 12,
                                     ),
                                     Row(
-                                      children: const [
-                                        Icon(FeatherIcons.star),
-                                        SizedBox(
+                                      children: [
+                                        const Icon(FeatherIcons.star),
+                                        const SizedBox(
                                           width: 12,
                                         ),
-                                        Text('4.7'),
+                                        Text('${widget.data.avgRate == '0' ? 'Tidak Ada Rating' : widget.data.avgRate}'),
                                       ],
                                     ),
                                   ],
@@ -302,14 +308,43 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                               child: GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    if (!isVideo) isVideo = true;
+                                    if (isVideo) isVideo = false;
+                                    isModules = false;
                                   });
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.only(bottom: 10),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
-                                    border: isVideo
+                                    border: !isVideo && !isModules
+                                        ? const Border(
+                                            bottom: BorderSide(
+                                            width: 1,
+                                          ))
+                                        : null,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      'Overview',
+                                      style: GoogleFonts.poppins(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    if (!isVideo) isVideo = true;
+                                    isModules = false;
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: isVideo && !isModules
                                         ? const Border(
                                             bottom: BorderSide(
                                             width: 1,
@@ -329,14 +364,14 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                               child: GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    if (isVideo) isVideo = false;
+                                    if (!isModules) isModules = true;
                                   });
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.only(bottom: 10),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
-                                    border: !isVideo
+                                    border: isModules
                                         ? const Border(
                                             bottom: BorderSide(
                                             width: 1,
@@ -345,7 +380,7 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                                   ),
                                   child: Center(
                                     child: Text(
-                                      'Modul',
+                                      'Module',
                                       style: GoogleFonts.poppins(),
                                     ),
                                   ),
@@ -357,7 +392,7 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                         const SizedBox(
                           height: 16,
                         ),
-                        isVideo
+                        isVideo && !isModules
                             ? ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
@@ -587,55 +622,97 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                                   );
                                 },
                               )
-                            : ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: DetailEcourceBloc.data.modules == null ? 0 : DetailEcourceBloc.data.modules!.length,
-                                itemBuilder: (context, i) {
-                                  final data = DetailEcourceBloc.data.modules?[i];
-                                  return Padding(
-                                    padding: const EdgeInsets.only(bottom: 12.0),
-                                    child: Center(
-                                      child: InkWell(
-                                        onTap: () {
-                                          _launchURL(data!.moduleUrl!);
-                                        },
-                                        child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            const Icon(FeatherIcons.fileText),
-                                            Expanded(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(12.0),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      data?.name ?? '',
-                                                      style: const TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight: FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      data?.description ?? 'Tidak Ada Deskripsi',
-                                                      style: const TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight: FontWeight.w500,
-                                                        color: Colors.black54,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                            : isModules
+                                ? ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    itemCount: DetailEcourceBloc.data.modules?.length,
+                                    itemBuilder: (context, index) {
+                                      final data = DetailEcourceBloc.data.modules![index];
+                                      return Row(
+                                        children: [
+                                          const Icon(
+                                            FeatherIcons.fileText,
+                                            size: 50,
+                                          ),
+                                          Text(data.name ?? ''),
+                                        ],
+                                      );
+                                    },
+                                  )
+                                : SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Key Points',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                         ),
-                                      ),
+                                        const SizedBox(
+                                          height: 12,
+                                        ),
+                                        Wrap(
+                                          children: (widget.data.dipelajari ?? '').split('\n').map<Widget>((e) {
+                                            return SizedBox(
+                                              width: (MediaQuery.of(context).size.width * .5) - 20,
+                                              child: Row(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  const Icon(
+                                                    FeatherIcons.checkCircle,
+                                                    color: Colors.blue,
+                                                    size: 18,
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 12,
+                                                  ),
+                                                  Expanded(child: Text(e)),
+                                                ],
+                                              ),
+                                            );
+                                          }).toList(),
+                                        ),
+                                        const SizedBox(
+                                          height: 12,
+                                        ),
+                                        Text(
+                                          'Course ini cocok untuk',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 12,
+                                        ),
+                                        Wrap(
+                                          children: (widget.data.cocokUntuk ?? '').split('\n').map<Widget>((e) {
+                                            return SizedBox(
+                                              width: (MediaQuery.of(context).size.width * .5) - 20,
+                                              child: Row(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  const Icon(
+                                                    FeatherIcons.checkCircle,
+                                                    color: Colors.blue,
+                                                    size: 18,
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 12,
+                                                  ),
+                                                  Expanded(child: Text(e)),
+                                                ],
+                                              ),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ],
                                     ),
-                                  );
-                                },
-                              ),
+                                  )
                       ],
                     ),
                   ),
