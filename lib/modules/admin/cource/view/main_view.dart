@@ -411,14 +411,16 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
                         color: Colors.red,
                         onTap: () async {
                           final pathModul = await getFile(context: context, extension: ['pdf']);
-                          AddVideoBloc.addModule(
-                            ModulData(
-                              name: modul.text,
-                              modulePath: pathModul,
-                              desc: deskripsi.text,
-                            ),
-                          );
-                          setStates(() {});
+                          if (pathModul != null) {
+                            AddVideoBloc.addModule(
+                              ModulData(
+                                name: modul.text,
+                                modulePath: pathModul,
+                                desc: deskripsi.text,
+                              ),
+                            );
+                            setStates(() {});
+                          }
                         },
                         context: context,
                         child: Row(

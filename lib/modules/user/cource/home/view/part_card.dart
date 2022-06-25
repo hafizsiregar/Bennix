@@ -224,3 +224,69 @@ Widget card2({required Function navigator, required List<Cource> dataList, setSt
           ),
   );
 }
+
+Widget cardMMentor({required Function navigator}) {
+  return SizedBox(
+    width: double.infinity,
+    height: 270,
+    child: ListView.builder(
+      shrinkWrap: true,
+      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 20),
+      scrollDirection: Axis.horizontal,
+      itemCount: 2,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(right: 18),
+          child: GestureDetector(
+            onTap: () {
+              // navigator(page: const EventView());
+            },
+            child: SizedBox(
+              width: 200,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        height: 90,
+                        decoration: BoxDecoration(
+                          color: Colors.orange[800],
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 200,
+                        height: 180,
+                        child: CachedNetworkImage(
+                          imageUrl: 'https://www.seekpng.com/png/full/76-760594_man-transparent-resolution-smile-man-png.png',
+                          fit: BoxFit.cover,
+                          alignment: Alignment.topCenter,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Text(
+                    'Mentor Developer',
+                    style: GoogleFonts.poppins(
+                      textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black),
+                    ),
+                  ),
+                  const Text('Programmer'),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    ),
+  );
+}

@@ -11,6 +11,7 @@ import 'package:benix/modules/user/cource/home/view/near_course.dart';
 import 'package:benix/modules/user/cource/home/view/new_course.dart';
 import 'package:benix/modules/user/home/api/request_api.dart';
 import 'package:benix/modules/user/home/bloc/model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -152,21 +153,21 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
                     const SizedBox(
                       height: 20,
                     ),
-                    CarouselSlider(
-                      items: banners,
-                      options: CarouselOptions(
-                        height: 200,
-                        viewportFraction: 0.95,
-                        aspectRatio: 50 / 16,
-                        autoPlay: true,
-                        autoPlayInterval: const Duration(seconds: 2),
-                        onPageChanged: (page, why) {},
-                        scrollDirection: Axis.horizontal,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    // CarouselSlider(
+                    //   items: banners,
+                    //   options: CarouselOptions(
+                    //     height: 200,
+                    //     viewportFraction: 0.95,
+                    //     aspectRatio: 50 / 16,
+                    //     autoPlay: true,
+                    //     autoPlayInterval: const Duration(seconds: 2),
+                    //     onPageChanged: (page, why) {},
+                    //     scrollDirection: Axis.horizontal,
+                    //   ),
+                    // ),
+                    // const SizedBox(
+                    //   height: 20,
+                    // ),
                     Padding(
                       padding: const EdgeInsets.only(left: 16),
                       child: category(
@@ -217,7 +218,7 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
                       height: 20,
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: cardHome(navigator: navigator, dataList: CourceBloc.getList(filter: _search.text), setState: setState),
                     ),
                     // cardNearby(context),
@@ -241,6 +242,44 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
                     //     scrollDirection: Axis.horizontal,
                     //   ),
                     // ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            "Mentor populer bulan ini",
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => NewCourse(
+                                    list: CourceBloc.getList(),
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              'Lihat Semua',
+                              style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w400, color: Colors.blue),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    cardMMentor(navigator: navigator),
                     const SizedBox(
                       height: 20,
                     ),

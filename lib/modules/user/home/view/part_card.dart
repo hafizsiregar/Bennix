@@ -54,17 +54,13 @@ Widget cardHome({required Function navigator}) {
                               blur: 20,
                               border: 1,
                               borderRadius: 5,
-                              linearGradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    const Color(0xFFffffff).withOpacity(0.1),
-                                    const Color(0xFFFFFFFF).withOpacity(0.05),
-                                  ],
-                                  stops: const [
-                                    0.1,
-                                    1,
-                                  ]),
+                              linearGradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [
+                                const Color(0xFFffffff).withOpacity(0.1),
+                                const Color(0xFFFFFFFF).withOpacity(0.05),
+                              ], stops: const [
+                                0.1,
+                                1,
+                              ]),
                               borderGradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
@@ -74,13 +70,8 @@ Widget cardHome({required Function navigator}) {
                                 ],
                               ),
                               child: Text(
-                                e.locationType == 'offline'
-                                    ? (e.locationAddress ?? '')
-                                    : 'Online',
-                                style: GoogleFonts.poppins(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white),
+                                e.locationType == 'offline' ? (e.locationAddress ?? '') : 'Online',
+                                style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white),
                               ),
                             ),
                           ),
@@ -88,29 +79,12 @@ Widget cardHome({required Function navigator}) {
                       ),
                     ),
                   ),
-                  Text(e.name!,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black)),
+                  Text(e.name!, overflow: TextOverflow.ellipsis, maxLines: 1, style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black)),
                   Row(
                     children: <Widget>[
                       Text(
-                        (e.startDate == null
-                                ? 'Undefined'
-                                : DateFormat('d MMM HH:mm')
-                                    .format(e.startDate!)) +
-                            ' - ' +
-                            (e.endDate == null
-                                ? 'Undefined'
-                                : DateFormat('d MMM HH:mm').format(e.endDate!)),
-                        style: GoogleFonts.poppins(
-                            fontSize: 12, 
-                            color: Colors.grey[600],
-                            fontWeight: FontWeight.w500
-                        ),
+                        (e.startDate == null ? 'Undefined' : DateFormat('d MMM HH:mm').format(e.startDate!)) + ' - ' + (e.endDate == null ? 'Undefined' : DateFormat('d MMM HH:mm').format(e.endDate!)),
+                        style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[600], fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
