@@ -165,7 +165,7 @@ class DetailEcourceBloc {
             episode: i['episode'].toString(),
             id: i['id'],
             isFree: i['is_free'].toString(),
-            name: i['name'],
+            name: (i['name'] ?? ''),
             videoUrl: i['video_url'],
             thumnail: fileName,
           ),
@@ -217,8 +217,13 @@ class CommentsBloc {
     _dataComment.clear();
     // ignore: avoid_print
     for (var i in data['data'] ?? []) {
-      add(Comment(id: i['id'], name: i['user']['name'], courseId: i['course_id'], userId: i['user_id'], chat: i['chat'], created: DateTime.parse(i['created_at'])));
+      try {
+        add(Comment(id: i['id'], name: i['user']['name'], courseId: i['course_id'].toString(), userId: i['user_id'].toString(), chat: i['chat'], created: DateTime.parse(i['created_at']), image: i['user']['photo_url']));
+      } catch (_) {
+        print(_);
+      }
     }
+    print(_dataComment.length);
   }
 
   static add(Comment data) {

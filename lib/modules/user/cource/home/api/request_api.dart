@@ -79,6 +79,7 @@ Future<void> getComments(context, id, {required Function onSuccess}) async {
     config: RequestApiHelperData(
       body: {'course_id': id},
       onSuccess: (data) async {
+        print(data);
         await CommentsBloc.init(data['data']);
         onSuccess();
       },
@@ -87,22 +88,28 @@ Future<void> getComments(context, id, {required Function onSuccess}) async {
 }
 
 saveComment(context, id, value, {required Function onSuccess}) async {
-  await RequestApiHelper.sendRequest(
-    type: Api.post,
-    url: 'chats',
-    replacementId: 23,
-    withLoading: true,
-    config: RequestApiHelperData(
-      body: {
-        "chat": value,
-        "course_id": id,
-      },
-      onSuccess: (data) async {
-        await CommentsBloc.init(data['data']);
-        onSuccess();
-      },
-    ),
-  );
+  try {
+    await RequestApiHelper.sendRequest(
+      type: Api.post,
+      url: 'chats',
+      replacementId: 23,
+      withLoading: true,
+      config: RequestApiHelperData(
+        body: {
+          "chat": value,
+          "course_id": id,
+        },
+        onSuccess: (data) async {
+          // await CommentsBloc.init(data['data']);
+          onSuccess();
+        },
+        onError: (data) async {},
+        onAuthError: (context) {},
+      ),
+    );
+  } catch (_) {
+    print(_);
+  }
 }
 
 rating(context, id, value, {required Function onSuccess}) async {

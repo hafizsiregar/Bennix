@@ -33,6 +33,7 @@ class PlayerCource extends StatefulWidget {
 }
 
 class _PlayerCourceState extends BaseBackground<PlayerCource> {
+  Widget players = const SizedBox();
   int selectedVideo = 0;
   YoutubePlayerController? _controllerGlobal;
   late YoutubePlayerController _controller;
@@ -45,6 +46,24 @@ class _PlayerCourceState extends BaseBackground<PlayerCource> {
       Duration.zero,
       () async {
         dataBased = PlayerC(desc: widget.desc, id: widget.id, title: widget.title, type: widget.type, url: widget.url);
+        players = dataBased.type == Types.external
+            ? YoutubePlayer(
+                controller: _controller,
+                showVideoProgressIndicator: true,
+                progressColors: const ProgressBarColors(
+                  playedColor: Colors.amber,
+                  handleColor: Colors.amberAccent,
+                ),
+                onReady: () {
+                  _controller.addListener(() {});
+                },
+              )
+            : BetterPlayer.network(
+                dataBased.url,
+                betterPlayerConfiguration: const BetterPlayerConfiguration(
+                  fit: BoxFit.contain,
+                ),
+              );
         setState(() {});
 
         getDetailVideo(widget.id, onSuccess: () {
@@ -120,19 +139,7 @@ class _PlayerCourceState extends BaseBackground<PlayerCource> {
                 SizedBox(
                   child: AspectRatio(
                     aspectRatio: 16 / 9,
-                    child: dataBased.type == Types.external
-                        ? YoutubePlayer(
-                            controller: _controller,
-                            showVideoProgressIndicator: true,
-                            progressColors: const ProgressBarColors(
-                              playedColor: Colors.amber,
-                              handleColor: Colors.amberAccent,
-                            ),
-                            onReady: () {
-                              _controller.addListener(() {});
-                            },
-                          )
-                        : BetterPlayer.network(dataBased.url),
+                    child: players,
                   ),
                 ),
                 const SizedBox(
@@ -201,7 +208,7 @@ class _PlayerCourceState extends BaseBackground<PlayerCource> {
                     child: ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: CourceBloc.detailVideo == null ? 0 : CourceBloc.detailVideo.length,
+                      itemCount: CourceBloc.detailVideo.isEmpty ? 0 : CourceBloc.detailVideo.length,
                       itemBuilder: (context, i) {
                         final data = CourceBloc.detailVideo[i];
                         late YoutubePlayerController _controller;
@@ -342,6 +349,26 @@ class _PlayerCourceState extends BaseBackground<PlayerCource> {
                                           title: data.name!,
                                           id: data.id.toString(),
                                         );
+
+                                        players = dataBased.type == Types.external
+                                            ? YoutubePlayer(
+                                                controller: _controller,
+                                                showVideoProgressIndicator: true,
+                                                progressColors: const ProgressBarColors(
+                                                  playedColor: Colors.amber,
+                                                  handleColor: Colors.amberAccent,
+                                                ),
+                                                onReady: () {
+                                                  _controller.addListener(() {});
+                                                },
+                                              )
+                                            : BetterPlayer.network(
+                                                dataBased.url,
+                                                betterPlayerConfiguration: const BetterPlayerConfiguration(
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              );
+                                        setState(() {});
                                       },
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,

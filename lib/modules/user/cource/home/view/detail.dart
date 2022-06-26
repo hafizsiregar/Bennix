@@ -479,38 +479,60 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                                                       ),
                                                       SizedBox(width: 15),
                                                       Expanded(
-                                                        child: Column(
+                                                        child: Row(
                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                           children: <Widget>[
-                                                            Text(
-                                                              data.name ?? '',
-                                                              style: GoogleFonts.poppins(
-                                                                fontSize: 16,
-                                                                fontWeight: FontWeight.w600,
-                                                              ),
+                                                            Container(
+                                                              height: 100,
+                                                              width: 170,
+                                                              child: data.isFree != '0' && (UserBloc.user.typeCourse == 'Gratis' || UserBloc.user.typeCourse == null)
+                                                                  ? Container(
+                                                                      width: 150,
+                                                                      height: 100,
+                                                                      decoration: data.videoUrl!.contains('youtube.com')
+                                                                          ? null
+                                                                          : BoxDecoration(
+                                                                              image: data.thumnail == null
+                                                                                  ? null
+                                                                                  : DecorationImage(
+                                                                                      image: FileImage(File(data.thumnail ?? '')),
+                                                                                      fit: BoxFit.cover,
+                                                                                    ),
+                                                                            ),
+                                                                    )
+                                                                  : Container(
+                                                                      decoration: BoxDecoration(
+                                                                        image: DecorationImage(
+                                                                          image: FileImage(File(data.thumnail ?? '')),
+                                                                          fit: BoxFit.cover,
+                                                                          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.darken),
+                                                                        ),
+                                                                      ),
+                                                                    ),
                                                             ),
-                                                            SizedBox(
-                                                              height: 5,
-                                                            ),
-                                                            Row(
-                                                              children: <Widget>[
-                                                                Text(
-                                                                  data.episode == 99 ? '${data.episode} Episode' : '${data.episode} Episode',
-                                                                  style: GoogleFonts.poppins(
-                                                                    fontSize: 12,
-                                                                    fontWeight: FontWeight.w500,
-                                                                    color: Colors.black54,
+                                                            SizedBox(width: 15),
+                                                            Expanded(
+                                                              child: Row(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: <Widget>[
+                                                                  Expanded(
+                                                                    child: Text(
+                                                                      data.name ?? '',
+                                                                      style: GoogleFonts.poppins(
+                                                                        fontSize: 16,
+                                                                        fontWeight: FontWeight.w600,
+                                                                      ),
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 5,
-                                                                ),
-                                                                Icon(
-                                                                  (data.isFree != '0' && (UserBloc.user.typeCourse == 'Gratis' || UserBloc.user.typeCourse == null)) ? Icons.lock : null,
-                                                                  size: 15,
-                                                                  color: Colors.amberAccent,
-                                                                )
-                                                              ],
+                                                                  (data.isFree != '0')
+                                                                      ? Icon(
+                                                                          Icons.lock,
+                                                                          size: 16,
+                                                                          color: Colors.yellow[800],
+                                                                        )
+                                                                      : const SizedBox(),
+                                                                ],
+                                                              ),
                                                             ),
                                                           ],
                                                         ),
@@ -527,6 +549,9 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                                                       fontWeight: FontWeight.w500,
                                                       color: BaseColor.theme?.captionColor,
                                                     ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
                                                   ),
                                                 ],
                                               )
@@ -546,6 +571,7 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: <Widget>[
                                                     Row(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: <Widget>[
                                                         Container(
                                                           height: 100,
@@ -577,27 +603,25 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                                                         ),
                                                         SizedBox(width: 15),
                                                         Expanded(
-                                                          child: Column(
+                                                          child: Row(
                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: <Widget>[
-                                                              Text(
-                                                                data.name ?? '',
-                                                                style: GoogleFonts.poppins(
-                                                                  fontSize: 16,
-                                                                  fontWeight: FontWeight.w600,
+                                                              Expanded(
+                                                                child: Text(
+                                                                  data.name ?? '',
+                                                                  style: GoogleFonts.poppins(
+                                                                    fontSize: 16,
+                                                                    fontWeight: FontWeight.w600,
+                                                                  ),
                                                                 ),
                                                               ),
-                                                              const SizedBox(
-                                                                height: 5,
-                                                              ),
-                                                              Text(
-                                                                data.episode == 99 ? '${data.episode} Episode' : '${data.episode} Episode',
-                                                                style: GoogleFonts.poppins(
-                                                                  fontSize: 12,
-                                                                  fontWeight: FontWeight.w500,
-                                                                  color: Colors.black54,
-                                                                ),
-                                                              ),
+                                                              (data.isFree != '0')
+                                                                  ? Icon(
+                                                                      Icons.lock,
+                                                                      size: 16,
+                                                                      color: Colors.yellow[800],
+                                                                    )
+                                                                  : const SizedBox(),
                                                             ],
                                                           ),
                                                         ),
@@ -613,6 +637,9 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                                                         fontWeight: FontWeight.w500,
                                                         color: BaseColor.theme?.captionColor,
                                                       ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 10,
                                                     ),
                                                   ],
                                                 ),
@@ -710,6 +737,9 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                                             );
                                           }).toList(),
                                         ),
+                                        const SizedBox(
+                                          height: 12,
+                                        ),
                                       ],
                                     ),
                                   )
@@ -734,7 +764,7 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(100),
           color: Colors.white,
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
               color: Colors.grey,
               blurRadius: 1,

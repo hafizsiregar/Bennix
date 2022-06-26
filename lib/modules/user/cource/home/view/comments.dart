@@ -2,6 +2,7 @@ import 'package:benix/main_library.dart';
 import 'package:benix/modules/user/cource/home/api/request_api.dart';
 import 'package:benix/modules/user/cource/home/model/bloc.dart';
 import 'package:benix/modules/user/cource/home/model/model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -60,65 +61,69 @@ class _CommentsViewState extends BaseBackground<CommentsView> {
               children: [
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: ListView.builder(
-                      itemCount: CommentsBloc.getList().take(10).toList().length,
-                      itemBuilder: (context, index) {
-                        List<Comment> dataList = CommentsBloc.getList().take(10).toList();
-                        Comment comment = dataList[index];
-                        return Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: 50,
-                              width: 50,
-                              decoration: const BoxDecoration(
-                                color: Colors.black12,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    comment.name ?? '',
-                                    style: GoogleFonts.poppins(
-                                      textStyle: const TextStyle(
-                                        fontSize: 16,
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: ListView.builder(
+                        itemCount: CommentsBloc.getList().take(10).toList().length,
+                        itemBuilder: (context, index) {
+                          List<Comment> dataList = CommentsBloc.getList().take(10).toList();
+                          Comment comment = dataList[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 20.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: 50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                    color: Colors.black12,
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: CachedNetworkImageProvider(comment.image ?? ''),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '@' + (comment.name ?? ''),
+                                        style: GoogleFonts.poppins(
+                                          textStyle: const TextStyle(
+                                            fontSize: 16,
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      Text(
+                                        timeago.format(comment.created!, locale: 'id'),
+                                        style: GoogleFonts.poppins(
+                                          textStyle: const TextStyle(fontSize: 11),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 6,
+                                      ),
+                                      Text(
+                                        comment.chat ?? '',
+                                        style: GoogleFonts.poppins(
+                                          textStyle: const TextStyle(fontSize: 13, color: Colors.black, fontWeight: FontWeight.w500),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    timeago.format(comment.created!, locale: 'id'),
-                                    style: GoogleFonts.poppins(
-                                      textStyle: const TextStyle(fontSize: 11),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 12,
-                                  ),
-                                  Text(
-                                    comment.chat ?? '',
-                                    style: GoogleFonts.poppins(
-                                      textStyle: const TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w600),
-                                    ),
-                                  ),
-                                  Text(
-                                    'Balas',
-                                    style: GoogleFonts.poppins(
-                                      textStyle: const TextStyle(fontSize: 11),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -164,7 +169,7 @@ class _CommentsViewState extends BaseBackground<CommentsView> {
                         if (_messageController.text == '') {
                           return;
                         }
-                        final bol = await saveComment(context, widget.data.id.toString(), _messageController.text.toString(), onSuccess: () {
+                        saveComment(context, widget.data.id.toString(), _messageController.text.toString(), onSuccess: () {
                           getComments(context, widget.data.id.toString(), onSuccess: () {
                             _messageController.clear;
                             setState(() {});

@@ -48,7 +48,7 @@ class DetailCource {
 }
 
 class Comment {
-  String? name, courseId, userId, chat;
+  String? name, courseId, userId, chat, image;
   int? id;
   DateTime? created;
   Comment({
@@ -58,6 +58,7 @@ class Comment {
     this.userId,
     this.chat,
     this.created,
+    this.image,
   });
 }
 
