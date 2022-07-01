@@ -25,7 +25,7 @@ class AddVideoView extends StatefulWidget {
 class _AddVideoViewState extends BaseBackground<AddVideoView> {
   List<bool> step = [false, false, false];
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _judul = TextEditingController(), _pengajar = TextEditingController(), _deskripsi = TextEditingController(), cocokUntuk = TextEditingController(), pelajaran = TextEditingController();
+  final TextEditingController _judul = TextEditingController(), _pengajar = TextEditingController(), _deskripsi = TextEditingController(), cocokUntuk = TextEditingController(), pelajaran = TextEditingController(), jam = TextEditingController(), menit = TextEditingController();
   DateTime? start = DateTime.now(), end = DateTime.now().add(const Duration(days: 1));
   SelectData? kategori;
   int currentIndex = 0;
@@ -721,6 +721,44 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
                             color: Colors.white,
                             child: Column(
                               children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 20, right: 20, top: 12, bottom: 12),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(bottom: 4),
+                                          child: Forms.border(
+                                            controller: jam,
+                                            context: context,
+                                            keyboardType: TextInputType.number,
+                                            label: 'Jam',
+                                            isfloat: true,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(bottom: 4),
+                                          child: Forms.border(
+                                            controller: menit,
+                                            context: context,
+                                            keyboardType: TextInputType.number,
+                                            label: 'Menit',
+                                            isfloat: true,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Divider(
+                                  color: Colors.black38,
+                                  height: 0,
+                                ),
                                 InkWell(
                                   onTap: () {
                                     Select.single(
@@ -1304,50 +1342,52 @@ class _AddVideoViewState extends BaseBackground<AddVideoView> {
                                 }
                                 if (widget.editData != null) {
                                   await updateEcource(
-                                      context: context,
-                                      data: Cource(
-                                        bannerUrl: banner,
-                                        name: _judul.text,
-                                        certificateUrl: '',
-                                        description: _deskripsi.text,
-                                        endDate: end,
-                                        id: widget.editData!.id,
-                                        isExternal: isExtern ? 'eksternal' : 'internal',
-                                        startDate: start,
-                                        trainerName: _pengajar.text,
-                                        kategori: kategori?.id,
-                                        cocokUntuk: cocokUntuk.text,
-                                        dipelajari: pelajaran.text,
-                                        jam: '',
-                                        menit: '',
-                                      ),
-                                      modul: AddVideoBloc.moduleData,
-                                      video: AddVideoBloc.videoData,
-                                      modulOld: AdminCourceBloc.moduleData,
-                                      videoOld: AdminCourceBloc.videoData,
-                                      onSuccess: () {});
+                                    context: context,
+                                    data: Cource(
+                                      bannerUrl: banner,
+                                      name: _judul.text,
+                                      certificateUrl: '',
+                                      description: _deskripsi.text,
+                                      endDate: end,
+                                      id: widget.editData!.id,
+                                      isExternal: isExtern ? 'eksternal' : 'internal',
+                                      startDate: start,
+                                      trainerName: _pengajar.text,
+                                      kategori: kategori?.id,
+                                      cocokUntuk: cocokUntuk.text,
+                                      dipelajari: pelajaran.text,
+                                      jam: jam.text,
+                                      menit: menit.text,
+                                    ),
+                                    modul: AddVideoBloc.moduleData,
+                                    video: AddVideoBloc.videoData,
+                                    modulOld: AdminCourceBloc.moduleData,
+                                    videoOld: AdminCourceBloc.videoData,
+                                    onSuccess: () {},
+                                  );
                                   return;
                                 } else {
                                   createEcource(
-                                      context: context,
-                                      data: AddVideo(
-                                        name: _judul.text,
-                                        bannerPath: banner,
-                                        certificatePath: '',
-                                        desc: _deskripsi.text,
-                                        end: DateFormat('yyyy-MM-dd').format(end!),
-                                        modul: AddVideoBloc.moduleData,
-                                        start: DateFormat('yyyy-MM-dd').format(start!),
-                                        trainer: _pengajar.text,
-                                        video: AddVideoBloc.videoData,
-                                        videoType: isExtern ? 'eksternal' : 'internal',
-                                        kategori: kategori?.id,
-                                        cocokUntuk: cocokUntuk.text,
-                                        dipelajari: pelajaran.text,
-                                        jam: '',
-                                        menit: '',
-                                      ),
-                                      onSuccess: () {});
+                                    context: context,
+                                    data: AddVideo(
+                                      name: _judul.text,
+                                      bannerPath: banner,
+                                      certificatePath: '',
+                                      desc: _deskripsi.text,
+                                      end: DateFormat('yyyy-MM-dd').format(end!),
+                                      modul: AddVideoBloc.moduleData,
+                                      start: DateFormat('yyyy-MM-dd').format(start!),
+                                      trainer: _pengajar.text,
+                                      video: AddVideoBloc.videoData,
+                                      videoType: isExtern ? 'eksternal' : 'internal',
+                                      kategori: kategori?.id,
+                                      cocokUntuk: cocokUntuk.text,
+                                      dipelajari: pelajaran.text,
+                                      jam: jam.text,
+                                      menit: menit.text,
+                                    ),
+                                    onSuccess: () {},
+                                  );
                                 }
                               },
                             ),

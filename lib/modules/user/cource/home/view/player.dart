@@ -327,7 +327,7 @@ class _PlayerCourceState extends BaseBackground<PlayerCource> {
                                             ),
                                           ],
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 10,
                                         ),
                                         Text(

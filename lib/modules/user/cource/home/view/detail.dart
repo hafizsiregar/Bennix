@@ -177,7 +177,7 @@ class _DetailEcourceViewState extends BaseBackground<DetailEcourceView> {
                               children: [
                                 InkWell(
                                   onTap: () {
-                                    navigator(page: CommentsView(data: widget.data));
+                                    showComment(widget.data.id);
                                   },
                                   focusColor: Colors.transparent,
                                   hoverColor: Colors.transparent,

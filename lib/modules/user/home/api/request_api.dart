@@ -1,5 +1,7 @@
 import 'package:benix/modules/admin/event/bloc/main_bloc.dart';
 import 'package:benix/modules/user/home/bloc/model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:request_api_helper/request.dart';
 import 'package:request_api_helper/request_api_helper.dart';
@@ -21,7 +23,6 @@ Future<void> filterEvent(context, FilterDataEvent data, {required Function onSuc
     type: Api.post,
     url: 'events',
     replacementId: 13,
-    withLoading: true,
     config: RequestApiHelperData(
       body: body,
       onSuccess: (data) async {
@@ -87,14 +88,21 @@ Future<void> getBanner(context, {required Function(List<Widget>) onSuccess}) asy
               onTap: () {
                 launchUrl(i['path']);
               },
-              child: Container(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: SizedBox(
-                      child: Image.network(i['path'], fit: BoxFit.cover, width: double.infinity),
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: CachedNetworkImageProvider(i['path']),
+                      fit: BoxFit.cover,
                     ),
-                  )),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(12),
+                    ),
+                  ),
+                ),
+              ),
             ),
           );
         }

@@ -315,58 +315,86 @@ Widget searchCard({required context, required Function navigator, required title
         child: ListView.builder(
           itemCount: CourceBloc.filterData.length,
           itemBuilder: (context, index) {
-            final e = CourceBloc.filterData[index];
+            final data = CourceBloc.filterData[index];
             return Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: GestureDetector(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: InkWell(
                 onTap: () {
                   Navigator.pop(context);
-
-                  navigator(
+                  Navigator.push(
+                    navigatorKey.currentContext!,
+                    fadeIn(
                       page: DetailEcourceView(
-                    data: e,
-                  ));
+                        data: data,
+                      ),
+                    ),
+                  );
                 },
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 12.0),
-                      child: Container(
-                        width: 120,
-                        height: 120,
+                hoverColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                child: IntrinsicHeight(
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 100,
                         decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(14)),
+                          color: Colors.black,
                           image: DecorationImage(
-                            image: NetworkImage(e.bannerUrl ?? ''),
+                            image: CachedNetworkImageProvider(data.bannerUrl ?? ''),
                             fit: BoxFit.cover,
+                          ),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(8),
                           ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 12.0),
-                            child: Text(
-                              DateFormat('d MMM y HH:mm:ss').format(e.startDate!) + ' - ' + DateFormat('d MMM y HH:mm:ss').format(e.endDate!),
-                              style: TextStyle(
-                                color: BaseColor.theme?.linkActive,
-                              ),
-                            ),
-                          ),
-                          Text(
-                            e.name ?? '',
-                            style: const TextStyle(
-                              fontSize: 19,
-                              // color: BaseColor.theme?.linkActive,
-                            ),
-                          ),
-                        ],
+                      const SizedBox(
+                        width: 12,
                       ),
-                    )
-                  ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(data.name ?? ''),
+                            Text(data.trainerName ?? ''),
+                            Row(
+                              children: [
+                                Row(
+                                  children: const [
+                                    Icon(
+                                      FeatherIcons.user,
+                                      size: 18,
+                                    ),
+                                    SizedBox(
+                                      width: 4,
+                                    ),
+                                    Text('200 Penonton'),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  width: 12,
+                                ),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.star,
+                                      color: Colors.orange,
+                                    ),
+                                    const SizedBox(
+                                      width: 4,
+                                    ),
+                                    Text((data.avgRate ?? '')),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             );

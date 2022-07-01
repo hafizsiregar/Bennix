@@ -120,7 +120,7 @@ rating(context, id, value, {required Function onSuccess}) async {
     withLoading: true,
     config: RequestApiHelperData(
       body: {
-        "chat": value,
+        "value": value,
         "course_id": id,
       },
       onSuccess: (data) async {

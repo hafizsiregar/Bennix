@@ -12,49 +12,57 @@ Widget category({counter, bool? selected, required context, state, Function(Stri
   return SingleChildScrollView(
     scrollDirection: Axis.horizontal,
     child: StatefulBuilder(
-      builder: (context, setState) => Row(
-        children: CourceBloc.category.map((e) {
-          return Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: Column(
-              children: <Widget>[
-                Material(
-                  child: InkWell(
-                    onTap: () {
-                      filterCategoryEcource(e.id, onSuccess: () {
-                        if (onTap != null) {
-                          onTap(e.title ?? '');
-                        }
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: e.objectData?['icon'] == null
-                          ? Image.network(
-                              'https://raw.githubusercontent.com/afandiyusuf/clone-tokopedia-ui-tutorial/master/assets/category-icon/lihat-semua.png',
-                              width: 38,
-                              color: Colors.blue,
-                              // height: 25,
-                            )
-                          : Image.network(
-                              e.objectData?['icon'],
-                              // color: iconColor,
-                              width: 38,
-                              color: Colors.blue,
-                            ),
+      builder: (context, setState) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 18.0),
+        child: Row(
+          children: CourceBloc.category.map((e) {
+            return Padding(
+              padding: const EdgeInsets.only(right: 20),
+              child: Column(
+                children: <Widget>[
+                  Material(
+                    elevation: 3,
+                    child: InkWell(
+                      onTap: () {
+                        filterCategoryEcource(e.id, onSuccess: () {
+                          if (onTap != null) {
+                            onTap(e.title ?? '');
+                          }
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: e.objectData?['icon'] == null
+                            ? Image.network(
+                                'https://raw.githubusercontent.com/afandiyusuf/clone-tokopedia-ui-tutorial/master/assets/category-icon/lihat-semua.png',
+                                width: 38,
+                                color: Colors.blue,
+                                // height: 25,
+                              )
+                            : Image.network(
+                                e.objectData?['icon'],
+                                // color: iconColor,
+                                width: 38,
+                                color: Colors.blue,
+                              ),
+                      ),
                     ),
                   ),
-                ),
-                Text(
-                  e.title!.substring(0, 4) + '...',
-                  style: GoogleFonts.poppins(fontSize: 10
-                      // color: textColor,
-                      ),
-                )
-              ],
-            ),
-          );
-        }).toList(),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Text(
+                    e.title!,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(fontSize: 10
+                        // color: textColor,
+                        ),
+                  )
+                ],
+              ),
+            );
+          }).toList(),
+        ),
       ),
     ),
   );

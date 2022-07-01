@@ -3,7 +3,7 @@ part of 'main_view.dart';
 Widget cardHome({required Function navigator, required List<Cource> dataList, setState}) {
   return SizedBox(
     width: double.infinity,
-    height: 240,
+    height: 300,
     child: ListView.builder(
       scrollDirection: Axis.horizontal,
       itemCount: dataList.length.clamp(0, 5),
@@ -21,13 +21,13 @@ Widget cardHome({required Function navigator, required List<Cource> dataList, se
               });
             },
             child: SizedBox(
-              width: 140,
+              width: 180,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    width: 140,
-                    height: 200,
+                    width: 180,
+                    height: 140,
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(Radius.circular(8)),
                       image: e.bannerUrl == null
@@ -43,12 +43,40 @@ Widget cardHome({required Function navigator, required List<Cource> dataList, se
                   ),
                   Text(
                     e.name ?? '',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.poppins(
-                      fontSize: 14,
+                      fontSize: 18,
                       fontWeight: FontWeight.w500,
                     ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    e.trainerName ?? '',
+                    style: GoogleFonts.poppins(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        (e.avgRate ?? '') == '0' ? '' : (e.avgRate ?? ''),
+                        style: GoogleFonts.poppins(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 6,
+                      ),
+                      for (int i = 0; i < (double.parse(e.avgRate.toString()).floor()); i++)
+                        const Icon(
+                          Icons.star,
+                          size: 16,
+                          color: Colors.orange,
+                        ),
+                    ],
                   ),
                 ],
               ),

@@ -1,13 +1,10 @@
-import 'package:benix/main_route.dart' show EventView;
 import 'package:benix/modules/admin/cource/model/main_bloc.dart';
 import 'package:benix/modules/admin/cource/model/model.dart';
 import 'package:benix/modules/admin/cource/view/main_view.dart';
 import 'package:benix/modules/admin/event/bloc/main_bloc.dart';
-import 'package:benix/modules/admin/event/bloc/model.dart';
 import 'package:benix/modules/user/cource/home/api/request_api.dart';
 import 'package:benix/modules/user/cource/home/model/bloc.dart';
 import 'package:benix/modules/user/cource/home/model/model.dart';
-import 'package:benix/modules/user/cource/home/view/near_course.dart';
 import 'package:benix/modules/user/cource/home/view/new_course.dart';
 import 'package:benix/modules/user/home/api/request_api.dart';
 import 'package:benix/modules/user/home/bloc/model.dart';
@@ -16,10 +13,13 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../../main.dart';
 import 'detail.dart';
 
-import '../../../../../main_library.dart' show Animation, AnimationController, AssetImage, Axis, BaseBackground, BaseColor, Border, BorderRadius, BorderSide, BouncingScrollPhysics, BoxConstraints, BoxDecoration, BoxFit, BoxShape, BuildContext, Button, Center, Color, Colors, Column, ConstrainedBox, Container, CrossAxisAlignment, CurvedAnimation, Curves, DecorationImage, EdgeInsets, Expanded, FontWeight, Forms, GestureDetector, Icon, Icons, Image, InkWell, InputDecoration, IntrinsicHeight, Key, ListView, MainAxisAlignment, MainAxisSize, Material, MaterialType, MediaQuery, Navigator, NetworkImage, OutlineInputBorder, Padding, Positioned, Radius, Responsive, Row, Scaffold, SelectData, SingleChildScrollView, SizedBox, Stack, StatefulBuilder, StatefulWidget, Text, TextEditingController, TextFormField, TextStyle, Theme, Tween, Widget, bottom, currencyFormat, showDatePicker, showModalBottomSheet;
+import '../../../../../main_library.dart' show Animation, AnimationController, AssetImage, Axis, BaseBackground, BaseColor, Border, BorderRadius, BorderSide, BouncingScrollPhysics, BoxConstraints, BoxDecoration, BoxFit, BoxShape, BuildContext, Button, Center, Color, Colors, Column, ConstrainedBox, Container, CrossAxisAlignment, CurvedAnimation, Curves, DecorationImage, EdgeInsets, Expanded, FontWeight, Forms, GestureDetector, Icon, Icons, Image, InkWell, InputDecoration, IntrinsicHeight, Key, ListView, MainAxisAlignment, MainAxisSize, Material, MaterialType, MediaQuery, Navigator, NetworkImage, OutlineInputBorder, Padding, Positioned, Radius, Responsive, Row, Scaffold, SelectData, SingleChildScrollView, SizedBox, Stack, StatefulBuilder, StatefulWidget, Text, TextEditingController, TextFormField, TextStyle, Theme, Tween, Widget, bottom, currencyFormat, fadeIn, showDatePicker, showModalBottomSheet;
 import 'package:intl/intl.dart';
+
+import 'mentor.dart';
 part 'part_card.dart';
 part 'part_category.dart';
 part 'part_nearby_card.dart';
@@ -150,24 +150,22 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
                         size: 18,
                       ),
                     ),
+                    CarouselSlider(
+                      items: banners,
+                      options: CarouselOptions(
+                        pauseAutoPlayOnManualNavigate: true,
+                        height: 200,
+                        viewportFraction: 0.95,
+                        aspectRatio: 50 / 16,
+                        autoPlay: true,
+                        autoPlayInterval: const Duration(seconds: 10),
+                        onPageChanged: (page, why) {},
+                        scrollDirection: Axis.horizontal,
+                      ),
+                    ),
                     const SizedBox(
                       height: 20,
                     ),
-                    // CarouselSlider(
-                    //   items: banners,
-                    //   options: CarouselOptions(
-                    //     height: 200,
-                    //     viewportFraction: 0.95,
-                    //     aspectRatio: 50 / 16,
-                    //     autoPlay: true,
-                    //     autoPlayInterval: const Duration(seconds: 2),
-                    //     onPageChanged: (page, why) {},
-                    //     scrollDirection: Axis.horizontal,
-                    //   ),
-                    // ),
-                    // const SizedBox(
-                    //   height: 20,
-                    // ),
                     Padding(
                       padding: const EdgeInsets.only(left: 16),
                       child: category(
@@ -180,35 +178,39 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
                         },
                       ),
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "E-Course Terdekat",
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                          Expanded(
+                            child: Text(
+                              "E-Course peminat terbanyak bulan ini",
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => NearCourse(
-                                    list: CourceBloc.getList(),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2.0),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => NewCourse(
+                                      title: "E-Course peminat terbanyak bulan ini",
+                                      list: CourceBloc.getList(),
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              'Lihat Semua',
-                              style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w400, color: Colors.blue),
+                                );
+                              },
+                              child: Text(
+                                'Lihat Semua',
+                                style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w400, color: Colors.blue),
+                              ),
                             ),
                           ),
                         ],
@@ -259,14 +261,7 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
                           ),
                           InkWell(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => NewCourse(
-                                    list: CourceBloc.getList(),
-                                  ),
-                                ),
-                              );
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => MentorPopularView()));
                             },
                             child: Text(
                               'Lihat Semua',
@@ -301,6 +296,7 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => NewCourse(
+                                    title: 'E-Course Terbaru',
                                     list: CourceBloc.getList(),
                                   ),
                                 ),
@@ -319,7 +315,7 @@ class _CourceHomeViewsState extends BaseBackground<CourceHomeViews> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: card2(navigator: navigator, dataList: CourceBloc.getList(filter: _search.text), setState: setState),
+                      child: cardHome(navigator: navigator, dataList: CourceBloc.getList(filter: _search.text), setState: setState),
                     ),
                     const SizedBox(
                       height: 50,

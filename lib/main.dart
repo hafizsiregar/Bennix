@@ -102,6 +102,7 @@ class _MyAppState extends State<MyApp> {
         statusBarColor: Colors.transparent,
       ),
       child: MaterialApp(
+        navigatorObservers: [RequestApiHelperObserver()],
         title: 'Bennix',
         debugShowCheckedModeBanner: false,
         theme: themeDatas(false, context),
