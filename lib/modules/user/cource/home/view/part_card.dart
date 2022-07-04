@@ -44,7 +44,7 @@ Widget cardHome({required Function navigator, required List<Cource> dataList, se
                   Text(
                     e.name ?? '',
                     style: GoogleFonts.poppins(
-                      fontSize: 18,
+                      fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
                   ),

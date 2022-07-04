@@ -130,6 +130,7 @@ class _AdminEventViewState extends BaseBackground<AdminEventView> {
                                     navigator(
                                       page: DashboardAdmin(
                                         id: BlocEvent.listEvent[index].id!,
+                                        index: index,
                                       ),
                                     );
                                   },

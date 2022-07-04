@@ -16,7 +16,8 @@ import '../api/request_api.dart';
 
 class DashboardAdmin extends StatefulWidget {
   final int id;
-  const DashboardAdmin({Key? key, required this.id}) : super(key: key);
+  final index;
+  const DashboardAdmin({Key? key, required this.id, required this.index}) : super(key: key);
 
   @override
   State<DashboardAdmin> createState() => _DashboardAdminState();
@@ -241,32 +242,32 @@ class _DashboardAdminState extends BaseBackground<DashboardAdmin> {
                           onTap: () async {
                             await detailEvent(
                               context: context,
-                              id: BlocEvent.listEvent[widget.id].id.toString(),
+                              id: BlocEvent.listEvent[widget.index].id.toString(),
                               onSuccess: (getData) async {
                                 await navigator(
                                   page: AddEventView(
                                     dataEdit: InputEventData(
-                                      banner: BlocEvent.listEvent[widget.id].banner!,
-                                      description: BlocEvent.listEvent[widget.id].description!,
-                                      endDate: BlocEvent.listEvent[widget.id].endDate!.toString(),
-                                      locationAddress: BlocEvent.listEvent[widget.id].locationAddress!,
-                                      locationCity: BlocEvent.listEvent[widget.id].locationCity,
-                                      locationLat: BlocEvent.listEvent[widget.id].locationLat,
-                                      locationLong: BlocEvent.listEvent[widget.id].locationLong,
-                                      locationType: BlocEvent.listEvent[widget.id].locationType!,
-                                      tages: BlocEvent.listEvent[widget.id].tages,
-                                      maxBuyTicket: BlocEvent.listEvent[widget.id].maxBuyTicket.toString(),
-                                      name: BlocEvent.listEvent[widget.id].name!,
-                                      organizerImg: BlocEvent.listEvent[widget.id].organizerImg,
-                                      organizerName: BlocEvent.listEvent[widget.id].organizerName!,
-                                      startDate: BlocEvent.listEvent[widget.id].startDate.toString(),
-                                      type: BlocEvent.listEvent[widget.id].type!,
-                                      uniqueEmailTransaction: BlocEvent.listEvent[widget.id].uniqueEmailTransaction.toString(),
-                                      id: BlocEvent.listEvent[widget.id].id,
+                                      banner: BlocEvent.listEvent[widget.index].banner!,
+                                      description: BlocEvent.listEvent[widget.index].description!,
+                                      endDate: BlocEvent.listEvent[widget.index].endDate!.toString(),
+                                      locationAddress: BlocEvent.listEvent[widget.index].locationAddress!,
+                                      locationCity: BlocEvent.listEvent[widget.index].locationCity,
+                                      locationLat: BlocEvent.listEvent[widget.index].locationLat,
+                                      locationLong: BlocEvent.listEvent[widget.index].locationLong,
+                                      locationType: BlocEvent.listEvent[widget.index].locationType!,
+                                      tages: BlocEvent.listEvent[widget.index].tages,
+                                      maxBuyTicket: BlocEvent.listEvent[widget.index].maxBuyTicket.toString(),
+                                      name: BlocEvent.listEvent[widget.index].name!,
+                                      organizerImg: BlocEvent.listEvent[widget.index].organizerImg,
+                                      organizerName: BlocEvent.listEvent[widget.index].organizerName!,
+                                      startDate: BlocEvent.listEvent[widget.index].startDate.toString(),
+                                      type: BlocEvent.listEvent[widget.index].type!,
+                                      uniqueEmailTransaction: BlocEvent.listEvent[widget.index].uniqueEmailTransaction.toString(),
+                                      id: BlocEvent.listEvent[widget.index].id,
                                       categories: getData['data']['events_categories'],
                                       tags: getData['data']['events_categories'],
                                       tickets: getData['data']['tickets'],
-                                      sk: BlocEvent.listEvent[widget.id].sk,
+                                      sk: BlocEvent.listEvent[widget.index].sk,
                                       buyerDataSettings: getData['data']['events_buyer_data_settings'],
                                     ),
                                   ),
