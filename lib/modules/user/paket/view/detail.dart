@@ -1,17 +1,6 @@
-import 'dart:io';
-
 import 'package:benix/main_library.dart';
-import 'package:benix/modules/user/cource/home/api/request_api.dart';
-import 'package:benix/modules/user/cource/home/model/bloc.dart';
-import 'package:benix/modules/user/cource/home/model/model.dart';
 import 'package:benix/modules/user/login/bloc/main_bloc.dart';
 import 'package:benix/modules/user/paket/model/model.dart';
-import 'package:benix/modules/user/paket/model/static_data.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:request_api_helper/background.dart';
-import 'package:request_api_helper/model/redirect_helper.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:intl/intl.dart';
 
 class PaketDetailView extends StatefulWidget {
   final Paket data;

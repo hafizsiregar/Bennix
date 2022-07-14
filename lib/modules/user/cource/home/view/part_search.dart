@@ -1,6 +1,7 @@
 part of 'main_view.dart';
 
 enum Waktu { sekarang, besok, mingguini, kosong }
+
 Waktu pilihWaktu = Waktu.sekarang;
 DateTime filterDate = DateTime.now();
 TextEditingController _price = TextEditingController();
@@ -275,21 +276,21 @@ Widget filterCard({required context, Function? onTap, required counter}) {
           onTap: () async {
             List cat = BlocEvent.listCategories.where((e) => e.selected!).toList();
             await filterEvent(
-              context,
-              FilterDataEvent(
-                calender: pilihWaktu == Waktu.kosong ? '' : DateFormat('y-MM-dd').format(filterDate),
-                category: cat.isNotEmpty ? cat[0].id.toString() : '',
-                locationCity: _lokasi.text,
-                name: _eventName.text,
-                startPrice: _price.text.replaceAll('.', ''),
-                today: pilihWaktu == Waktu.sekarang ? '1' : '0',
-                tomorrow: pilihWaktu == Waktu.besok ? '1' : '0',
-                week: pilihWaktu == Waktu.mingguini ? '1' : '0',
-              ),
-            );
+                context,
+                FilterDataEvent(
+                  calender: pilihWaktu == Waktu.kosong ? '' : DateFormat('y-MM-dd').format(filterDate),
+                  category: cat.isNotEmpty ? cat[0].id.toString() : '',
+                  locationCity: _lokasi.text,
+                  name: _eventName.text,
+                  startPrice: _price.text.replaceAll('.', ''),
+                  today: pilihWaktu == Waktu.sekarang ? '1' : '0',
+                  tomorrow: pilihWaktu == Waktu.besok ? '1' : '0',
+                  week: pilihWaktu == Waktu.mingguini ? '1' : '0',
+                ), onSuccess: () {
+              Navigator.of(context).pop();
+              onTap!();
+            });
             // setState(() {});
-            Navigator.of(context).pop();
-            onTap!();
           },
         ),
       ],
@@ -312,56 +313,88 @@ Widget searchCard({required context, required Function navigator, required title
       ),
       Expanded(
         child: ListView.builder(
-          itemCount: BlocEvent.filteredEvent.length,
+          itemCount: CourceBloc.filterData.length,
           itemBuilder: (context, index) {
-            final e = BlocEvent.filteredEvent[index];
+            final data = CourceBloc.filterData[index];
             return Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: GestureDetector(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: InkWell(
                 onTap: () {
-                  BlocEvent.selectEvent(e.id);
-                  navigator(page: const EventView());
+                  Navigator.pop(context);
+                  Navigator.push(
+                    navigatorKey.currentContext!,
+                    fadeIn(
+                      page: DetailEcourceView(
+                        data: data,
+                      ),
+                    ),
+                  );
                 },
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 12.0),
-                      child: Container(
-                        width: 120,
-                        height: 120,
+                hoverColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                child: IntrinsicHeight(
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 100,
                         decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(14)),
+                          color: Colors.black,
                           image: DecorationImage(
-                            image: NetworkImage(e.banner!),
+                            image: CachedNetworkImageProvider(data.bannerUrl ?? ''),
                             fit: BoxFit.cover,
+                          ),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(8),
                           ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 12.0),
-                            child: Text(
-                              DateFormat('d MMM y HH:mm:ss').format(e.startDate!) + ' - ' + DateFormat('d MMM y HH:mm:ss').format(e.endDate!),
-                              style: TextStyle(
-                                color: BaseColor.theme?.linkActive,
-                              ),
-                            ),
-                          ),
-                          Text(
-                            e.name ?? '',
-                            style: const TextStyle(
-                              fontSize: 19,
-                              // color: BaseColor.theme?.linkActive,
-                            ),
-                          ),
-                        ],
+                      const SizedBox(
+                        width: 12,
                       ),
-                    )
-                  ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(data.name ?? ''),
+                            Text(data.trainerName ?? ''),
+                            Row(
+                              children: [
+                                Row(
+                                  children: const [
+                                    Icon(
+                                      FeatherIcons.user,
+                                      size: 18,
+                                    ),
+                                    SizedBox(
+                                      width: 4,
+                                    ),
+                                    Text('200 Penonton'),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  width: 12,
+                                ),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.star,
+                                      color: Colors.orange,
+                                    ),
+                                    const SizedBox(
+                                      width: 4,
+                                    ),
+                                    Text((data.avgRate ?? '')),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             );

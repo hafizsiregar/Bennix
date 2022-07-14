@@ -2,11 +2,16 @@ import 'package:benix/modules/user/cource/home/model/model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
+import '../../../../../widget/model/select_model.dart';
+
 class CourceBloc {
   static final List<Cource> _data = [];
   static final List<Cource> _closeData = [];
   static List<Cource> get data => _data;
   static List<Cource> get closeData => _closeData;
+  static final List<Cource> filterData = [];
+  static List<SelectData> category = [];
+  static List<CourceVideo> detailVideo = [];
 
   static List<Cource> getList({String? filter}) {
     return data.where((element) => element.name!.toUpperCase().contains((filter ?? '').toUpperCase())).toList();
@@ -14,6 +19,61 @@ class CourceBloc {
 
   static List<Cource> getListClose({String? filter}) {
     return closeData.where((element) => element.name!.toUpperCase().contains((filter ?? '').toUpperCase())).toList();
+  }
+
+  static parseDetailVideo(data) async {
+    for (var i in data['data'] ?? []) {
+      String? fileName;
+      try {
+        fileName = await VideoThumbnail.thumbnailFile(
+          video: i['video_url'],
+          thumbnailPath: (await getTemporaryDirectory()).path,
+          timeMs: 0,
+          imageFormat: ImageFormat.JPEG,
+          maxHeight: 180,
+          quality: 100,
+        );
+      } catch (_) {}
+      try {
+        detailVideo.add(
+          CourceVideo(
+            courceId: i['course_id'].toString(),
+            description: i['description'],
+            episode: i['episode'].toString(),
+            id: i['id'],
+            isFree: i['is_free'].toString(),
+            name: i['name'],
+            videoUrl: i['video_url'],
+            thumnail: fileName,
+          ),
+        );
+      } catch (_) {}
+    }
+  }
+
+  static parseFilterCategoryFromResponse(data) {
+    filterData.clear();
+    for (var i in data['data'] ?? []) {
+      filterData.add(Cource(
+        episodeMin: i['episode_min'].toString(),
+        episodeMax: i['episode_max'].toString(),
+        bannerUrl: i['banner_url'],
+        certificateUrl: i['certificate_url'],
+        description: i['description'],
+        id: i['id'],
+        jumlahModule: i['jumlah_module'],
+        jumlahVideo: i['jumlah_video'],
+        name: i['name'],
+        status: i['status'],
+        trainerName: i['trainer_name'],
+        userId: i['user_id'].toString(),
+        videoType: i['video_type'],
+        endDate: DateTime.parse(i['end_date']),
+        startDate: DateTime.parse(i['start_date']),
+        avgRate: i['avg_rate'].toString() != 'null' ? i['avg_rate'].toString()[0] : null,
+        isExternal: i['video_type'],
+      ));
+    }
   }
 
   static init(data) {
@@ -31,12 +91,14 @@ class CourceBloc {
         name: i['name'],
         status: i['status'],
         trainerName: i['trainer_name'],
-        userId: i['user_id'],
+        userId: i['user_id'].toString(),
         videoType: i['video_type'],
         endDate: DateTime.parse(i['end_date']),
         startDate: DateTime.parse(i['start_date']),
         avgRate: i['avg_rate'].toString() != 'null' ? i['avg_rate'].toString()[0] : null,
         isExternal: i['video_type'],
+        dipelajari: i['dipelajari'],
+        cocokUntuk: i['cocok_untuk'],
       ));
     }
   }
@@ -95,27 +157,28 @@ class DetailEcourceBloc {
           quality: 100,
         );
       } catch (_) {}
-
-      videos.add(
-        CourceVideo(
-          courceId: i['course_id'],
-          description: i['description'],
-          episode: i['episode'],
-          id: i['id'],
-          isFree: i['is_free'],
-          name: i['name'],
-          videoUrl: i['video_url'],
-          thumnail: fileName,
-        ),
-      );
+      try {
+        videos.add(
+          CourceVideo(
+            courceId: i['course_id'].toString(),
+            description: i['description'],
+            episode: i['episode'].toString(),
+            id: i['id'],
+            isFree: i['is_free'].toString(),
+            name: (i['name'] ?? ''),
+            videoUrl: i['video_url'],
+            thumnail: fileName,
+          ),
+        );
+      } catch (_) {}
     }
 
     for (var i in data['course_modules'] ?? []) {
       modules.add(
         CourceModules(
-          courceId: i['course_id'],
+          courceId: i['course_id'].toString(),
           description: i['description'],
-          episode: i['episode'],
+          episode: i['episode'].toString(),
           id: i['id'],
           moduleUrl: i['module_url'],
           name: i['name'],
@@ -153,10 +216,14 @@ class CommentsBloc {
   static init(data) {
     _dataComment.clear();
     // ignore: avoid_print
-    print(data['data']);
     for (var i in data['data'] ?? []) {
-      add(Comment(id: i['id'], name: i['user']['name'], courseId: i['course_id'], userId: i['user_id'], chat: i['chat'], created: DateTime.parse(i['created_at'])));
+      try {
+        add(Comment(id: i['id'], name: i['user']['name'], courseId: i['course_id'].toString(), userId: i['user_id'].toString(), chat: i['chat'], created: DateTime.parse(i['created_at']), image: i['user']['photo_url']));
+      } catch (_) {
+        print(_);
+      }
     }
+    print(_dataComment.length);
   }
 
   static add(Comment data) {

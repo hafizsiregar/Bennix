@@ -2,25 +2,19 @@ import 'dart:convert';
 
 import 'package:benix/main_library.dart';
 import 'package:benix/main_route.dart';
-// import 'package:benix/widget/webview.dart';
-// import 'package:flutter/cupertino.dart' show Navigator;
-import 'package:request_api_helper/request.dart' as req;
-import 'package:request_api_helper/request_api_helper.dart' show RESTAPI, RequestApiHelperConfigData, RequestData;
+import 'package:request_api_helper/request.dart';
+import 'package:request_api_helper/request_api_helper.dart';
 
-Future<bool> checkout({required context, data, required Function navigator}) async {
-  bool status = false;
-
-  await req.send(
-    type: RESTAPI.post,
-    name: 'transactions/store',
-    context: context,
-    data: RequestData(
-      rawJson: json.encode(data),
-    ),
-    changeConfig: RequestApiHelperConfigData(
-      successMessage: 'default',
-      onSuccess: (data) {
-        
+checkout({required context, data, required Function navigator, required Function(bool) onSuccess}) async {
+  await RequestApiHelper.sendRequest(
+    type: Api.post,
+    url: 'transactions/store',
+    replacementId: 19,
+    withLoading: true,
+    config: RequestApiHelperData(
+      body: data,
+      bodyIsJson: true,
+      onSuccess: (data) async {
         if (data['data']['snap_url'] == null || data['data']['snap_url'] == '') {
           Navigator.pushAndRemoveUntil(
               context,
@@ -38,10 +32,8 @@ Future<bool> checkout({required context, data, required Function navigator}) asy
             ),
           );
         }
-        status = true;
+        onSuccess(true);
       },
     ),
   );
-
-  return status;
 }

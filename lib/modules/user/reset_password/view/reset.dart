@@ -16,18 +16,16 @@ class _ResetPasswordView2State extends BaseBackground<ResetPasswordView2> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   _send() async {
-    final status = await changePassword(
-      context: context,
-      email: widget.email,
-      p2: _passwordk.text,
-      p: _password.text,
-    );
-
-    if (status) {
-      navigatorRemove(
-        page: const LoginView(),
-      );
-    }
+    await changePassword(
+        context: context,
+        email: widget.email,
+        p2: _passwordk.text,
+        p: _password.text,
+        onSuccess: () {
+          navigatorRemove(
+            page: const LoginView(),
+          );
+        });
   }
 
   @override

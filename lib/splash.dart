@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:benix/main_route.dart' show DashboardView;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:request_api_helper/helper/database.dart';
 import 'package:request_api_helper/session.dart';
 import 'package:uni_links/uni_links.dart';
 import 'main_library.dart' show BaseBackground, BuildContext, Center, EdgeInsets, Image, Key, MediaQuery, Padding, Responsive, Scaffold, StatefulWidget, Text, Widget, setMaxWidth;
@@ -17,13 +19,14 @@ class Splash extends StatefulWidget {
 
 class _SplashState extends BaseBackground<Splash> {
   loadProfile() async {
-    final isRemember = await Session.load('isRemember');
+    // final isRemember = await Session.load('isRemember');
     // if (isRemember != null) {
     //   if (!isRemember) {
     //     await UserBloc.logout();
     //   } else {
-        await UserBloc.load();
-      // }
+    // await Session.init();
+    await UserBloc.load();
+    // }
     // }
     Timer(const Duration(seconds: 2), () async {
       Uri? initialUri;
@@ -58,19 +61,21 @@ class _SplashState extends BaseBackground<Splash> {
           Center(
             child: Padding(
               padding: const EdgeInsets.all(40.0),
-                child: Image.asset(
-                  'assets/images/bennix.png',
-                ),
+              child: Image.asset(
+                'assets/images/bennix.png',
               ),
+            ),
           ),
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: const EdgeInsets.all(30.0),
-              child: Text('Versi 1.0.1',
-              style: GoogleFonts.poppins(
-                color: Colors.grey[600],
-              ),),
+              child: Text(
+                'Versi 1.0.1',
+                style: GoogleFonts.poppins(
+                  color: Colors.grey[600],
+                ),
+              ),
             ),
           )
         ],

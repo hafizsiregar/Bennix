@@ -3,9 +3,11 @@ import 'package:benix/main_route.dart';
 import 'package:benix/modules/user/home/bloc/model.dart';
 import 'package:benix/modules/user/login/bloc/main_bloc.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:request_api_helper/request_api_helper.dart';
 import 'package:benix/main_library.dart';
+import 'package:request_api_helper/session.dart';
 
 double? _maxWidth = 0;
 
@@ -40,6 +42,7 @@ abstract class BaseBackground<T extends StatefulWidget> extends State<T> with Ti
 
   @override
   void initState() {
+    RequestApiHelper.initState();
     super.initState();
     transitionController = AnimationController(
       duration: const Duration(
@@ -189,15 +192,17 @@ class DrawerBack extends StatelessWidget {
                   onTap: () {
                     animationController.reverse();
                   },
-                  child: const Icon(Icons.arrow_back_ios, size: 20,),
+                  child: const Icon(
+                    Icons.arrow_back_ios,
+                    size: 20,
+                  ),
                 ),
                 Container(
                   width: 80,
                   height: 80,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    image: 
-                    UserBloc.user.photoProfile == null ? null : DecorationImage(image: NetworkImage(UserBloc.user.photoProfile!), fit: BoxFit.cover),
+                    image: UserBloc.user.photoProfile == null ? null : DecorationImage(image: NetworkImage(UserBloc.user.photoProfile!), fit: BoxFit.cover),
                   ),
                 ),
                 const SizedBox(
@@ -270,10 +275,12 @@ class DrawerBack extends StatelessWidget {
                                       const SizedBox(
                                         width: 20,
                                       ),
-                                      Text(e.title ?? '', 
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 14,
-                                      ),),
+                                      Text(
+                                        e.title ?? '',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 14,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),

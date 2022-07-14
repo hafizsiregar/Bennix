@@ -1,66 +1,48 @@
 import 'package:benix/modules/user/login/bloc/main_bloc.dart';
-import 'package:benix/notification.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:request_api_helper/request.dart' as req;
-import 'package:request_api_helper/request_api_helper.dart' show RESTAPI, Redirects, RequestApiHelperConfigData, RequestData, Session;
+import 'package:request_api_helper/request.dart';
+import 'package:request_api_helper/request_api_helper.dart';
+import 'package:request_api_helper/session.dart';
 
-Future<bool> login({required context, required email, required password}) async {
-  bool status = false;
+login({required context, required email, required password, required Function onSuccess}) async {
   String? firebaseMessagingToken = await FirebaseMessaging.instance.getToken();
-
-  await req.send(
-    type: RESTAPI.post,
-    context: context,
-    name: 'auth/login',
-    data: RequestData(
-      body: {
-        'email': email,
-        'password': password,
-        'notification_token':firebaseMessagingToken
-      },
-    ),
-    changeConfig: RequestApiHelperConfigData(
-      successMessage: 'default',
-      authErrorRedirect: Redirects(
-        widget: null,
-      ),
+  await RequestApiHelper.sendRequest(
+    type: Api.post,
+    url: 'auth/login',
+    replacementId: 11,
+    withLoading: true,
+    config: RequestApiHelperData(
+      onAuthError: (context) {},
+      body: {'email': email, 'password': password, 'notification_token': firebaseMessagingToken},
       onSuccess: (data) async {
         await UserBloc.save(data['data']);
-        await Session.save('token', 'Bearer ' + data['credential']);
-        status = true;
+        await Session.save(header: 'token', stringData: 'Bearer ' + data['credential']);
+        onSuccess();
       },
     ),
   );
-  return status;
 }
 
-Future<bool> loginGoogle({required context, required email, required member}) async {
-  bool status = false;
-  await req.send(
-    type: RESTAPI.post,
-    context: context,
-    name: 'auth/login/social',
-    data: RequestData(
+loginGoogle({required context, required email, required member, required Function onSuccess}) async {
+  await RequestApiHelper.sendRequest(
+    type: Api.post,
+    url: 'auth/login/social',
+    replacementId: 12,
+    withLoading: true,
+    config: RequestApiHelperData(
+      onAuthError: (context) {},
       body: {
         'email': email,
         'name': member,
       },
-    ),
-    changeConfig: RequestApiHelperConfigData(
-      successMessage: 'default',
-      
-      authErrorRedirect: Redirects(
-        widget: null,
-      ),
       onSuccess: (data) async {
         await UserBloc.save(data['data']);
-        await Session.save('token', 'Bearer ' + data['credential']);
-        status = true;
+        await Session.save(header: 'token', stringData: 'Bearer ' + data['credential']);
+        onSuccess();
       },
     ),
   );
-  return status;
 }
 
 class GoogleService {
@@ -69,5 +51,4 @@ class GoogleService {
   static Future<GoogleSignInAccount?> login() => _googleSignIn.signIn();
 
   static Future logout() => _googleSignIn.disconnect();
-
 }

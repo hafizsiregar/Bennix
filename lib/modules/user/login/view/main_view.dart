@@ -19,11 +19,17 @@ Future<void> handleSignIn(context, navigatorRemove) async {
   try {
     final GoogleSignInAccount? data = await _googleSignIn.signIn();
     if (data != null) {
-      final bool status = await loginGoogle(context: context, email: data.email, member: data.displayName);
-      if (status) navigatorRemove(page: const DashboardView());
+      await loginGoogle(
+        context: context,
+        email: data.email,
+        member: data.displayName,
+        onSuccess: () {
+          navigatorRemove(page: const DashboardView());
+        },
+      );
     }
   } catch (error) {
-    print(error);
+    // print(error);
   }
 }
 
@@ -42,12 +48,14 @@ class _LoginViewState extends BaseBackground<LoginView> {
   bool isRemember = true;
 
   _login() async {
-    final bool status = await login(
+    await login(
       context: context,
       email: email.text,
       password: password.text,
+      onSuccess: () {
+        navigatorRemove(page: const DashboardView());
+      },
     );
-    if (status) navigatorRemove(page: const DashboardView());
   }
 
   _loadRemember() async {
@@ -63,18 +71,17 @@ class _LoginViewState extends BaseBackground<LoginView> {
 
   @override
   Widget build(BuildContext context) {
+    //   Future handleSignIn() async {
+    //   final user = await GoogleService.login();
 
-  //   Future handleSignIn() async {
-  //   final user = await GoogleService.login();
-
-  //   if(user == null) {
-  //     ScaffoldMessenger.of(context)
-  //     .showSnackBar(SnackBar(content: Text('Sign in Failed')));
-  //   } else {
-  //   Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => 
-  //   DashboardView()));
-  //   }
-  // }
+    //   if(user == null) {
+    //     ScaffoldMessenger.of(context)
+    //     .showSnackBar(SnackBar(content: Text('Sign in Failed')));
+    //   } else {
+    //   Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>
+    //   DashboardView()));
+    //   }
+    // }
 
     return AnimateTransition(
       animation: animationTransition!,
@@ -103,11 +110,10 @@ class _LoginViewState extends BaseBackground<LoginView> {
                       width: double.infinity,
                       child: Center(
                         child: Text(
-                            'Masuk Aplikasi',
-                            style: TextStyle(
-                              fontSize: 24,
-                            ),
-                          
+                          'Masuk Aplikasi',
+                          style: TextStyle(
+                            fontSize: 24,
+                          ),
                         ),
                       ),
                     ),
@@ -159,7 +165,7 @@ class _LoginViewState extends BaseBackground<LoginView> {
                         // const Text('Ingat Saya'),
                         const Expanded(child: SizedBox()),
                         Padding(
-                          padding: const EdgeInsets.only(right: 20,top: 16),
+                          padding: const EdgeInsets.only(right: 20, top: 16),
                           child: InkWell(
                             borderRadius: const BorderRadius.all(Radius.circular(100)),
                             onTap: () {
@@ -167,7 +173,7 @@ class _LoginViewState extends BaseBackground<LoginView> {
                                 page: const ResetPasswordView(),
                               );
                             },
-                            child: const Text('Lupa Password?',style: TextStyle(color: Colors.blue)),
+                            child: const Text('Lupa Password?', style: TextStyle(color: Colors.blue)),
                           ),
                         ),
                       ],

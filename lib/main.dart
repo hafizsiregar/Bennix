@@ -1,11 +1,20 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:benix/notification.dart';
 import 'package:benix/splash.dart';
 import 'package:benix/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:request_api_helper/helper/database.dart';
+import 'package:request_api_helper/loading.dart';
+import 'package:request_api_helper/request.dart';
 import 'package:request_api_helper/request_api_helper.dart';
+import 'package:request_api_helper/session.dart';
+
+GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -16,23 +25,40 @@ class MyHttpOverrides extends HttpOverrides {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-    statusBarIconBrightness: Brightness.light,
-    statusBarBrightness: Brightness.light));
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
-    statusBarIconBrightness: Brightness.dark,
-    statusBarBrightness: Brightness.dark));
-  await Firebase.initializeApp();
+
+// ignore: prefer_function_declarations_over_variables
+
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(statusBarIconBrightness: Brightness.light, statusBarBrightness: Brightness.light));
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(statusBarIconBrightness: Brightness.dark, statusBarBrightness: Brightness.dark));
+  try {
+    await Firebase.initializeApp();
+  } finally {}
+
   HttpOverrides.global = MyHttpOverrides();
-  RequestApiHelperConfig.save(
-    RequestApiHelperConfigData(
-      withLoading: Redirects(toogle: true),
-      noapiurl: 'https://admin.benix.id/',
-      url: 'https://admin.benix.id/api/',
-      errorMessage: 'default',
-      timeout: const Duration(seconds: 120),
+  await RequestApiHelper.init(
+    RequestApiHelperData(
+      baseUrl: 'https://admin.benix.id/api/',
+      debug: !kReleaseMode,
+      navigatorKey: navigatorKey,
+      onError: (res) {
+        final parse = json.decode(res.body);
+        if (parse['message'] != null) {
+          Fluttertoast.showToast(msg: parse['message']);
+        }
+      },
     ),
   );
+  Loading.widget = (context) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        Loading.currentContext = context;
+        Loading.lastContext = context;
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+    Loading.currentContext = context;
+  };
   runApp(const MyApp());
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -48,7 +74,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   DarkThemeProvider themeChangeProvider = DarkThemeProvider();
-  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   String notificationTitle = 'No Title';
   String notificationBody = 'No Body';
   String notificationData = 'No Data';
@@ -56,12 +81,14 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     BaseColor.setColor();
-    final firebaseMessaging = FCM();
-    firebaseMessaging.setNotifications();
+    try {
+      final firebaseMessaging = FCM();
+      firebaseMessaging.setNotifications();
 
-    firebaseMessaging.streamCtlr.stream.listen(_changeData);
-    firebaseMessaging.bodyCtlr.stream.listen(_changeBody);
-    firebaseMessaging.titleCtlr.stream.listen(_changeTitle);
+      firebaseMessaging.streamCtlr.stream.listen(_changeData);
+      firebaseMessaging.bodyCtlr.stream.listen(_changeBody);
+      firebaseMessaging.titleCtlr.stream.listen(_changeTitle);
+    } finally {}
   }
 
   _changeData(String msg) => setState(() => notificationData = msg);
@@ -75,6 +102,7 @@ class _MyAppState extends State<MyApp> {
         statusBarColor: Colors.transparent,
       ),
       child: MaterialApp(
+        navigatorObservers: [RequestApiHelperObserver()],
         title: 'Bennix',
         debugShowCheckedModeBanner: false,
         theme: themeDatas(false, context),

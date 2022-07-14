@@ -1,47 +1,40 @@
 import 'package:benix/modules/user/login/bloc/main_bloc.dart';
 import 'package:benix/modules/user/login/bloc/model.dart';
-import 'package:request_api_helper/request.dart' as req;
-import 'package:request_api_helper/request_api_helper.dart' show RESTAPI, RequestApiHelperConfigData, RequestData;
+import 'package:request_api_helper/request.dart';
+import 'package:request_api_helper/request_api_helper.dart';
 
-Future<bool> saveProfileImage({required context, required image}) async {
-  bool status = false;
-  await req.send(
-    type: RESTAPI.post,
-    context: context,
-    name: 'auth/update-photo-profile',
-    data: RequestData(
+saveProfileImage({required context, required image, required Function onSuccess}) async {
+  await RequestApiHelper.sendRequest(
+    type: Api.post,
+    url: 'auth/update-photo-profile',
+    replacementId: 6,
+    withLoading: true,
+    config: RequestApiHelperData(
       body: {
         'photo_profile': image,
       },
-    ),
-    changeConfig: RequestApiHelperConfigData(
-      successMessage: 'default',
-      onSuccess: (data) async {
+      onSuccess: (data) {
         UserBloc.save(data['data']);
-        status = true;
+        onSuccess();
       },
     ),
   );
-  return status;
 }
 
-Future<bool> saveProfile({required context, required name, required gender, required date, required phone}) async {
-  bool status = false;
-  await req.send(
-    type: RESTAPI.post,
-    context: context,
-    name: 'auth/update',
-    data: RequestData(
+saveProfile({required context, required name, required gender, required date, required phone, required Function onSuccess}) async {
+  await RequestApiHelper.sendRequest(
+    type: Api.post,
+    url: 'auth/update',
+    replacementId: 7,
+    withLoading: true,
+    config: RequestApiHelperData(
       body: {
         'name': name,
         'gender': gender,
         'date_of_birth': date,
         'phone': phone,
       },
-    ),
-    changeConfig: RequestApiHelperConfigData(
-      successMessage: 'default',
-      onSuccess: (data) async {
+      onSuccess: (data) {
         UserBloc.update(
           User(
             email: UserBloc.user.email,
@@ -56,32 +49,27 @@ Future<bool> saveProfile({required context, required name, required gender, requ
             phone: phone,
           ),
         );
-        status = true;
+        onSuccess();
       },
     ),
   );
-  return status;
 }
 
-Future<bool> updatePassword({required context, required p, required pp, required ppk}) async {
-  bool status = false;
-  await req.send(
-    type: RESTAPI.post,
-    context: context,
-    name: 'auth/update-password',
-    data: RequestData(
+updatePassword({required context, required p, required pp, required ppk, required Function onSuccess}) async {
+  await RequestApiHelper.sendRequest(
+    type: Api.post,
+    url: 'auth/update-password',
+    replacementId: 8,
+    withLoading: true,
+    config: RequestApiHelperData(
       body: {
         'password': p,
         'old_password': pp,
         'confirm_password': ppk,
       },
-    ),
-    changeConfig: RequestApiHelperConfigData(
-      successMessage: 'default',
-      onSuccess: (data) async {
-        status = true;
+      onSuccess: (data) {
+        onSuccess();
       },
     ),
   );
-  return status;
 }

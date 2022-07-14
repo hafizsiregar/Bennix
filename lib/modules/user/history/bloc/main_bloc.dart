@@ -12,17 +12,7 @@ class BlocHistoryEvent extends Bloc {
     _listEvent.clear();
     if (data['data'] != null) {
       for (var i in data['data']) {
-        _listEvent.add(HistoryEvent(
-            date: DateTime.parse(i['date']),
-            dueDate:
-                i['due_date'] == null ? null : DateTime.parse(i['due_date']),
-            orderNumber: i['order_number'],
-            paymentMethod: i['payment_method'],
-            status: i['status'],
-            isCheckin: i['is_checkin'],
-            total: int.parse(i['total_net'].replaceAll('.00', '')),
-            event: addEvent(i['event']),
-            id: i['id']));
+        _listEvent.add(HistoryEvent(date: DateTime.parse(i['date']), dueDate: i['due_date'] == null ? null : DateTime.parse(i['due_date']), orderNumber: i['order_number'], paymentMethod: i['payment_method'], status: i['status'], isCheckin: i['is_checkin'].toString(), total: int.parse(i['total_net'].replaceAll('.00', '')), event: addEvent(i['event']), id: i['id']));
       }
     }
   }
@@ -40,14 +30,14 @@ class BlocHistoryEvent extends Bloc {
         locationLat: data['location_lat'],
         locationLong: data['location_long'],
         locationType: data['location_type'],
-        maxBuyTicket: int.tryParse(data['max_buy_ticket']),
+        maxBuyTicket: int.tryParse(data['max_buy_ticket'].toString()),
         name: data['name'],
         organizerImg: data['organizer_img_url'],
         organizerName: data['organizer_name'],
         startDate: DateTime.parse(data['start_date']),
         type: data['type'],
-        uniqueEmailTransaction: int.parse(data['uniqe_email_transaction']),
-        userId: int.parse(data['user_id']),
+        uniqueEmailTransaction: int.parse(data['uniqe_email_transaction'].toString()),
+        userId: int.parse(data['user_id'].toString()),
         locationName: data['location_name'],
       );
     } else {
@@ -67,12 +57,9 @@ class DetailHistoryBloc {
   static DetailHistory get data => _data;
 
   static Future<void> init(data) async {
-    
     List<DetailTicket> tickets = [];
     //  _data = DetailHistory();
-    print("dataa ${_data.eventName}");
     for (var i in data['details'] ?? []) {
-    
       tickets.add(
         DetailTicket(
           ticketName: i['ticket']['name'],
@@ -85,28 +72,18 @@ class DetailHistoryBloc {
         ),
       );
     }
-   
+
     _data = DetailHistory(
       detailTicket: tickets,
       buyerEmail: data['buyer_user']['email'],
       buyerName: data['buyer_user']['name'],
-      buyerPhone: data['buyer_user']['phone'] == null ||
-              data['buyer_user']['phone'] == 'null'
-          ? '-'
-          : data['buyer_user']['phone'],
+      buyerPhone: data['buyer_user']['phone'] == null || data['buyer_user']['phone'] == 'null' ? '-' : data['buyer_user']['phone'],
       eventName: data['event']['name'],
       eventPlace: data['event']['location_address'],
-      eventdate: DateFormat('yyyy-MM-dd hh:mm')
-          .format(DateTime.parse(data['event']['start_date'].toString()))
-          .toString(),
-      invoicedate: DateFormat('yyyy-MM-dd')
-          .format(DateTime.parse(data['date'].toString()))
-          .toString(),
+      eventdate: DateFormat('yyyy-MM-dd hh:mm').format(DateTime.parse(data['event']['start_date'].toString())).toString(),
+      invoicedate: DateFormat('yyyy-MM-dd').format(DateTime.parse(data['date'].toString())).toString(),
       orderNumber: data['order_number'],
-      paymentMethod:
-          data['payment_method'] == null || data['payment_method'] == 'null'
-              ? '-'
-              : data['payment_method'],
+      paymentMethod: data['payment_method'] == null || data['payment_method'] == 'null' ? '-' : data['payment_method'],
       status: data['status'],
       billNumber: data['bill_number'],
       billCode: data['bill_code'],

@@ -1,141 +1,150 @@
+import 'package:benix/main.dart';
 import 'package:benix/main_library.dart';
 import 'package:benix/modules/user/cource/home/api/request_api.dart';
 import 'package:benix/modules/user/cource/home/model/bloc.dart';
 import 'package:benix/modules/user/cource/home/model/model.dart';
-import 'package:benix/modules/user/login/bloc/main_bloc.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-import 'detail.dart';
-
-class CommentsView extends StatefulWidget {
-  final Cource data;
-  const CommentsView({Key? key, required this.data}) : super(key: key);
-
-  @override
-  _CommentsViewState createState() => _CommentsViewState();
-}
-
-class _CommentsViewState extends BaseBackground<CommentsView> {
-  bool isVideo = true;
+showComment(id) async {
   final TextEditingController _messageController = TextEditingController();
-  @override
-  void initState() {
-    super.initState();
-    timeago.setLocaleMessages('id', timeago.IdMessages());
-    Future.delayed(Duration.zero, () async {
-      await getComments(context, widget.data.id.toString());
-      setState(() {});
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimateTransition(
-      animation: animationTransition!,
-      child: InitControl(
-        child: Scaffold(
-          body: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 12.0),
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-                  decoration: BoxDecoration(
-                    color: BaseColor.theme?.primaryColor,
+  getComments(navigatorKey.currentContext!, id.toString(), onSuccess: () {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: navigatorKey.currentContext!,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return StatefulBuilder(builder: (context, setState) {
+          return bottom(
+            maxHeight: MediaQuery.of(context).size.height,
+            context: context,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * .35,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: ListView.builder(
+                        itemCount: CommentsBloc.getList().take(10).toList().length,
+                        itemBuilder: (context, index) {
+                          List<Comment> dataList = CommentsBloc.getList().take(10).toList();
+                          Comment comment = dataList[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 20.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: 50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                    color: Colors.black12,
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: CachedNetworkImageProvider(comment.image ?? ''),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '@' + (comment.name ?? ''),
+                                        style: GoogleFonts.poppins(
+                                          textStyle: const TextStyle(
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                      Text(
+                                        timeago.format(comment.created!, locale: 'id'),
+                                        style: GoogleFonts.poppins(
+                                          textStyle: const TextStyle(fontSize: 11),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 6,
+                                      ),
+                                      Text(
+                                        comment.chat ?? '',
+                                        style: GoogleFonts.poppins(
+                                          textStyle: const TextStyle(fontSize: 13, color: Colors.black, fontWeight: FontWeight.w500),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   ),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          IconButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              icon: const Icon(
-                                Icons.arrow_back_ios_new,
-                                color: Colors.white,
-                              )),
-                          const Text(
-                            'Komentar',
-                            style: TextStyle(
-                              fontSize: 22,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
+                ),
+                Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    border: Border(
+                      bottom: BorderSide(
+                        width: 1,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 4,
+                          child: TextField(
+                            controller: _messageController,
+                            // style: const TextStyle(height: 0.5, color: Colors.black),
+                            scrollPadding: EdgeInsets.zero,
+                            decoration: const InputDecoration(
+                              contentPadding: EdgeInsets.zero,
+                              isDense: true,
+                              hintText: "Tambahkan Komentar",
+                              border: InputBorder.none,
                             ),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: ListView.builder(
-                    itemCount: CommentsBloc.getList().take(10).toList().length,
-                    itemBuilder: (context, index) {
-                      List<Comment> dataList = CommentsBloc.getList().take(10).toList();
-                      Comment comment = dataList[index];
-                      return Card(
-                        elevation: 0.5,
-                        child: ListTile(
-                          leading: const Icon(Icons.comment),
-                          title: Text(comment.name ?? ''),
-                          subtitle: Text(comment.chat ?? ''),
-                          // trailing: Text( DateFormat('MMM').format(comment.created!).toUpperCase()),
-                          trailing: Text(
-                            timeago.format(comment.created!, locale: 'id'),
-                            style: const TextStyle(color: Colors.blue, fontSize: 10),
-                          ),
                         ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-          bottomSheet: Container(
-            color: Colors.white,
-            child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 4,
-                      child: TextField(
-                        controller: _messageController,
-                        style: const TextStyle(height: 0.5, color: Colors.black),
-                        decoration: const InputDecoration(
-                          isDense: true,
-                          hintText: "Pesan komentar",
-                          border: OutlineInputBorder(),
+                        const SizedBox(
+                          width: 4,
                         ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 4,
-                    ),
-                    Expanded(
-                        flex: 1,
-                        child: ElevatedButton(
-                          child: const Icon(Icons.send),
-                          onPressed: () async {
-                            final bol = await saveComment(context, widget.data.id.toString(), _messageController.text.toString());
-                            if (bol) {
-                              await getComments(context, widget.data.id.toString());
-                              _messageController.clear;
-                              setState(() {});
+                        GestureDetector(
+                          child: Image.asset('assets/icons/send.png'),
+                          onTap: () async {
+                            if (_messageController.text == '') {
+                              return;
                             }
+                            saveComment(context, id.toString(), _messageController.text.toString(), onSuccess: () {
+                              getComments(context, id.toString(), onSuccess: () {
+                                _messageController.clear;
+                                setState(() {});
+                              });
+                              setState(() {});
+                            });
                           },
-                        ))
-                  ],
-                )),
-          ),
-        ),
-      ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
+      },
     );
-  }
+  });
 }

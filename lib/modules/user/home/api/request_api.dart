@@ -1,11 +1,13 @@
 import 'package:benix/modules/admin/event/bloc/main_bloc.dart';
 import 'package:benix/modules/user/home/bloc/model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:request_api_helper/request.dart' as req;
-import 'package:request_api_helper/request_api_helper.dart' show RESTAPI, Redirects, RequestApiHelperConfigData, RequestData;
+import 'package:request_api_helper/request.dart';
+import 'package:request_api_helper/request_api_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-Future<void> filterEvent(context, FilterDataEvent data) async {
+Future<void> filterEvent(context, FilterDataEvent data, {required Function onSuccess}) async {
   Map<String, dynamic> body = {
     'category': data.category,
     'name': data.name,
@@ -17,91 +19,96 @@ Future<void> filterEvent(context, FilterDataEvent data) async {
     'from_calender': data.calender,
   };
 
-  await req.send(
-    name: 'events',
-    context: context,
-    type: RESTAPI.get,
-    data: RequestData(
+  await RequestApiHelper.sendRequest(
+    type: Api.post,
+    url: 'events',
+    replacementId: 13,
+    config: RequestApiHelperData(
       body: body,
-    ),
-    changeConfig: RequestApiHelperConfigData(
-      onSuccess: (data) {
+      onSuccess: (data) async {
         BlocEvent.initEventFilter(data['data']);
+        onSuccess();
       },
     ),
   );
 }
 
-Future<void> popularEvent(context) async {
+Future<void> popularEvent(context, {required Function onSuccess}) async {
   Map<String, dynamic> body = {
     'order_by': 'populer',
   };
 
-  await req.send(
-    name: 'events',
-    context: context,
-    type: RESTAPI.get,
-    data: RequestData(
+  await RequestApiHelper.sendRequest(
+    type: Api.get,
+    url: 'events',
+    replacementId: 14,
+    withLoading: true,
+    config: RequestApiHelperData(
       body: body,
-    ),
-    changeConfig: RequestApiHelperConfigData(
-      onSuccess: (data) {
+      onSuccess: (data) async {
         BlocEvent.initEvent(data['data']);
-      },
-    ),
-  );
-} 
-
-Future<void> newEvent(context) async {
-  Map<String, dynamic> body = {
-    'order_by': 'new',
-  };
-
-  await req.send(
-    name: 'events',
-    context: context,
-    type: RESTAPI.get,
-    data: RequestData(
-      body: body,
-    ),
-    changeConfig: RequestApiHelperConfigData(
-      onSuccess: (data) {
-        BlocEvent.initNewEvent(data['data']);
+        onSuccess();
       },
     ),
   );
 }
 
-Future<List<Widget>> getBanner(context) async {
+Future<void> newEvent(context, {required Function onSuccess}) async {
+  Map<String, dynamic> body = {
+    'order_by': 'new',
+  };
+
+  await RequestApiHelper.sendRequest(
+    type: Api.get,
+    url: 'events',
+    replacementId: 15,
+    withLoading: true,
+    config: RequestApiHelperData(
+      body: body,
+      onSuccess: (data) async {
+        BlocEvent.initNewEvent(data['data']);
+        onSuccess();
+      },
+    ),
+  );
+}
+
+Future<void> getBanner(context, {required Function(List<Widget>) onSuccess}) async {
   final List<Widget> res = [];
-  await req.send(
-    name: 'misc/banner',
-    context: context,
-    type: RESTAPI.get,
-    changeConfig: RequestApiHelperConfigData(
-      withLoading: Redirects(toogle: false),
-      onSuccess: (data) {
+  await RequestApiHelper.sendRequest(
+    type: Api.get,
+    url: 'misc/banner',
+    replacementId: 16,
+    withLoading: true,
+    config: RequestApiHelperData(
+      onSuccess: (data) async {
         for (var i in data['data']) {
           res.add(
             GestureDetector(
               onTap: () {
-                launch(i['path']);
+                launchUrl(i['path']);
               },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 5),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    child: Image.network(i['path'],
-                        fit: BoxFit.cover, width: double.infinity),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: CachedNetworkImageProvider(i['path']),
+                      fit: BoxFit.cover,
+                    ),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(12),
+                    ),
                   ),
-                )
+                ),
               ),
             ),
           );
         }
+        // BlocEvent.initNewEvent(data['data']);
+        onSuccess(res);
       },
     ),
   );
-  return res;
 }

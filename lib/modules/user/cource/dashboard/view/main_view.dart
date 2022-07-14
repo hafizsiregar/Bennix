@@ -1,11 +1,9 @@
 import 'package:benix/main_route.dart' show CalendarView, HistoryView, LoginView;
-import 'package:benix/modules/admin/cource/view/main_view.dart';
 import 'package:benix/modules/user/cource/home/api/request_api.dart';
 import 'package:benix/modules/user/cource/home/model/static_data.dart';
 import 'package:benix/modules/user/cource/home/view/main_view.dart';
 import 'package:benix/modules/user/home/bloc/model.dart';
 import 'package:benix/modules/user/login/bloc/main_bloc.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:request_api_helper/session.dart';
 import '../../../../../main_library.dart' show Alignment, AnimateTransition, Animation, AnimationController, BaseBackground, BaseColor, BorderRadius, BuildContext, Center, Color, Colors, Column, CurvedAnimation, Curves, DrawerBack, EdgeInsets, Expanded, Icon, Icons, InitControl, InkWell, Key, MainAxisAlignment, Material, MaterialType, MediaQuery, NeverScrollableScrollPhysics, Padding, PageController, PageView, Positioned, Radius, Responsive, Row, Scaffold, SizedBox, Stack, StatefulWidget, Text, TextStyle, Tween, Widget, getMaxWidth;
 // import 'package:google_sign_in/google_sign_in.dart';
@@ -37,10 +35,11 @@ class _DashboardCourceViewState extends BaseBackground<DashboardCourceView> {
 
   _getDataHome() async {
     if (widget.selectedPage == 0) {
-      await getEcource(context);
+      await getEcource(context, onSuccess: () {
+        setState(() {});
+      });
       // await getCategory(context: context);
     }
-    setState(() {});
   }
 
   _initMenu() async {

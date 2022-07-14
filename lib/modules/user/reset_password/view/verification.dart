@@ -19,18 +19,16 @@ class _VerificationViewState extends BaseBackground<VerificationView> {
   bool isRemember = false;
 
   check() async {
-    final bool status = await checkOtp(
-      context: context,
-      email: widget.email,
-      otp: value,
-    );
-
-    if (status) {
-      navigator(
-          page: ResetPasswordView2(
+    await checkOtp(
+        context: context,
         email: widget.email,
-      ));
-    }
+        otp: value,
+        onSuccess: () {
+          navigator(
+              page: ResetPasswordView2(
+            email: widget.email,
+          ));
+        });
 
     return;
   }

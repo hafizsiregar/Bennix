@@ -16,8 +16,9 @@ class HistoryView extends StatefulWidget {
 
 class _HistoryViewState extends BaseBackground<HistoryView> {
   _getData() async {
-    await getHistory(context);
-    setState(() {});
+    await getHistory(context, onSuccess: () {
+      setState(() {});
+    });
   }
 
   @override
@@ -122,7 +123,11 @@ class _HistoryViewState extends BaseBackground<HistoryView> {
                                                     children: [
                                                       Expanded(
                                                         child: Text(
-                                                          BlocHistoryEvent.listEvent[index].isCheckin == '1' ?  'Hadir'  : BlocHistoryEvent.listEvent[index].isCheckin == '0' ? 'Belum Checkin': 'Tidak Hadir',
+                                                          BlocHistoryEvent.listEvent[index].isCheckin == '1'
+                                                              ? 'Hadir'
+                                                              : BlocHistoryEvent.listEvent[index].isCheckin == '0'
+                                                                  ? 'Belum Checkin'
+                                                                  : 'Tidak Hadir',
                                                           style: TextStyle(
                                                             color: BaseColor.theme?.primaryColor,
                                                           ),

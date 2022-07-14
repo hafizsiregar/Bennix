@@ -2,51 +2,43 @@ import 'dart:convert';
 
 import 'package:benix/modules/user/history/bloc/main_bloc.dart';
 import 'package:benix/modules/user/history/bloc/model.dart';
-import 'package:request_api_helper/request.dart' as req;
-import 'package:request_api_helper/request_api_helper.dart' show RESTAPI, RequestApiHelperConfigData, RequestData;
+import 'package:request_api_helper/request.dart';
+import 'package:request_api_helper/request_api_helper.dart';
 
-Future<void> getUpcomming(context) async {
-  await req.send(
-    type: RESTAPI.get,
-    context: context,
-    name: 'transactions',
-    data: RequestData(
+Future<void> getUpcomming(context, {required Function onSuccess}) async {
+  await RequestApiHelper.sendRequest(
+    type: Api.get,
+    url: 'transactions',
+    replacementId: 19,
+    withLoading: true,
+    config: RequestApiHelperData(
       body: {
         'status': 'ongoing',
       },
-    ),
-    changeConfig: RequestApiHelperConfigData(
-      
-      onSuccess: (data) {
-        print("DATA KALENDER $data");
+      onSuccess: (data) async {
         BlocHistoryEvent.initEvent(data);
+        onSuccess();
       },
     ),
   );
 }
 
-Future<bool> updateHadir({required context, required HistoryEvent data}) async {
-  bool status = false;
-  Map body = {
-   'id' : data.id,
-   'is_checkin':data.isCheckin
-  };
+updateHadir({required context, required HistoryEvent data, required Function onSuccess}) async {
+  Map<String, dynamic> body = {'id': data.id, 'is_checkin': data.isCheckin};
 
-  await req.send(
-    type: RESTAPI.post,
-    context: context,
-    name: 'transactions/update-status',
-    data: RequestData(
-      rawJson: json.encode(body),
-    ),
-    changeConfig: RequestApiHelperConfigData(
-      successMessage: 'default',
+  await RequestApiHelper.sendRequest(
+    type: Api.post,
+    url: 'transactions/update-status',
+    replacementId: 20,
+    withLoading: true,
+    config: RequestApiHelperData(
+      body: body,
+      bodyIsJson: true,
       onSuccess: (data) async {
-        await getUpcomming(context);
-        status = true;
+        await getUpcomming(context, onSuccess: () {
+          onSuccess();
+        });
       },
     ),
   );
-
-  return status;
 }

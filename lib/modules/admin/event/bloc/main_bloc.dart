@@ -143,7 +143,6 @@ class BlocEvent extends Bloc {
     _listEvent.clear();
     if (data['data'] != null) {
       for (var i in data['data']) {
-        print(i['name']);
         addEvent(i);
       }
     }
@@ -163,7 +162,7 @@ class BlocEvent extends Bloc {
           locationLat: data['location_lat'],
           locationLong: data['location_long'],
           locationType: data['location_type'],
-          maxBuyTicket: int.tryParse(data['max_buy_ticket']),
+          maxBuyTicket: int.tryParse(data['max_buy_ticket'].toString()),
           name: data['name'],
           organizerImg: data['organizer_img_url'],
           organizerName: data['organizer_name'],
@@ -171,10 +170,10 @@ class BlocEvent extends Bloc {
           type: data['type'],
           sk: data['sk'],
           tages: data['tages'],
-          uniqueEmailTransaction: int.parse(data['uniqe_email_transaction']),
-          userId: int.parse(data['user_id']),
+          uniqueEmailTransaction: int.parse(data['uniqe_email_transaction'].toString()),
+          userId: int.parse(data['user_id'].toString()),
           locationName: data['location_name'],
-          sumPeserta: data['sum_peserta'],
+          sumPeserta: data['sum_peserta'].toString(),
         ),
       );
     }
@@ -203,17 +202,17 @@ class BlocEvent extends Bloc {
           locationLat: data['location_lat'],
           locationLong: data['location_long'],
           locationType: data['location_type'],
-          maxBuyTicket: int.tryParse(data['max_buy_ticket']),
+          maxBuyTicket: int.tryParse(data['max_buy_ticket'].toString()),
           name: data['name'],
           organizerImg: data['organizer_img_url'],
           organizerName: data['organizer_name'],
           startDate: DateTime.parse(data['start_date']),
           type: data['type'],
           sk: data['sk'],
-          uniqueEmailTransaction: int.parse(data['uniqe_email_transaction']),
-          userId: int.parse(data['user_id']),
+          uniqueEmailTransaction: int.parse(data['uniqe_email_transaction'].toString()),
+          userId: int.parse(data['user_id'].toString()),
           locationName: data['location_name'],
-          sumPeserta: data['sum_peserta'],
+          sumPeserta: data['sum_peserta'].toString(),
         ),
       );
     }

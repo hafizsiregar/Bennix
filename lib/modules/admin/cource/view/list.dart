@@ -20,8 +20,11 @@ class _AdminListEcourceViewState extends BaseBackground<AdminListEcourceView> {
   AnimationController? animatePositionC;
 
   getData() async {
-    await getCourceAdmin(context: context);
-    setState(() {});
+    await getCourceAdmin(
+        context: context,
+        onSuccess: (data) {
+          setState(() {});
+        });
   }
 
   @override
