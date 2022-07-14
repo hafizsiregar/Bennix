@@ -8,7 +8,6 @@ import 'package:benix/modules/user/cource/home/api/request_api.dart';
 import 'package:benix/modules/user/cource/home/model/model.dart';
 import 'package:benix/modules/user/login/bloc/main_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:request_api_helper/loading.dart';
 import 'package:request_api_helper/request.dart';
 import 'package:request_api_helper/request_api_helper.dart';
 
@@ -115,7 +114,7 @@ createEcource({required context, required AddVideo data, required Function onSuc
       },
       onError: (res) {},
     ),
-    onUploadProgress: fileUpload[0].isEmpty
+    onProgress: fileUpload[0].isEmpty
         ? null
         : (progress, max) {
             progress = 100 - (((max - progress) / max) * 100).round() > 90 ? 90 : 100 - (((max - progress) / max) * 100).round();
@@ -362,7 +361,7 @@ updateEcource({required context, required Cource data, List<VideoData>? video, L
         onSuccess();
       },
     ),
-    onUploadProgress: fileUpload[0].isEmpty
+    onProgress: fileUpload[0].isEmpty
         ? null
         : (progress, max) {
             progress = 100 - (((max - progress) / max) * 100).round() > 90 ? 90 : 100 - (((max - progress) / max) * 100).round();
