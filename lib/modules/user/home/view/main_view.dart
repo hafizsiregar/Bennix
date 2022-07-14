@@ -277,7 +277,7 @@ class _HomeViewState extends BaseBackground<HomeView> {
                           child: InkWell(
                             onTap: () {
                               Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => PopularEvents()));
+                              MaterialPageRoute(builder: (context) => const PopularEvents()));
                             },
                             child: Text(
                               'Lihat Semua',
